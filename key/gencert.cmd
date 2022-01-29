@@ -1,0 +1,1 @@
+openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout api.key -out api.crt -subj "/CN=theaterdays-zh.appspot.com" -days 3650
