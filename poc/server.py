@@ -3,8 +3,8 @@ from ssl import SSLContext, PROTOCOL_TLS_SERVER
 from handler import application
 
 with make_server('', 443, application) as httpd:
-    certfile = '../key/web.crt'
-    keyfile = '../key/web.key'
+    certfile = '../key/api.crt'
+    keyfile = '../key/api.key'
     context = SSLContext(PROTOCOL_TLS_SERVER)
     context.load_cert_chain(certfile, keyfile)
 ##    httpd.socket = wrap_socket(
