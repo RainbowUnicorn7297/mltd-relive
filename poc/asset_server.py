@@ -34,15 +34,13 @@ def application(environ, start_response):
     return [asset('zh' if host == 'd3k5923sb1sy5k.cloudfront.net' else 'ko',
                  tokens[-2], tokens[-1])]
 
-with make_server('', 80, application) as httpd:
-##    certfile = '../key/asset.crt'
-##    keyfile = '../key/asset.key'
-##    context = SSLContext(PROTOCOL_TLS_SERVER)
-##    context.load_cert_chain(certfile, keyfile)
-####    httpd.socket = wrap_socket(
-####        httpd.socket, certfile=certfile, keyfile=keyfile, server_side=True)
-##    httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-##    httpd.socket.accept()
+with make_server('', 8000, application) as httpd:
+    certfile = '../key/asset.crt'
+    keyfile = '../key/asset.key'
+    context = SSLContext(PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile, keyfile)
+    httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+    httpd.socket.accept()
     
-    print('Serving HTTP on port 80...')
+    print('Serving HTTPS on port 8000...')
     httpd.serve_forever()
