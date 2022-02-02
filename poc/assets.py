@@ -13,7 +13,6 @@ def load_manifest(lang, platform):
 
 def asset(lang, platform, hashed_name):
     global manifest_name, lookup
-    print(lang+' '+platform+' '+hashed_name)
     if platform not in lookup[lang].keys():
         load_manifest(lang, platform)
     path = '../assets-' + lang + '-' + platform + '/'
