@@ -1,3 +1,4 @@
 
 *.pyc
 poc/assets.lnk
+assets-*/

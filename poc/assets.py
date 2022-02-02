@@ -1,7 +1,3 @@
-# temp hack for Windows Shortcut
-import sys
-import win32com.client
-##
 from msgpack import unpackb
 
 manifest_name = {'zh': '85822153578df611a4f852d4e02660f6f34401e4.data',
@@ -10,12 +6,7 @@ lookup = {'zh': {}, 'ko': {}}
 
 def load_manifest(lang, platform):
     global manifest_name, lookup
-    path = 'assets-' + lang + '-' + platform + '/' + manifest_name[lang]
-    # temp hack for Windows Shortcut
-    shell = win32com.client.Dispatch('WScript.Shell')
-    shortcut = shell.CreateShortCut('assets-' + lang + '-' + platform + '.lnk')
-    path = shortcut.Targetpath + '/' + manifest_name[lang]
-    ##
+    path = '../assets-' + lang + '-' + platform + '/' + manifest_name[lang]
     with open(path, 'rb') as f:
         manifest = unpackb(f.read())
         lookup[lang][platform] = {v[1]: k for k, v in manifest[0].items()}
@@ -25,12 +16,7 @@ def asset(lang, platform, hashed_name):
     print(lang+' '+platform+' '+hashed_name)
     if platform not in lookup[lang].keys():
         load_manifest(lang, platform)
-    path = 'assets-' + lang + '-' + platform + '/'
-    # temp hack for Windows Shortcut
-    shell = win32com.client.Dispatch('WScript.Shell')
-    shortcut = shell.CreateShortCut('assets-' + lang + '-' + platform + '.lnk')
-    path = shortcut.Targetpath + '/'
-    ##
+    path = '../assets-' + lang + '-' + platform + '/'
     if hashed_name == manifest_name[lang]:
         path += hashed_name
     else:

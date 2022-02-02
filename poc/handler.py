@@ -6,19 +6,6 @@ def application(environ, start_response):
 
     host = environ['HTTP_HOST']
 
-##    if host == 'd3k5923sb1sy5k.cloudfront.net' or \
-##       host == 'd1jbhqydw6nrn1.cloudfront.net':
-    if host == 'assets.rainbowunicorn7297.com':
-        print('Serving asset...\n')
-        status = '200 OK'
-        headers = [('Content-Type', 'application/octet-stream'),
-                   ('Cache-Control', 'public, no-transform, max-age=31536000, stale-if-error=31536000')]
-    
-        start_response(status, headers)
-
-        tokens = environ['PATH_INFO'].split('/')
-        return [asset('zh',# if host == 'd3k5923sb1sy5k.cloudfront.net' else 'ko',
-                     tokens[-2], tokens[-1])]
     if host == 'theaterdays-zh.appspot.com' or \
        host == 'theaterdays-ko.appspot.com':
         status = '200 OK'
@@ -31,8 +18,13 @@ def application(environ, start_response):
                    ('X-Encryption-Mode', '3'),
                    ('X-Force-Update-Date', '2021-09-27T04:00:00+0000'),
                    ('X-Require-Client-Version', '2.1.000'),
-                   ('X-Server-Date', '2022-01-31T22:00:00+0000')]
-
+                   #('X-Server-Date', '2022-01-28T03:56:29+0000'),
+                   ('X-Server-Date', '2022-02-01T20:00:00+0000'),
+                   ('X-Cloud-Trace-Context', 'feebbe68ee9fbaaeedaa3e6c996c7681;o=1'),
+                   #('Date', 'Mon, 28 Jan 2022 03:56:29 GMT'),
+                   #('Date', 'Mon, 31 Jan 2022 21:00:00 GMT'),
+                   ('Cache-Control', 'private'),
+                   ('Alt-Svc', 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"')]
         start_response(status, headers)
 
         service = environ['PATH_INFO'].split('/')[-1]
@@ -67,7 +59,6 @@ def application(environ, start_response):
     else:
         status = '503 Service Unavailable'
         headers = [('Content-Type', 'text/html')]
-        
         start_response(status, headers)
 
         return [b'503 Service Unavailable']
