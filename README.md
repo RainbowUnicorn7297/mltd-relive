@@ -5,7 +5,7 @@
 MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方沒有提供轉移資料至日服的渠道，意味著大家花了不少時間和金錢收集回來的卡片、服裝和名牌在關服後也被永久刪除，也不能再以親切的中文和韓文介面來繼續培育偶像。本專案的目的是以運行本地伺服器的形式令海外版MLTD可以繼續遊玩，希望能給大家一點安慰，也不會讓官方的本地化翻譯白白浪費。
 
 ## 使用方法
-1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行mltd-relive-<程式版本>.exe
+1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行`mltd-relive-<程式版本>.exe`
 2. 若果出現Windows防火牆提示，勾選全部選項並按允許存取（Allow access）
 <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/152468770-f79c53e9-31a3-4a61-89c2-0fbbb4feced6.png">
 
@@ -20,6 +20,19 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
 
 4. 運行遊戲
+
+## 自行構建
+1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.10.2）
+2. 以系統管理員身份（Run as administrator）打開命令提示字元（cmd.exe），安裝以下所需套件：
+```
+pip install pyinstaller
+pip install dnslib
+pip install requests
+pip install msgpack
+pip install pycryptodome
+```
+3. 用GitHub Desktop複製或[手動下載](https://github.com/RainbowUnicorn7297/mltd-relive/archive/refs/heads/main.zip)程式碼至您的電腦上
+4. 運行`prototype/build.bat`，會在`prototype/dist`資料夾裡生成`mltd-relive-prototype.exe`檔案
 
 ## 計劃
 
