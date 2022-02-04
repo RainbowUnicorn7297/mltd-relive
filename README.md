@@ -8,6 +8,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行mltd-relive-<程式版本>.exe
 2. 若果出現Windows防火牆提示，勾選全部選項並按允許存取（Allow access）
 <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/152468770-f79c53e9-31a3-4a61-89c2-0fbbb4feced6.png">
+
 3. 在手機上打開Wi-Fi設定，IP設定如下：
 
    - IP設定：靜態(Static)
@@ -17,6 +18,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - DNS 1：電腦的LAN IP
    - DNS 2：可用路由器的DNS或公用DNS(如Google的8.8.8.8)
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
+
 4. 運行遊戲
 
 ## 計劃
