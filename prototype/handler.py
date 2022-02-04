@@ -24,6 +24,13 @@ def application(environ, start_response):
 
         service = environ['PATH_INFO'].split('/')[-1]
         response = path.join(response_path(), service + '.response')
+        if service == 'AssetService.GetAssetVersion':
+            lang = 'zh' if 'theaterdays-zh.appspot.com' in host else 'ko'
+            platform = environ['HTTP_X_OS_NAME']
+            if platform != 'android':
+                platform = 'ios'
+            response = path.join(response_path(),
+                                 f'{service}.response.{lang}-{platform}')
         if service == 'LiveService.GetRandomGuestList':
             responses = [r for r in listdir(response_path()) if service in r]
             response = path.join(response_path(), random.choice(responses))
