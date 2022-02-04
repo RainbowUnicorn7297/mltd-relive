@@ -4,6 +4,21 @@
 
 MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方沒有提供轉移資料至日服的渠道，意味著大家花了不少時間和金錢收集回來的卡片、服裝和名牌在關服後也被永久刪除，也不能再以親切的中文和韓文介面來繼續培育偶像。本專案的目的是以運行本地伺服器的形式令海外版MLTD可以繼續遊玩，希望能給大家一點安慰，也不會讓官方的本地化翻譯白白浪費。
 
+## 使用方法
+1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行mltd-relive-<程式版本>.exe
+2. 若果出現Windows防火牆提示，勾選全部選項並按允許存取（Allow access）
+<img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/152468770-f79c53e9-31a3-4a61-89c2-0fbbb4feced6.png">
+3. 在手機上打開Wi-Fi設定，IP設定如下：
+
+   - IP設定：靜態(Static)
+   - IP位址(IP address)：手機的LAN IP
+   - 閘道(Gateway)：路由器的閘道位址
+   - 網路前置碼長度(Network prefix length)：一般家用LAN是24
+   - DNS 1：電腦的LAN IP
+   - DNS 2：可用路由器的DNS或公用DNS(如Google的8.8.8.8)
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
+4. 運行遊戲
+
 ## 計劃
 
 ### 第一階段（已完成）
