@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from ssl import SSLContext, PROTOCOL_TLS_SERVER
-import requests
+from os import path
+import sys, requests
 
 port = 443
 api_port = 8443
@@ -32,11 +33,15 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(resp.content)
 
+def key_path():
+    base_path = getattr(sys, '_MEIPASS', path.abspath('..'))
+    return path.join(base_path, 'key')
+
 def start(port):
     server_address = ('', port)
     httpd = HTTPServer(server_address, ProxyHTTPRequestHandler)
-    certfile = '../key/api.crt'
-    keyfile = '../key/api.key'
+    certfile = path.join(key_path(), 'api.crt')
+    keyfile = path.join(key_path(), 'api.key')
     context = SSLContext(PROTOCOL_TLS_SERVER)
     context.load_cert_chain(certfile, keyfile)
     httpd.socket = context.wrap_socket(httpd.socket, server_side=True)

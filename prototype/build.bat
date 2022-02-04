@@ -1,0 +1,1 @@
+pyinstaller --clean -F main.spec

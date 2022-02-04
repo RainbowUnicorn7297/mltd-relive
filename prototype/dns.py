@@ -18,7 +18,11 @@ def get_ip():
     return ip
 
 def start(port):
-    zone_record = 'theaterdays-zh.appspot.com. 60 IN A ' + get_ip()
+    lan_ip = get_ip()
+    zone_record = f'''
+theaterdays-zh.appspot.com. 60 IN A {lan_ip}
+theaterdays-ko.appspot.com. 60 IN A {lan_ip}
+'''
 
     resolver = InterceptResolver('8.8.8.8',     #upstream address
                                  53,            #upstream port
