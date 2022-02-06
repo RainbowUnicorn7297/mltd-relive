@@ -9,6 +9,8 @@ def response_path():
 def application(environ, start_response):
 ##    print('\n'.join([str((f'{key}: {value}').encode('utf-8'))
 ##                     for key, value in environ.items()]))
+    req_body_size = int(environ['CONTENT_LENGTH'])
+    print(environ['wsgi.input'].read(req_body_size))
 
     host = environ['HTTP_HOST']
 
@@ -31,7 +33,7 @@ def application(environ, start_response):
                 platform = 'ios'
             response = path.join(response_path(),
                                  f'{service}.response.{lang}-{platform}')
-        if service == 'LiveService.GetRandomGuestList':
+        elif service == 'LiveService.GetRandomGuestList':
             responses = [r for r in listdir(response_path()) if service in r]
             response = path.join(response_path(), random.choice(responses))
         ret = b''
