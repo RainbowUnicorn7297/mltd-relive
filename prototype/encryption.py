@@ -6,6 +6,12 @@ import gzip, json
 key = b'do8PxbqYKV7cexTrt4J3fmgBtXXzu+dP'
 iv = b'\x00' * 16
 
+def decrypt_request(data):
+    cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+    data = unpad(cipher.decrypt(b64decode(data, b'-_')), 16)
+    data = bytearray(data)[16:]
+    return json.loads(data)
+
 def decrypt_response(data):
     cipher = AES.new(key, AES.MODE_CBC, iv=iv)
     data = unpad(cipher.decrypt(b64decode(data, b'-_')), 16)
