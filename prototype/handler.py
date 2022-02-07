@@ -10,8 +10,6 @@ def response_path():
 def application(environ, start_response):
 ##    print('\n'.join([str((f'{key}: {value}').encode('utf-8'))
 ##                     for key, value in environ.items()]))
-##    req_body_size = int(environ['CONTENT_LENGTH'])
-##    print(environ['wsgi.input'].read(req_body_size))
 
     host = environ['HTTP_HOST']
 
