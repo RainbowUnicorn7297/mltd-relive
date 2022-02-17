@@ -1,21 +1,20 @@
 from connection import conn
 
-def create_mst_idol(cursor):
-    '''Master table for idol info
-'''
-
-    cursor.execute('''
-''')
-
-
 def create_mst_costume(cursor):
     '''Master table for costumes
 
-
+mst_costume_group_id: ??? 0-993
+costume_name: ??? -,ex,ss,sr,gs, mostly ex
+costume_number: ??? 0-601
+exclude_album: Unused. exclude_album=false for all costumes
+exclude_random: true for mst_costume_id=0, false for everything else
+collabo_number: Unused. collabo_number=0 for all costumes
+replace_group_id: ??? 0,4-6, mostly 0
+gorgeous_appeal_type: 0=normal, 1=master rank 5 costume
 '''
 
     cursor.execute('''
-create table costume(
+create table mst_costume(
     mst_costume_id int primary key,
     mst_idol_id int,
     resource_id text,
@@ -29,6 +28,19 @@ create table costume(
     sort_id int,
     release_date int,
     gorgeous_appeal_type int
+)
+''')
+
+
+def create_costume(cursor):
+    '''Costumes unlocked by user
+'''
+
+    cursor.execute('''
+create table costume(
+    costume_id text primary key,
+    user_id text,
+    mst_costume_id int
 )
 ''')
 
@@ -96,10 +108,10 @@ evaluation: Required note types for activating skill
     2=Perfect/Great
     3=Great
     4=Great/Good/Fast/Slow
-    5=Perfect/Great/Good
-    6=Perfect/Great/Good/Fast/Slow
+    6=Fast/Slow
     7=Great/Good
 evaluation2: Required note types for activating 2nd skill
+probability_base: skill probability in % if skill level=0
 value: % or value increase for skill
 value2: % or value increase for 2nd skill
 '''
@@ -112,7 +124,7 @@ create table mst_card_skill(
     evaluation int,
     evaluation2 int,
     interval int,
-    probability int,
+    probability_base int,
     value int,
     value2 int
 )
@@ -126,7 +138,7 @@ rarity: 1=N, 2=R, 3=SR, 4=SSR
 attribute:
     1=Vocal+X%, 2=Dance+X%, 3=Visual+X%, 4=All appeals+X%,
     5=Life+X%, 6=Skill prob.+X%
-begin_date: Card first became available
+begin_date: Card released
 ex_type: 0=Normal, 2=PST (Ranking), 3=PST (Event Pt), 4=FES, 5=1st, 6=Ex, 7=2nd
 idol_type: 1=Princess, 2=Fairy, 3=Angel, 5=Ex
 level_max: max level after awakened
@@ -144,7 +156,7 @@ vocal_master_bonus: Vocal bonus per master rank
     vocal_master_bonus = round(vocal_max * 0.03)
 cheer_point: Unused. cheer_point=0 for all cards
 variation: ??? 1-16, older=smaller, newer=larger
-master_lesson_begin_date: PST card became exchangeable in event shop
+master_lesson_begin_date: master lessons became available for PST card
 card_category: ??? 10-35
     33=Anniversary card
 extend_card_params: Anniversary card stats after trained to SSR
@@ -220,6 +232,11 @@ vocal_diff: Vocal bonus per level
         If R, vocal_diff += vocal_max * 10 / 100 / 50
         If SR, vocal_diff += vocal_max * 10 / 140 / 70
         If SSR, vocal_diff += vocal_max * 10 / 180 / 90
+skill_probability: Current skill probability in %
+    For skill levels 1-10:
+        skill_probability = probability_base + skill_level
+    For skill levels 11-12:
+        skill_probability = probability_base + 10 + 5 * (skill_level - 10)
 create_date: Card obtained by user
 '''
 
@@ -245,6 +262,7 @@ create table card(
     after_awakened_dance int,
     after_awakened_visual int,
     skill_level int,
+    skill_probability int,
     is_awakened int,
     awakening_gauge int,
     master_rank int,
@@ -254,11 +272,160 @@ create table card(
 ''')
 
 
+def create_mst_direction_category(cursor):
+    '''Master table for direction category (演出)
+
+
+'''
+
+    cursor.execute('''
+create table mst_direction_category(
+    mst_direction_category_id int primary key,
+    sort_id int,
+    idol_detail_type int,
+    direction_type int,
+    resource_id text,
+    release_date int
+)
+''')
+
+
+def create_mst_voice_category(cursor):
+    '''Master table for voice category (語音)
+
+
+'''
+
+    cursor.execute('''
+create table mst_voice_category(
+    mst_voice_category_id int primary key,
+    sort_id int,
+    idol_detail_type int,
+    value int,
+    rarity int,
+    label_header text,
+    voice_label text,
+    release_date int,
+    mst_direction_category_id int
+)
+''')
+
+
+def create_mst_lesson_wear(cursor):
+    '''Master table for lesson wear
+
+mst_lesson_wear_id: 1-52=訓練課程服, 9001-90052=1週年記念
+mst_lesson_wear_group_id: 1=訓練課程服, 9001=1週年記念
+costume_number: costume_number=1 for all lesson wear
+costume_name: tr=訓練課程服, cr=1週年記念
+collabo_no: 0=, 55=1週年記念
+resource_id: resource_id=training_01 for all lesson wear
+'''
+
+    cursor.execute('''
+create table mst_lesson_wear(
+    mst_lesson_wear_id int primary key,
+    mst_idol_id int,
+    mst_lesson_wear_group_id int,
+    costume_number int,
+    costume_name text,
+    collabo_no int,
+    resource_id text
+)
+''')
+
+
+def create_mst_idol(cursor):
+    '''Master table for idol info
+
+tension: Unused. tension=100 for all idols
+is_best_condition: Unused. is_best_condition=false for all idols
+area: ??? 0-7
+offer_type: ??? 0-4
+mst_agency_id: 1=765, 2=961
+default_costume: mst_costume_id of casual wear
+birthday_live: birthday_live=0 for Shika, 1 for everyone else
+'''
+
+    cursor.execute('''
+create table mst_idol(
+    mst_idol_id int primary key,
+    idol_type int,
+    tension int,
+    is_best_condition int,
+    area int,
+    offer_type int,
+    mst_agency_id int,
+    default_costume int,
+    birthday_live int
+)
+''')
+
+
+def create_idol_voice_category(cursor):
+    '''Unlocked idol voice categories (偶像特有台詞) by user
+'''
+
+    cursor.execute('''
+create table idol_voice_category(
+    idol_voice_category_id text primary key,
+    user_id text,
+    mst_idol_id int,
+    mst_voice_category_id int
+)
+''')
+
+
+def create_idol_lesson_wear(cursor):
+    '''Default lesson wear chosen by each user
+
+TODO: table might be redundant based on system setting "lesson_wear_setting_id"
+'''
+
+    cursor.execute('''
+create table idol_lesson_wear(
+    idol_lesson_wear_id text primary key,
+    user_id text,
+    mst_lesson_wear_id int,
+    default_flag int
+)
+''')
+
+
+def create_idol(cursor):
+    '''Idol info specific to each user
+
+has_another_appeal: true=unlocked 異色綻放, false=not yet unlocked
+can_perform: false only when Ex card not yet obtained
+'''
+
+    cursor.execute('''
+create table idol(
+    idol_id text primary key,
+    user_id text,
+    mst_idol_id int,
+    fan int,
+    affection int,
+    has_another_appeal int,
+    can_perform int
+)
+''')
+
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
+    create_costume(cursor)
     create_mst_center_effect(cursor)
     create_mst_card_skill(cursor)
     create_mst_card(cursor)
     create_card(cursor)
+    create_mst_direction_category(cursor)
+    create_mst_voice_category(cursor)
+    create_mst_lesson_wear(cursor)
+    create_mst_idol(cursor)
+    create_idol_voice_category(cursor)
+    create_idol_lesson_wear(cursor)
+    create_idol(cursor)
     conn.commit()
