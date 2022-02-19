@@ -237,6 +237,7 @@ skill_probability: Current skill probability in %
         skill_probability = probability_base + skill_level
     For skill levels 11-12:
         skill_probability = probability_base + 10 + 5 * (skill_level - 10)
+        TODO: verify skill level 11
 create_date: Card obtained by user
 '''
 
@@ -311,6 +312,29 @@ create table mst_voice_category(
 ''')
 
 
+def create_idol_voice_category(cursor):
+    '''Unlocked idol voice categories (偶像特有台詞) by user
+
+first 5 are unlocked at the same time as memorial stories
+#1: affection=50
+#2: affection=200
+#3: affection=500
+#4: affection=1000
+#5: affection=1500
+#6: affection=???
+TODO: table might be redundant based on affection per idol
+'''
+
+    cursor.execute('''
+create table idol_voice_category(
+    idol_voice_category_id text primary key,
+    user_id text,
+    mst_idol_id int,
+    mst_voice_category_id int
+)
+''')
+
+
 def create_mst_lesson_wear(cursor):
     '''Master table for lesson wear
 
@@ -331,6 +355,22 @@ create table mst_lesson_wear(
     costume_name text,
     collabo_no int,
     resource_id text
+)
+''')
+
+
+def create_idol_lesson_wear(cursor):
+    '''Default lesson wear chosen by each user
+
+TODO: table might be redundant based on system setting "lesson_wear_setting_id"
+'''
+
+    cursor.execute('''
+create table idol_lesson_wear(
+    idol_lesson_wear_id text primary key,
+    user_id text,
+    mst_lesson_wear_id int,
+    default_flag int
 )
 ''')
 
@@ -362,36 +402,6 @@ create table mst_idol(
 ''')
 
 
-def create_idol_voice_category(cursor):
-    '''Unlocked idol voice categories (偶像特有台詞) by user
-'''
-
-    cursor.execute('''
-create table idol_voice_category(
-    idol_voice_category_id text primary key,
-    user_id text,
-    mst_idol_id int,
-    mst_voice_category_id int
-)
-''')
-
-
-def create_idol_lesson_wear(cursor):
-    '''Default lesson wear chosen by each user
-
-TODO: table might be redundant based on system setting "lesson_wear_setting_id"
-'''
-
-    cursor.execute('''
-create table idol_lesson_wear(
-    idol_lesson_wear_id text primary key,
-    user_id text,
-    mst_lesson_wear_id int,
-    default_flag int
-)
-''')
-
-
 def create_idol(cursor):
     '''Idol info specific to each user
 
@@ -412,6 +422,192 @@ create table idol(
 ''')
 
 
+def create_mst_memorial(cursor):
+    '''Master table for memorials
+
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+'''
+
+    cursor.execute('''
+create table mst_memorial(
+    mst_memorial_id int primary key,
+    scenario_id text,
+    mst_idol_id int,
+    release_affection int,
+    number int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int,
+    is_available int,
+    begin_date int
+)
+''')
+
+
+def create_memorial(cursor):
+    '''Memorial states for each user
+
+released_date: Unused. released_date=null for all memorials
+'''
+
+    cursor.execute('''
+create table memorial(
+    memorial_id text primary key,
+    user_id text,
+    mst_memorial_id int,
+    is_released int,
+    is_read int,
+    released_date int
+)
+''')
+
+
+def create_episode(cursor):
+    '''Awakening story states for each card for each user
+
+released_date: Unused. released_date=null for all episodes
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=25
+'''
+
+    cursor.execute('''
+create table episode(
+    episode_id text primary key,
+    user_id text,
+    mst_card_id int,
+    is_released int,
+    is_read int,
+    released_date int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int
+)
+''')
+
+
+def create_mst_theater_costume_blog(cursor):
+    '''Master table for costume blogs
+'''
+
+    cursor.execute('''
+create table mst_theater_costume_blog(
+    mst_theater_costume_blog_id int primary key,
+    mst_card_id int
+)
+''')
+
+
+def create_costume_adv(cursor):
+    '''Costume blog states for each user
+
+released_date: Unused. released_date=null for all episodes
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+'''
+
+    cursor.execute('''
+create table costume_adv(
+    costume_adv_id text primary key,
+    user_id text,
+    mst_theater_costume_blog_id int,
+    is_released int,
+    is_read int,
+    released_date int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int
+)
+''')
+
+
+def create_mst_item(cursor):
+    '''Master table for items
+
+item_navi_type:
+    0=Others (money, memory piece, anniversary idol-specific piece)
+    1=Vitality recovery item (spark drink, macaron, present from idol)
+    2=Awakening item
+    3=Lesson ticket
+    4=Master rank item (including PST piece)
+    5=Gacha ticket/medal
+    6=Live item (live ticket, auto live pass, singing voice master key)
+    7=Gift for affection
+    8=Gift for awakening gauge
+item_type:
+    2=Money
+    3=Live ticket
+    5=Gacha ticket/medal
+    6=Vitality recovery item
+    7=Awakening item
+    8=Lesson ticket
+    9=Master rank item
+    13=Selection ticket/Platinum selection ticket/Platinum SR selection ticket
+    17=Memory piece
+    18=PST piece
+    19=FES master piece
+    22=Anniversary idol-specific piece
+    23=Auto live pass
+    25=Gift for affection
+    26=Gift for awakening gauge
+    27=Singing voice master key
+value1/value2:
+    For vitality recovery item:
+        Spark drink 10: value1=10, value2=0
+        Spark drink 20: value1=20, value2=0
+        Spark drink 30: value1=30, value2=0
+        Spark drink MAX/equivalent: value1=0, value2=100
+    For lesson ticket,
+        Lesson ticket N: value1=800, value2=0
+        Lesson ticket R: value1=2500, value2=300
+        Lesson ticket SR: value1=4000, value2=1000
+        Lesson ticket SSR: value1=5000, value2=2000
+    For gift for affection,
+        Throat lozenge: value1=50, value2=0
+        Tapioca drink: value1=100, value2=0
+        High cocoa chocolate: value1=150, value2=0
+        Roll cake: value1=200, value2=0
+    For gift for awakening gauge,
+        Fan letter: value1=10, value2=0
+        Single flower: value1=20, value2=0
+        Hand cream: value1=30, value2=0
+        Bath additive: value1=40, value2=0
+        Preserved flower: value1=50, value2=0
+    For money, value1=200, value2=0
+is_extend:
+    is_extend=true for some Platinum/Selection/SSR tickets
+    is_extend=false for everything else
+'''
+
+    cursor.execute('''
+create table mst_item(
+    mst_item_id int primary key,
+    name text,
+    item_navi_type int,
+    max_amount int,
+    item_type int,
+    sort_id int,
+    value1 int,
+    value2 int,
+    is_extend int
+)
+''')
+
+
+def create_item(cursor):
+    '''Items obtained by user
+'''
+
+    cursor.execute('''
+create table item(
+    item_id text primary key,
+    user_id text,
+    mst_item_id int,
+    amonut int,
+    expire_date int
+)
+''')
+
 
 if __name__ == "__main__":
     cursor = conn.cursor()
@@ -423,9 +619,16 @@ if __name__ == "__main__":
     create_card(cursor)
     create_mst_direction_category(cursor)
     create_mst_voice_category(cursor)
-    create_mst_lesson_wear(cursor)
-    create_mst_idol(cursor)
     create_idol_voice_category(cursor)
+    create_mst_lesson_wear(cursor)
     create_idol_lesson_wear(cursor)
+    create_mst_idol(cursor)
     create_idol(cursor)
+    create_mst_memorial(cursor)
+    create_memorial(cursor)
+    create_episode(cursor)
+    create_mst_theater_costume_blog(cursor)
+    create_costume_adv(cursor)
+    create_mst_item(cursor)
+    create_item(cursor)
     conn.commit()
