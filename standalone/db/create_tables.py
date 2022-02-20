@@ -315,13 +315,12 @@ create table mst_voice_category(
 def create_idol_voice_category(cursor):
     '''Unlocked idol voice categories (偶像特有台詞) by user
 
-first 5 are unlocked at the same time as memorial stories
-#1: affection=50
+#1: affection=50?
 #2: affection=200
-#3: affection=500
-#4: affection=1000
-#5: affection=1500
-#6: affection=???
+#3: affection=500?
+#4: affection=900?
+#5: affection=1400?
+#6: affection=2000?
 TODO: table might be redundant based on affection per idol
 '''
 
@@ -488,12 +487,18 @@ create table episode(
 
 def create_mst_theater_costume_blog(cursor):
     '''Master table for costume blogs
+
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
 '''
 
     cursor.execute('''
 create table mst_theater_costume_blog(
     mst_theater_costume_blog_id int primary key,
-    mst_card_id int
+    mst_card_id int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int
 )
 ''')
 
@@ -501,8 +506,7 @@ create table mst_theater_costume_blog(
 def create_costume_adv(cursor):
     '''Costume blog states for each user
 
-released_date: Unused. released_date=null for all episodes
-reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+released_date: Unused. released_date=null for all costume blogs
 '''
 
     cursor.execute('''
@@ -512,11 +516,7 @@ create table costume_adv(
     mst_theater_costume_blog_id int,
     is_released int,
     is_read int,
-    released_date int,
-    reward_type int,
-    reward_mst_item_id int,
-    reward_item_type int,
-    reward_amount int
+    released_date int
 )
 ''')
 
@@ -609,6 +609,217 @@ create table item(
 ''')
 
 
+def create_mst_gasha(cursor):
+    '''Master table for gachas
+
+currency_type_list: comma-separated currency types
+'''
+
+    cursor.execute('''
+create table mst_gasha(
+    mst_gasha_id int primary key,
+    mst_gasha_ticket_item_id int,
+    name text,
+    display_category int,
+    begin_date int,
+    end_date int,
+    currency_type_list text,
+    is_paid_jewel_only int,
+    draw1_jewel_value int,
+    draw10_jewel_value int,
+    draw1_mst_item_id int,
+    draw10_mst_item_id int,
+    daily_limit int,
+    total_limit int,
+    sr_passport int,
+    ssr_passport int,
+    has_new_idol int,
+    has_limited int,
+    notify_num int,
+    today_count int,
+    total_count int,
+    mst_gasha_kind_id int,
+    mst_gasha_bonus_id int,
+    gasha_bonus_item int,
+    gasha_bonus_mst_achievement_id int,
+    gasha_bonus_costume int,
+    ticket_item text,
+    is_limit int,
+    draw_point_mst_item_id int,
+    draw_point int,
+    draw_point_max int,
+    draw1_free_count int,
+    draw10_free_count int,
+    pickup_signature text,
+    pickup_gasha_card int,
+    balloon int
+)
+''')
+
+
+def create_mst_job(cursor):
+    '''Master table for jobs
+'''
+
+    cursor.execute('''
+create table mst_job(
+    mst_job_id int primary key,
+    resource_id text,
+    vitality_cost int,
+    job_type int,
+    idol_type int,
+    reward_exp int,
+    reward_fan int,
+    reward_affection int,
+    reward_money int,
+    reward_live_ticket int,
+    begin_date int,
+    end_date int
+)
+''')
+
+
+def create_mst_course(cursor):
+    '''Master table for course info for each song
+
+course_id: 
+    1=Solo 2M?
+    2=2M?
+    3=Solo 2M+?
+    4=4M
+    5=6M?
+    6=MM
+TODO: add score/combo/clear rank requirements?
+'''
+
+    cursor.execute('''
+create table mst_course(
+    mst_song_id int,
+    course_id int,
+    cost int,
+    level int,
+    appeal int,
+    notes int,
+    primary key (mst_song_id, course_id)
+)
+''')
+
+
+def create_course(cursor):
+    '''Course info specific to each user
+'''
+
+    cursor.execute('''
+create table course(
+    user_id text,
+    mst_song_id int,
+    course_id int,
+    score int,
+    combo int,
+    clear int,
+    score_rank int,
+    combo_rank int,
+    clear_rank int,
+    is_released int,
+    primary key (user_id, mst_song_id, course_id)
+)
+''')
+
+
+def create_mst_extend_song(cursor):
+    '''Master table for extend songs
+
+song_unit_idol_id_list: comma-separated mst_idol_ids
+'''
+
+    cursor.execute('''
+create table mst_extend_song(
+    mst_song_id int primary_key,
+    resource_id text,
+    kind int,
+    stage_id int,
+    stage_ts_id int,
+    mst_song_unit_id int,
+    song_unit_idol_id_list text,
+    unit_selection_type int,
+    unit_song_type int,
+    icon_type int,
+    idol_count int,
+    extend_type int,
+    filter_type int,
+    song_open_type int,
+    song_open_type_value int,
+    song_open_level int
+)
+''')
+
+def create_mst_song(cursor):
+    '''Master table for songs
+'''
+
+    cursor.execute('''
+create table mst_song(
+    mst_song_id int primary key,
+    sort_id int,
+    resource_id text,
+    idol_type int,
+    song_type int,
+    kind int,
+    stage_id int,
+    stage_ts_id int,
+    bpm int,
+    apple_song_url text,
+    google_song_url text,
+    song_open_type int,
+    song_open_type_value int,
+    song_open_level int,
+    song_unit_idol_id_list text,
+    mst_song_unit_id int,
+    idol_count int,
+    icon_type int,
+    unit_selection_type int,
+    only_default_unit int,
+    only_extend int,
+    is_off_vocal_available int,
+    off_vocal_cue_sheet text,
+    off_vocal_cue_name text,
+    song_permit_control int,
+    permitted_mst_idol_id_list text,
+    permitted_mst_agency_id_list text,
+    extend_song_playable_status int,
+    live_start_voice_mst_idol_id_list text,
+    is_enable_random int,
+    part_permitted_mst_idol_id_list text,
+    is_recommend int,
+    song_parts_type int
+)
+''')
+
+
+def create_song(cursor):
+    '''Song info specific to each user
+'''
+
+    cursor.execute('''
+create table song(
+    song_id text primary key,
+    user_id text,
+    mst_song_id int,
+    is_released_mv int,
+    is_released_horizontal_mv int,
+    is_released_vertical_mv int,
+    is_cleared int,
+    first_cleared_date int,
+    is_played int,
+    lp int,
+    is_visible int,
+    is_disable int,
+    is_off_vocal_released int,
+    is_new int
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -631,4 +842,11 @@ if __name__ == "__main__":
     create_costume_adv(cursor)
     create_mst_item(cursor)
     create_item(cursor)
+    create_mst_gasha(cursor)
+    create_mst_job(cursor)
+    create_mst_course(cursor)
+    create_course(cursor)
+    create_mst_extend_song(cursor)
+    create_mst_song(cursor)
+    create_song(cursor)
     conn.commit()
