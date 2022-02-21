@@ -294,7 +294,14 @@ create table mst_direction_category(
 def create_mst_voice_category(cursor):
     '''Master table for voice category (語音)
 
-
+value: Unlock condition for voice category
+    For mst_voice_category_ids 3101-3106, value=required affection
+    For 3101, value=50
+    For 3102, value=200
+    For 3103, value=500
+    For 3104, value=900
+    For 3105, value=1400
+    For 3106, value=2000
 '''
 
     cursor.execute('''
@@ -312,26 +319,27 @@ create table mst_voice_category(
 ''')
 
 
-def create_idol_voice_category(cursor):
-    '''Unlocked idol voice categories (偶像特有台詞) by user
-
-#1: affection=50?
-#2: affection=200
-#3: affection=500?
-#4: affection=900?
-#5: affection=1400?
-#6: affection=2000?
-TODO: table might be redundant based on affection per idol
-'''
-
-    cursor.execute('''
-create table idol_voice_category(
-    idol_voice_category_id text primary key,
-    user_id text,
-    mst_idol_id int,
-    mst_voice_category_id int
-)
-''')
+##def create_idol_voice_category(cursor):
+##    '''Unlocked idol voice categories (偶像特有台詞) by user
+##
+###1: affection=50
+###2: affection=200
+###3: affection=500
+###4: affection=900
+###5: affection=1400
+###6: affection=2000
+##TODO: table is redundant by comparing mst_voice_category's value with
+##      current affection per idol for each user
+##'''
+##
+##    cursor.execute('''
+##create table idol_voice_category(
+##    idol_voice_category_id text primary key,
+##    user_id text,
+##    mst_idol_id int,
+##    mst_voice_category_id int
+##)
+##''')
 
 
 def create_mst_lesson_wear(cursor):
@@ -753,6 +761,7 @@ create table mst_extend_song(
 )
 ''')
 
+
 def create_mst_song(cursor):
     '''Master table for songs
 '''
@@ -820,6 +829,164 @@ create table song(
 ''')
 
 
+def create_unit_idol(cursor):
+    '''Idol list (selected card & costume) for each unit for each user
+'''
+
+    cursor.execute('''
+create table unit_idol(
+    user_id text,
+    unit_num int,
+    card_id text,
+    mst_costume_id int,
+    mst_lesson_wear_id int,
+    costume_is_random int,
+    costume_random_type int,
+    primary key (user_id, unit_num, card_id)
+)
+''')
+
+
+def create_unit(cursor):
+    '''Unit info specific to each user
+'''
+
+    cursor.execute('''
+create table unit(
+    user_id text,
+    unit_num int,
+    name text,
+    primary key (user_id, unit_num)
+)
+''')
+
+
+def create_song_unit_idol(cursor):
+    '''Idol list (selected card & costume) for each song unit for each user
+'''
+
+    cursor.execute('''
+create table song_unit_idol(
+    user_id text,
+    mst_song_id int,
+    card_id text,
+    mst_costume_id int,
+    mst_lesson_wear_id int,
+    costume_is_random int,
+    costume_random_type int,
+    primary key (user_id, mst_song_id, card_id)
+)
+''')
+
+
+def create_song_unit(cursor):
+    '''Unit info specific to each song for each user
+'''
+
+    cursor.execute('''
+create table song_unit(
+    user_id text,
+    mst_song_id int,
+    unit_song_type int,
+    is_new int,
+    primary key (user_id, mst_song_id)
+)
+''')
+
+
+def create_mst_theater_main_story_idol(cursor):
+    '''Master table for theater room idol list for each main story
+'''
+
+    cursor.execute('''
+create table mst_theater_main_story_idol(
+    mst_theater_main_story_id int,
+    mst_idol_id int,
+    position_id text,
+    motion_id text,
+    reaction_id text,
+    reaction_id_2 text,
+    primary key (mst_theater_main_story_id, mst_idol_id)
+)
+''')
+
+
+def create_mst_theater_main_story(cursor):
+    '''Master table for theater room status for each main story
+
+TODO: Some columns for theater_room_status seem to be designed for other
+      purposes. API is returning everything using a common data structure.
+      May need to refactor later.
+'''
+
+    cursor.execute('''
+create table mst_theater_main_story(
+    mst_theater_main_story_id int primary key,
+    mst_main_story_id int,
+    mst_room_id int,
+    theater_contact_category_type int,
+    resource_id text,
+    mst_theater_contact_schedule_id int,
+    mst_theater_contact_id int,
+    mst_theater_guest_main_story_id int,
+    guest_main_story_has_intro int,
+    mst_guest_main_story_id int,
+    mst_theater_blog_id int,
+    mst_theater_costume_blog_id int,
+    mst_costume_id int,
+    mst_theater_event_story_id int,
+    mst_event_story_id int,
+    mst_event_id int,
+    duration int
+)
+''')
+
+
+def create_mst_main_story(cursor):
+    '''Master table for main stories
+
+mst_idol_id_list: comma-separated mst_idol_ids
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+'''
+
+    cursor.execute('''
+create table mst_main_story(
+    mst_main_story_id int,
+    number int,
+    chapter int,
+    mst_idol_id_list text,
+    release_level int,
+    release_song_id int,
+    reward_song_id int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int,
+    intro_contact_mst_idol_id int,
+    blog_contact_mst_idol_id int,
+    primary key (mst_main_story_id, number, chapter)
+)
+''')
+
+
+def create_main_story(cursor):
+    '''Main story states specific to each user
+'''
+
+    cursor.execute('''
+create table main_story(
+    user_id text,
+    mst_main_story_id int,
+    number int,
+    chapter int,
+    released_date int,
+    is_released int,
+    is_read int,
+    primary key (user_id, mst_main_story_id, number, chapter)
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -830,7 +997,7 @@ if __name__ == "__main__":
     create_card(cursor)
     create_mst_direction_category(cursor)
     create_mst_voice_category(cursor)
-    create_idol_voice_category(cursor)
+##    create_idol_voice_category(cursor)
     create_mst_lesson_wear(cursor)
     create_idol_lesson_wear(cursor)
     create_mst_idol(cursor)
@@ -849,4 +1016,12 @@ if __name__ == "__main__":
     create_mst_extend_song(cursor)
     create_mst_song(cursor)
     create_song(cursor)
+    create_unit_idol(cursor)
+    create_unit(cursor)
+    create_song_unit_idol(cursor)
+    create_song_unit(cursor)
+    create_mst_theater_main_story_idol(cursor)
+    create_mst_theater_main_story(cursor)
+    create_mst_main_story(cursor)
+    create_main_story(cursor)
     conn.commit()
