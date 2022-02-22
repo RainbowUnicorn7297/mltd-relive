@@ -366,20 +366,21 @@ create table mst_lesson_wear(
 ''')
 
 
-def create_idol_lesson_wear(cursor):
-    '''Default lesson wear chosen by each user
-
-TODO: table might be redundant based on system setting "lesson_wear_setting_id"
-'''
-
-    cursor.execute('''
-create table idol_lesson_wear(
-    idol_lesson_wear_id text primary key,
-    user_id text,
-    mst_lesson_wear_id int,
-    default_flag int
-)
-''')
+##def create_idol_lesson_wear(cursor):
+##    '''Default lesson wear chosen by each user
+##
+##TODO: table is redundant by combining tables "mst_lesson_wear",
+##      "lesson_wear_config" and "mst_lesson_wear_config"
+##'''
+##
+##    cursor.execute('''
+##create table idol_lesson_wear(
+##    idol_lesson_wear_id text primary key,
+##    user_id text,
+##    mst_lesson_wear_id int,
+##    default_flag int
+##)
+##''')
 
 
 def create_mst_idol(cursor):
@@ -987,6 +988,191 @@ create table main_story(
 ''')
 
 
+def create_mst_awakening_config(cursor):
+    '''Required items for awakening
+'''
+
+    cursor.execute('''
+create table mst_awakening_config(
+    rarity int,
+    idol_type int,
+    mst_card_id int,
+    mst_item_id int,
+    amount int,
+    primary key (rarity, idol_type, mst_item_id)
+)
+''')
+
+
+def create_mst_master_lesson2_config(cursor):
+    '''Required master pieces for master lessons
+'''
+
+    cursor.execute('''
+create table mst_master_lesson2_config(
+    rarity int,
+    idol_type int,
+    mst_item_id int,
+    amount int,
+    primary key (rarity, idol_type, mst_item_id)
+)
+''')
+
+
+def create_mst_ex_master_lesson_config(cursor):
+    '''Required items for ex master lessons
+
+ex_type: ??? 2-6
+    2=PST
+amount: comma-separated values, one for each master rank
+'''
+
+    cursor.execute('''
+create table mst_ex_master_lesson_config(
+    ex_type int primary key,
+    mst_item_id int,
+    amount text,
+    mst_card_id int
+)
+''')
+
+
+def create_mst_lesson_money_config(cursor):
+    '''Required money per ticket for lessons
+'''
+
+    cursor.execute('''
+create table mst_lesson_money_config(
+    rarity int primary key,
+    money int,
+    mst_item_id int
+)
+''')
+
+
+def create_mst_lesson_skill_level_up_config(cursor):
+    '''Required "skill EXP" for each skill level for guanranteed level up
+
+skill_level: target skill level
+rarity: card rarity
+value: required "skill EXP"
+"Skill EXP" per ticket is defined by mst_item's value2:
+    Lesson ticket N=0
+    Lesson ticket R=300
+    Lesson ticket SR=1000
+    Lesson ticket SSR=2000
+'''
+
+    cursor.execute('''
+create table mst_lesson_skill_level_up_config(
+    skill_level int,
+    rarity int,
+    value int,
+    primary key (skill_level, rarity)
+)
+''')
+
+
+def create_mst_lesson_wear_config(cursor):
+    '''Available lesson wear in system settings
+'''
+
+    cursor.execute('''
+create table mst_lesson_wear_config(
+    mst_lesson_wear_setting_id int primary key,
+    mst_lesson_wear_group_id int
+)
+''')
+
+
+def create_lesson_wear_config(cursor):
+    '''Lesson wear chosen by user
+'''
+
+    cursor.execute('''
+create table lesson_wear_config(
+    user_id text primary key,
+    mst_lesson_wear_setting_id int
+)
+''')
+
+
+def create_mst_comic_menu(cursor):
+    '''Comic menu list (unused in zh/ko versions)
+'''
+
+    cursor.execute('''
+create table mst_comic_menu(
+    mst_comic_menu_id int primary key,
+    url text,
+    resource_id text,
+    enable_button int
+)
+''')
+
+
+def create_mst_training_unit(cursor):
+    '''Required songs and idols for anniversary training mission
+
+idol_id_list: comma-separated mst_idol_ids
+'''
+
+    cursor.execute('''
+create table mst_training_unit(
+    mst_song_unit_id int primary key,
+    idol_id_list text
+)
+''')
+
+
+def create_mst_master_lesson_five_config(cursor):
+    '''Required items for master rank 5 lessons
+
+ex_type: ??? 0 or 4
+'''
+
+    cursor.execute('''
+create table mst_master_lesson_five_config(
+    ex_type int,
+    idol_type int,
+    mst_item_id int,
+    amount int,
+    primary key (ex_type, idol_type, mst_item_id)
+)
+''')
+
+
+def create_mst_title_image(cursor):
+    '''Available title images in system settings
+
+title_image_type: 2=event, 3=others
+'''
+
+    cursor.execute('''
+create table mst_title_image(
+    mst_title_image_id int primary key,
+    title_image_type int,
+    sord_id int,
+    begin_date int,
+    end_date int
+)
+''')
+
+
+def create_mst_loading_character(cursor):
+    '''Loading character list
+'''
+
+    cursor.execute('''
+create table mst_loading_character(
+    resource_id text primary key,
+    weight int,
+    begin_date int,
+    end_date int
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -999,7 +1185,7 @@ if __name__ == "__main__":
     create_mst_voice_category(cursor)
 ##    create_idol_voice_category(cursor)
     create_mst_lesson_wear(cursor)
-    create_idol_lesson_wear(cursor)
+##    create_idol_lesson_wear(cursor)
     create_mst_idol(cursor)
     create_idol(cursor)
     create_mst_memorial(cursor)
@@ -1024,4 +1210,16 @@ if __name__ == "__main__":
     create_mst_theater_main_story(cursor)
     create_mst_main_story(cursor)
     create_main_story(cursor)
+    create_mst_awakening_config(cursor)
+    create_mst_master_lesson2_config(cursor)
+    create_mst_ex_master_lesson_config(cursor)
+    create_mst_lesson_money_config(cursor)
+    create_mst_lesson_skill_level_up_config(cursor)
+    create_mst_lesson_wear_config(cursor)
+    create_lesson_wear_config(cursor)
+    create_mst_comic_menu(cursor)
+    create_mst_training_unit(cursor)
+    create_mst_master_lesson_five_config(cursor)
+    create_mst_title_image(cursor)
+    create_mst_loading_character(cursor)
     conn.commit()
