@@ -1173,6 +1173,199 @@ create table mst_loading_character(
 ''')
 
 
+def create_mst_campaign(cursor):
+    '''Master table for campaigns
+'''
+
+    cursor.execute('''
+create table mst_campaign(
+    mst_campain_id int primary key,
+    type int,
+    value int,
+    footer_button int,
+    start_date int,
+    end_date int
+)
+''')
+
+
+def create_campaign(cursor):
+    '''Campaigns available for each user
+'''
+
+    cursor.execute('''
+create table campaign(
+    user_id text,
+    mst_campain_id int,
+    primary key (user_id, mst_campain_id)
+)
+''')
+
+def create_gasha_medal(cursor):
+    '''Gacha medals and expiry dates for each user
+
+expire_date_list: comma-separated dates
+'''
+
+    cursor.execute('''
+create table gasha_medal(
+    user_id text primary key,
+    point_amount int,
+    expire_date_list text
+)
+''')
+
+
+def create_jewel(cursor):
+    '''Jewels for each user
+'''
+
+    cursor.execute('''
+create table jewel(
+    user_id text primary key,
+    free_jewel_amount int,
+    paid_jewel_amount int
+)
+''')
+
+
+def create_mst_record_time(cursor):
+    '''Master table for user actions that require tracking (e.g. tutorials)
+'''
+
+    cursor.execute('''
+create table mst_record_time(
+    kind text primary key
+)
+''')
+
+
+def create_record_time(cursor):
+    '''Recorded times for actions performed by each user
+'''
+
+    cursor.execute('''
+create table record_time(
+    user_id text,
+    kind text,
+    time int,
+    primary key (user_id, kind)
+)
+''')
+
+
+def create_mst_topics(cursor):
+    '''Master table for topics (text/images for loading screen)
+'''
+
+    cursor.execute('''
+create table mst_topics(
+    mst_topics_id int primary key,
+    topics_category int,
+    topics_type int,
+    mst_topics_icon_id int,
+    number int,
+    release_date int
+)
+''')
+
+
+def create_mst_event_talk_story(cursor):
+    '''Master table for each episode of MILLION LIVE WORKING stories
+
+mst_event_talk_speaker_id: comma-separated mst_idol_ids
+'''
+
+    cursor.execute('''
+create table mst_event_talk_story(
+    mst_event_talk_story_id int primary key,
+    episode int,
+    release_event_point int,
+    mst_event_talk_speaker_id text,
+    bg_id text,
+    thumbnail_id text,
+    begin_date int
+)
+''')
+
+
+def create_event_talk_story(cursor):
+    '''MILLION LIVE WORKING story episode states for each user
+'''
+
+    cursor.execute('''
+create table event_talk_story(
+    user_id text,
+    mst_event_talk_story_id int,
+    released_date int,
+    is_released int,
+    is_read int,
+    primary key (user_id, mst_event_talk_story_id)
+)
+''')
+
+
+def create_mst_event_talk_call_text(cursor):
+    '''Master table for MILLION LIVE WORKING story call text
+'''
+
+    cursor.execute('''
+create table mst_event_talk_call_text(
+    mst_event_talk_call_text_id int primary key,
+    speaker_id int
+)
+''')
+
+
+def create_mst_event_talk_control(cursor):
+    '''Master table for each day of MILLION LIVE WORKING stories
+
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=25
+'''
+
+    cursor.execute('''
+create table mst_event_talk_control(
+    mst_event_talk_control_id int primary key,
+    mst_event_id int,
+    event_day int,
+    mst_event_schedule_id int,
+    release_event_point int,
+    release_item_id int,
+    release_item_amount int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int
+)
+''')
+
+
+def create_mst_event(cursor):
+    '''Master table for events
+'''
+
+    cursor.execute('''
+create table mst_event(
+    mst_event_id int primary key,
+    begin_date int,
+    end_date int,
+    page_begin_date int,
+    page_end_date int,
+    boost_begin_date int,
+    boost_end_date int,
+    event_type int,
+    cue_sheet text,
+    cue_name text,
+    cue_sheet2 text,
+    cue_name2 text,
+    ending_cue_sheet text,
+    ending_cue_name text,
+    appeal_type int,
+    is_board_open int
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -1222,4 +1415,16 @@ if __name__ == "__main__":
     create_mst_master_lesson_five_config(cursor)
     create_mst_title_image(cursor)
     create_mst_loading_character(cursor)
+    create_mst_campaign(cursor)
+    create_campaign(cursor)
+    create_gasha_medal(cursor)
+    create_jewel(cursor)
+    create_mst_record_time(cursor)
+    create_record_time(cursor)
+    create_mst_topics(cursor)
+    create_mst_event_talk_story(cursor)
+    create_event_talk_story(cursor)
+    create_mst_event_talk_call_text(cursor)
+    create_mst_event_talk_control(cursor)
+    create_mst_event(cursor)
     conn.commit()
