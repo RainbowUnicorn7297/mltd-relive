@@ -895,25 +895,38 @@ create table song_unit(
 ''')
 
 
-def create_mst_theater_main_story_idol(cursor):
-    '''Master table for theater room idol list for each main story
+def create_mst_theater_room_idol(cursor):
+    '''Master table for theater room idol list for each contact status
 '''
 
     cursor.execute('''
-create table mst_theater_main_story_idol(
+create table mst_theater_room_idol(
+    mst_theater_contact_id int,
     mst_theater_main_story_id int,
+    mst_theater_guest_main_story_id int,
+    mst_theater_blog_id int,
+    mst_theater_costume_blog_id int,
+    mst_theater_event_story_id int,
     mst_idol_id int,
     position_id text,
     motion_id text,
     reaction_id text,
     reaction_id_2 text,
-    primary key (mst_theater_main_story_id, mst_idol_id)
+    primary key (
+        mst_theater_contact_id,
+        mst_theater_main_story_id,
+        mst_theater_guest_main_story_id,
+        mst_theater_blog_id,
+        mst_theater_costume_blog_id,
+        mst_theater_event_story_id,
+        mst_idol_id
+    )
 )
 ''')
 
 
-def create_mst_theater_main_story(cursor):
-    '''Master table for theater room status for each main story
+def create_mst_theater_contact_status(cursor):
+    '''Master table for theater contact status
 
 TODO: Some columns for theater_room_status seem to be designed for other
       purposes. API is returning everything using a common data structure.
@@ -921,14 +934,13 @@ TODO: Some columns for theater_room_status seem to be designed for other
 '''
 
     cursor.execute('''
-create table mst_theater_main_story(
-    mst_theater_main_story_id int primary key,
-    mst_main_story_id int,
+create table mst_theater_contact_status(
     mst_room_id int,
     theater_contact_category_type int,
     resource_id text,
     mst_theater_contact_schedule_id int,
     mst_theater_contact_id int,
+    mst_theater_main_story_id int,
     mst_theater_guest_main_story_id int,
     guest_main_story_has_intro int,
     mst_guest_main_story_id int,
@@ -938,7 +950,16 @@ create table mst_theater_main_story(
     mst_theater_event_story_id int,
     mst_event_story_id int,
     mst_event_id int,
-    duration int
+    duration int,
+    mst_main_story_id int,
+    primary key (
+        mst_theater_contact_id,
+        mst_theater_main_story_id,
+        mst_theater_guest_main_story_id,
+        mst_theater_blog_id,
+        mst_theater_costume_blog_id,
+        mst_theater_event_story_id
+    )
 )
 ''')
 
@@ -1366,6 +1387,258 @@ create table mst_event(
 ''')
 
 
+def create_mst_mission(cursor):
+    '''Master table for missions
+
+premise_mst_mission_id_list: comma-separated mst_mission_ids
+'''
+
+    cursor.execute('''
+create table mst_mission(
+    mst_mission_id int,
+    mst_panel_mission_id int,
+    mst_idol_mission_id int,
+    mission_type int,
+    mst_mission_class_id int,
+    goal int,
+    option text,
+    option2 text,
+    premise_mst_mission_id_list text,
+    reward_mst_item_id int,
+    reward_item_type_id int,
+    reward_amount int,
+    reward_mst_card_id int,
+    reward_mst_achievement_id int,
+    reward_mst_song_id int,
+    reward_resource_id text,
+    create_date int,
+    sort_id int,
+    jump_type text,
+    mission_operation_label text,
+    mst_mission_chedule_id int,
+    mst_panel_mission_sheet_id int,
+    primary key (mst_mission_id, mst_panel_mission_id, mst_idol_mission_id)
+)
+''')
+
+
+def create_mission(cursor):
+    '''Mission states for each user
+'''
+
+    cursor.execute('''
+create table mission(
+    user_id text,
+    mst_mission_id int,
+    update_date int,
+    finish_date int,
+    progress int,
+    mission_state int,
+    song_idol_type int,
+    primary key (user_id, mst_mission_id)
+)
+''')
+
+
+def create_mst_mission_schedule(cursor):
+    '''Master table for mission schedules
+'''
+
+    cursor.execute('''
+create table mst_mission_schedule(
+    mst_mission_schedule_id int primary key,
+    begin_date int,
+    end_date int,
+    mission_type int
+)
+''')
+
+
+def create_mst_panel_mission_sheet(cursor):
+    '''Master table for panel mission sheets
+'''
+
+    cursor.execute('''
+create table mst_panel_mission_sheet(
+    mst_panel_mission_sheet_id int primary key,
+    begin_date int,
+    end_date int,
+    reward_mst_item_id int,
+    reward_item_type_id int,
+    reward_amount int,
+    reward_mst_card_id int,
+    reward_mst_achievement_id int,
+    reward_mst_song_id int,
+    reward_resource_id text
+)
+''')
+
+
+def create_panel_mission_sheet(cursor):
+    '''Panel mission sheet states for each user
+'''
+
+    cursor.execute('''
+create table panel_mission_sheet(
+    user_id text primary key,
+    current_mst_panel_mission_sheet_id int,
+    current_panel_mission_sheet_state int
+)
+''')
+
+
+def create_mst_special_mv_unit_idol(cursor):
+    '''Master table for unit idols in special MVs
+'''
+
+    cursor.execute('''
+create table mst_special_mv_unit_idol(
+    mst_special_story_id int,
+    mst_idol_id int,
+    mst_costume_id int,
+    primary key (mst_special_story_id, mst_idol_id)
+)
+''')
+
+
+def create_mst_special_story(cursor):
+    '''Master table for special stories
+
+mst_idol_id_list: comma-separated mst_idol_ids
+'''
+
+    cursor.execute('''
+create table mst_special_story(
+    mst_special_story_id int primary key,
+    mst_special_id int,
+    mst_idol_id_list text,
+    cue_name text,
+    scenario_id text,
+    number int,
+    reward_type int,
+    reward_amount int,
+    story_type int,
+    special_mv_mst_song_id int,
+    category int,
+    begin_date int,
+    end_date int
+)
+''')
+
+
+def create_special_story(cursor):
+    '''Special story states for each user
+'''
+
+    cursor.execute('''
+create table special_story(
+    user_id text,
+    mst_special_story_id int,
+    is_released int,
+    is_read int,
+    primary key (user_id, mst_special_story_id)
+)
+''')
+
+
+def create_mst_event_story_mv_unit_idol(cursor):
+    '''Master table for unit idols in event story MVs
+'''
+
+    cursor.execute('''
+create table mst_event_story_mv_unit_idol(
+    mst_event_story_id int,
+    mst_idol_id int,
+    mst_costume_id int,
+    primary key (mst_event_story_id, mst_idol_id)
+)
+''')
+
+
+def create_mst_event_story(cursor):
+    '''Master table for event stories
+
+mst_idol_id_list: comma-separated mst_idol_ids
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+'''
+
+    cursor.execute('''
+create table mst_event_story(
+    mst_event_story_id int primary key,
+    mst_idol_id_list text,
+    mst_event_id int,
+    event_type int,
+    number int,
+    has_mv int,
+    has_mv_twin int,
+    event_story_mv_mst_song_id int,
+    release_event_point int,
+    begin_date int,
+    end_date int,
+    page_begin_date int,
+    page_end_date int,
+    reward_type int,
+    reward_mst_item_id int,
+    reward_item_type int,
+    reward_amount int,
+    release_mst_item_id int,
+    release_item_amount int,
+    release_item_begin_date int,
+    before_scenario_id text
+)
+''')
+
+
+def create_event_story(cursor):
+    '''Event story states for each user
+'''
+
+    cursor.execute('''
+create table event_story(
+    user_id text,
+    mst_event_story_id int,
+    released_date int,
+    is_released int,
+    is_read int,
+    primary key (user_id, mst_event_story_id)
+)
+''')
+
+
+def create_mst_event_memory(cursor):
+    '''Master table for event memories
+'''
+
+    cursor.execute('''
+create table mst_event_memory(
+    mst_event_memory_id int primary key,
+    mst_event_id int,
+    release_mst_item_id int,
+    release_item_amount int,
+    release_item_begin_date int,
+    event_memory_type int,
+    mst_song_id int,
+    mst_song_unit_id int,
+    event_encounter_status_list text,
+    past_mst_event_id int
+)
+''')
+
+
+def create_event_memory(cursor):
+    '''Event memory states for each user
+'''
+
+    cursor.execute('''
+create table event_memory(
+    user_id text,
+    mst_event_memory_id int,
+    is_released int,
+    primary key (user_id, mst_event_memory_id)
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -1399,8 +1672,8 @@ if __name__ == "__main__":
     create_unit(cursor)
     create_song_unit_idol(cursor)
     create_song_unit(cursor)
-    create_mst_theater_main_story_idol(cursor)
-    create_mst_theater_main_story(cursor)
+    create_mst_theater_room_idol(cursor)
+    create_mst_theater_contact_status(cursor)
     create_mst_main_story(cursor)
     create_main_story(cursor)
     create_mst_awakening_config(cursor)
@@ -1427,4 +1700,16 @@ if __name__ == "__main__":
     create_mst_event_talk_call_text(cursor)
     create_mst_event_talk_control(cursor)
     create_mst_event(cursor)
+    create_mst_mission(cursor)
+    create_mission(cursor)
+    create_mst_mission_schedule(cursor)
+    create_mst_panel_mission_sheet(cursor)
+    create_panel_mission_sheet(cursor)
+    create_mst_special_mv_unit_idol(cursor)
+    create_mst_special_story(cursor)
+    create_special_story(cursor)
+    create_mst_event_story_mv_unit_idol(cursor)
+    create_mst_event_story(cursor)
+    create_event_story(cursor)
+    create_mst_event_memory(cursor)
     conn.commit()
