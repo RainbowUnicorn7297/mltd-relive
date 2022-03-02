@@ -58,7 +58,7 @@ def load_file():
         root = tree.getroot()
         for item in root:
             host = item.find('host').text
-            if 'appspot.com' in host:
+            if 'appspot.com' in host and 'webview' not in host:
                 methods.append(item.find('path').text)
                 request = b64decode(item.find('request').text).decode('utf-8')
                 requests.append(request)

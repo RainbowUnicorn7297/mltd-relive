@@ -1250,15 +1250,15 @@ create table jewel(
 ''')
 
 
-def create_mst_record_time(cursor):
-    '''Master table for user actions that require tracking (e.g. tutorials)
-'''
-
-    cursor.execute('''
-create table mst_record_time(
-    kind text primary key
-)
-''')
+##def create_mst_record_time(cursor):
+##    '''Master table for user actions that require tracking (e.g. tutorials)
+##'''
+##
+##    cursor.execute('''
+##create table mst_record_time(
+##    kind text primary key
+##)
+##''')
 
 
 def create_record_time(cursor):
@@ -1639,6 +1639,320 @@ create table event_memory(
 ''')
 
 
+def create_lp(cursor):
+    '''LP list for each user
+'''
+
+    cursor.execute('''
+create table lp(
+    user_id text,
+    mst_song_id int,
+    lp int,
+    is_playable int,
+    primary key (user_id, mst_song_id)
+)
+''')
+
+
+def create_user(cursor):
+    '''User info
+'''
+
+    cursor.execute('''
+create table user(
+    user_id text primary key,
+    search_id text,
+    name text,
+    money int,
+    max_money int,
+    vitality int,
+    max_vitality int,
+    live_ticket int,
+    max_live_ticket int,
+    exp int,
+    next_exp int,
+    level int,
+    max_level int,
+    lp int,
+    theater_fan int,
+    last_login_date int,
+    is_tutorial_finished int,
+    lounge_id text,
+    lounge_name text,
+    lounger_user_state int,
+    producer_rank int,
+    full_recover_date int,
+    auto_recover_interval int,
+    first_time_date int,
+    produce_gauge int,
+    max_friend int,
+    daily_challenge_mst_song_id int,
+    challenge_song_update_date int,
+    is_connected_bnid int,
+    is_connected_facebook int,
+    default_live_quality int,
+    default_theater_quality int,
+    default_mv_quality int,
+    mv_quality_limit int,
+    tutorial_live_quality int,
+    asset_tag text,
+    user_map_level int,
+    user_recognition real,
+    actual_map_level int,
+    actual_recognition real,
+    user_id_hash text,
+    un_lock_song_count int,
+    un_lock_song_max_count int,
+    disabled_massive_live int,
+    disabled_massive_mv int,
+    button_disabled int,
+    training_point int,
+    total_training_point int
+)
+''')
+
+
+def create_mst_login_bonus_schedule(cursor):
+    '''Master table for login bonus schedules
+'''
+
+    cursor.execute('''
+create table mst_login_bonus_schedule(
+    mst_login_bonus_schedule_id int primary key,
+    is_last_day int,
+    resource_id text,
+    cue_name1 text,
+    cue_name2 text,
+    script_name text
+)
+''')
+
+
+def create_mst_login_bonus_item(cursor):
+    '''Master table for login bonus items
+'''
+
+    cursor.execute('''
+create table mst_login_bonus_item(
+    mst_login_bonus_schedule_id int,
+    mst_item_id int,
+    item_type int,
+    amount int,
+    day int,
+    primary key (mst_login_bonus_schedule_id, day)
+)
+''')
+
+
+def create_login_bonus_item(cursor):
+    '''Login bonus item states for each user
+'''
+
+    cursor.execute('''
+create table login_bonus_item(
+    user_id text,
+    mst_login_bonus_schedule_id int,
+    day int,
+    reward_item_state int,
+    next_login_date int,
+    primary key (user_id, mst_login_bonus_schedule_id, day)
+)
+''')
+
+
+def create_mst_offer(cursor):
+    '''Master table for offers
+
+recommended_idol_id_list: comma-separated mst_idol_ids
+'''
+
+    cursor.execute('''
+create table mst_offer(
+    mst_offer_id int primary key,
+    mst_event_id int,
+    resource_id text,
+    resource_logo_id text,
+    require_time int,
+    mst_offer_type int,
+    main_idol_id int,
+    recommended_idol_id_list text,
+    parameter_type int,
+    border_value int
+)
+''')
+
+
+def create_offer(cursor):
+    '''Offer states for each user
+
+card_list: comma-separated card_ids
+'''
+
+    cursor.execute('''
+create table offer(
+    user_id text,
+    mst_offer_id int,
+    slot int,
+    status int,
+    start_date int,
+    card_list text,
+    is_recommended int,
+    is_text_completed int,
+    primary key (user_id, mst_offer_id)
+)
+''')
+
+
+def create_mst_banner(cursor):
+    '''Master table for banner list
+'''
+
+    cursor.execute('''
+create table mst_banner(
+    banner_id text primary key,
+    jump text,
+    banner_type int,
+    open_date int,
+    close_date int,
+    banner_image_link text,
+    announce_web_view_link text,
+    is_gasha_view int,
+    url text,
+    simple_view_text text
+)
+''')
+
+
+def create_helper_card(cursor):
+    '''Helper cards for each user
+'''
+
+    cursor.execute('''
+create table helper_card(
+    user_id text,
+    idol_type int,
+    card_id text,
+    primary key (user_id, idol_type)
+)
+''')
+
+
+def create_clear_song_count(cursor):
+    '''Cleared song counts for each user
+'''
+
+    cursor.execute('''
+create table clear_song_count(
+    user_id text,
+    live_course int,
+    count int,
+    primary key (user_id, live_course)
+)
+''')
+
+
+def create_full_combo_song_count(cursor):
+    '''Full combo song counts for each user
+'''
+
+    cursor.execute('''
+create table full_combo_song_count(
+    user_id text,
+    live_course int,
+    count int,
+    primary key (user_id, live_course)
+)
+''')
+
+
+def create_profile(cursor):
+    '''Profile for each user
+
+mst_achievement_id_list: comma-separated mst_achievement_ids
+'''
+
+    cursor.execute('''
+create table profile(
+    id text primary key,
+    name text,
+    birthday text,
+    is_birthday_public int,
+    comment text,
+    favorite_card_id text,
+    favorite_card_before_awake int,
+    mst_achievement_id int,
+    mst_achievement_id_list text,
+    lp int,
+    album_count int,
+    story_count int
+)
+''')
+
+
+def create_theater_room(cursor):
+    '''Theater room list for each user
+'''
+
+    cursor.execute('''
+create table theater_room(
+    user_id text,
+    mst_room_id int,
+    mst_theater_contact_id int,
+    mst_theater_main_story_id int,
+    mst_theater_guest_main_story_id int,
+    mst_theater_blog_id int,
+    mst_theater_costume_blog_id int,
+    mst_theater_event_story_id int,
+    primary key (user_id, mst_room_id)
+)
+''')
+
+
+def create_last_update_date(cursor):
+    '''Last update dates for each user
+'''
+
+    cursor.execute('''
+create table last_update_date(
+    user_id text,
+    last_update_date_type int,
+    last_update_date int,
+    primary key (user_id, last_update_date_type)
+)
+''')
+
+
+def create_mst_birthday_calendar(cursor):
+    '''Birthday calendar for all characters
+'''
+
+    cursor.execute('''
+create table mst_birthday_calendar(
+    mst_character_id int primary key,
+    idol_type int,
+    birthday_month int,
+    birthday_day int
+)
+''')
+
+
+def create_birthday(cursor):
+    '''Character birthday states for each user
+'''
+
+    cursor.execute('''
+create table birthday(
+    user_id text,
+    year int,
+    mst_character_id int,
+    is_executed int,
+    is_birthday_live_played int,
+    mst_idol_id_list text,
+    primary key (user_id, year, mst_character_id)
+)
+''')
+
+
 if __name__ == "__main__":
     cursor = conn.cursor()
     create_mst_costume(cursor)
@@ -1692,7 +2006,7 @@ if __name__ == "__main__":
     create_campaign(cursor)
     create_gasha_medal(cursor)
     create_jewel(cursor)
-    create_mst_record_time(cursor)
+##    create_mst_record_time(cursor)
     create_record_time(cursor)
     create_mst_topics(cursor)
     create_mst_event_talk_story(cursor)
@@ -1712,4 +2026,20 @@ if __name__ == "__main__":
     create_mst_event_story(cursor)
     create_event_story(cursor)
     create_mst_event_memory(cursor)
+    create_lp(cursor)
+    create_user(cursor)
+    create_mst_login_bonus_schedule(cursor)
+    create_mst_login_bonus_item(cursor)
+    create_login_bonus_item(cursor)
+    create_mst_offer(cursor)
+    create_offer(cursor)
+    create_mst_banner(cursor)
+    create_helper_card(cursor)
+    create_clear_song_count(cursor)
+    create_full_combo_song_count(cursor)
+    create_profile(cursor)
+    create_theater_room(cursor)
+    create_last_update_date(cursor)
+    create_mst_birthday_calendar(cursor)
+    create_birthday(cursor)
     conn.commit()
