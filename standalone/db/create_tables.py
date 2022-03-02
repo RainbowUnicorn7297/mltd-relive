@@ -6,7 +6,8 @@ def create_mst_costume(cursor):
 mst_costume_group_id: ??? 0-993
 costume_name: ??? -,ex,ss,sr,gs, mostly ex
 costume_number: ??? 0-601
-exclude_album: Unused. exclude_album=false for all costumes
+exclude_album: true for 2nd anniversay costumes with butterfly wings (excluded
+               from costume album), false for everything else
 exclude_random: true for mst_costume_id=0, false for everything else
 collabo_number: Unused. collabo_number=0 for all costumes
 replace_group_id: ??? 0,4-6, mostly 0
@@ -391,7 +392,7 @@ is_best_condition: Unused. is_best_condition=false for all idols
 area: ??? 0-7
 offer_type: ??? 0-4
 mst_agency_id: 1=765, 2=961
-default_costume: mst_costume_id of casual wear
+default_costume: mst_costume_id of zh/ko default costume (輝煌一體)
 birthday_live: birthday_live=0 for Shika, 1 for everyone else
 '''
 

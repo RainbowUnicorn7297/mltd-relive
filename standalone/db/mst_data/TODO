@@ -1,0 +1,6 @@
+mst_costume
+include mst_costume_id=0?
+
+mst_item
+include jewel? (mst_item_id=3, item_type=1)
+what is mst_item_id=502, item_type=4? (dropped from theater contact)
