@@ -1,4 +1,5 @@
 mst_costume_id,mst_idol_id,resource_id,mst_costume_group_id,costume_name,costume_number,exclude_album,exclude_random,collabo_number,replace_group_id,sort_id,release_date,gorgeous_appeal_type
+0,0,-,0,-,0,FALSE,TRUE,0,0,0,2018-01-01T00:00:00+0800,0
 1,1,costume_99,1,ex,1,FALSE,FALSE,0,0,10101010,2018-01-01T00:00:00+0800,0
 2,2,costume_99,1,ex,1,FALSE,FALSE,0,0,10101020,2018-01-01T00:00:00+0800,0
 3,3,costume_99,1,ex,1,FALSE,FALSE,0,0,10101030,2018-01-01T00:00:00+0800,0
