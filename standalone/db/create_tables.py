@@ -278,7 +278,15 @@ create table card(
 def create_mst_direction_category(cursor):
     '''Master table for direction category (演出)
 
-
+idol_detail_type: 1=shown in idol details, 2=hidden from idol details
+direction_type:
+    1=idol birthday greeting
+    2=seasonal greeting
+    4-6=default greeting???
+3rd idol birthday greeting (mst_direction_category_id=2010) is only available
+for idols with birthdays between June 29 and September 30
+1st new year greeting (mst_direction_category_id=2002) is only available for
+Mirai, Shizuka and Tsubasa
 '''
 
     cursor.execute('''
@@ -347,12 +355,12 @@ create table mst_voice_category(
 def create_mst_lesson_wear(cursor):
     '''Master table for lesson wear
 
-mst_lesson_wear_id: 1-52=訓練課程服, 9001-90052=1週年記念
+mst_lesson_wear_id: 1-53=訓練課程服, 9001-90052=1週年記念
 mst_lesson_wear_group_id: 1=訓練課程服, 9001=1週年記念
 costume_number: costume_number=1 for all lesson wear
-costume_name: tr=訓練課程服, cr=1週年記念
-collabo_no: 0=, 55=1週年記念
-resource_id: resource_id=training_01 for all lesson wear
+costume_name: tr,gs=訓練課程服, cr=1週年記念
+collabo_no: 0=訓練課程服, 55=1週年記念
+resource_id: 201xxx0013 for Shika, training_01 for everyone else
 '''
 
     cursor.execute('''
@@ -400,6 +408,7 @@ birthday_live: birthday_live=0 for Shika, 1 for everyone else
     cursor.execute('''
 create table mst_idol(
     mst_idol_id int primary key,
+    resource_id text,
     idol_type int,
     tension int,
     is_best_condition int,
