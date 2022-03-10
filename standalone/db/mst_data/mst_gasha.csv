@@ -1,0 +1,7 @@
+﻿mst_gasha_id,mst_gasha_ticket_item_id,name,display_category,begin_date,end_date,currency_type_list,is_paid_jewel_only,draw1_jewel_value,draw10_jewel_value,draw1_mst_item_id,draw10_mst_item_id,daily_limit,total_limit,sr_passport,ssr_passport,has_new_idol,has_limited,notify_num,today_count,total_count,mst_gasha_kind_id,mst_gasha_bonus_id,gasha_bonus_item_list,gasha_bonus_mst_achievement_id_list,gasha_bonus_costume_list,ticket_item_list,is_limit,draw_point_mst_item_id,draw_point,draw_point_max,draw1_free_count,draw10_free_count,pickup_signature,pickup_gasha_card_list,balloon
+10002,0,Welcome!! 保證SSR轉蛋,19,2021-08-30T00:00:00+0800,2022-08-29T23:59:59+0800,,FALSE,0,0,0,0,1,1,0,0,FALSE,FALSE,0,0,0,500,0,,,,,FALSE,40,0,300,0,0,,,0
+99001,0,白金特別轉蛋,1,2021-10-01T15:00:00+0800,2099-10-12T14:59:59+0800,1,TRUE,60,0,0,0,1,0,0,0,FALSE,FALSE,0,0,0,101,0,,,,,TRUE,40,208,300,0,0,,,0
+99002,0,白金特別轉蛋,2,2021-10-01T15:00:00+0800,2099-10-12T14:59:59+0800,"1,6",FALSE,250,2500,0,0,0,0,1,0,FALSE,FALSE,0,0,135,101,0,,,,,TRUE,40,208,300,1,0,,,1
+99996,0,服裝轉蛋,18,2020-04-12T15:00:00+0800,2099-12-31T23:59:59+0800,,FALSE,0,0,0,0,0,0,0,0,FALSE,FALSE,0,0,0,400,0,,,,,FALSE,40,0,300,0,0,,,0
+99997,0,百萬收藏轉蛋,16,2020-01-27T15:00:00+0800,2099-12-31T23:59:59+0800,,FALSE,0,0,0,0,0,0,0,0,FALSE,FALSE,0,0,0,300,0,,,,,FALSE,40,0,300,0,0,,,0
+99998,0,代幣轉蛋,3,2019-05-01T00:00:00+0800,2099-12-31T23:59:59+0800,2,FALSE,0,0,13,0,0,0,0,0,TRUE,FALSE,0,0,939,0,0,,,,13,FALSE,40,0,300,0,0,,,0

@@ -641,6 +641,8 @@ def create_mst_gasha(cursor):
     '''Master table for gachas
 
 currency_type_list: comma-separated currency types
+ticket_item_list: comma-separated mst_item_ids
+TODO: identify user-specific columns
 '''
 
     cursor.execute('''
@@ -668,10 +670,10 @@ create table mst_gasha(
     total_count int,
     mst_gasha_kind_id int,
     mst_gasha_bonus_id int,
-    gasha_bonus_item int,
-    gasha_bonus_mst_achievement_id int,
-    gasha_bonus_costume int,
-    ticket_item text,
+    gasha_bonus_item_list text,
+    gasha_bonus_mst_achievement_id_list text,
+    gasha_bonus_costume_list text,
+    ticket_item_list text,
     is_limit int,
     draw_point_mst_item_id int,
     draw_point int,
@@ -679,7 +681,7 @@ create table mst_gasha(
     draw1_free_count int,
     draw10_free_count int,
     pickup_signature text,
-    pickup_gasha_card int,
+    pickup_gasha_card_list text,
     balloon int
 )
 ''')
@@ -789,10 +791,10 @@ def create_mst_song(cursor):
     cursor.execute('''
 create table mst_song(
     mst_song_id int primary key,
+    song_type int,
     sort_id int,
     resource_id text,
     idol_type int,
-    song_type int,
     kind int,
     stage_id int,
     stage_ts_id int,
