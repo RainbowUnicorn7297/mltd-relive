@@ -355,7 +355,7 @@ create table mst_voice_category(
 def create_mst_lesson_wear(cursor):
     '''Master table for lesson wear
 
-mst_lesson_wear_id: 1-53=訓練課程服, 9001-90052=1週年記念
+mst_lesson_wear_id: 1-53=訓練課程服, 90001-90052=1週年記念
 mst_lesson_wear_group_id: 1=訓練課程服, 9001=1週年記念
 costume_number: costume_number=1 for all lesson wear
 costume_name: tr,gs=訓練課程服, cr=1週年記念
@@ -444,6 +444,11 @@ create table idol(
 def create_mst_memorial(cursor):
     '''Master table for memorials
 
+1st memorial reward per idol:
+reward_type=4, reward_mst_item_id=405, reward_item_type=2, reward_amount=3000
+2nd memorial reward:
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=25
+subsequent rewards:
 reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
 '''
 
@@ -472,12 +477,12 @@ released_date: Unused. released_date=null for all memorials
 
     cursor.execute('''
 create table memorial(
-    memorial_id text primary key,
     user_id text,
     mst_memorial_id int,
     is_released int,
     is_read int,
-    released_date int
+    released_date int,
+    primary key (user_id, mst_memorial_id)
 )
 ''')
 
@@ -486,12 +491,14 @@ def create_episode(cursor):
     '''Awakening story states for each card for each user
 
 released_date: Unused. released_date=null for all episodes
+Reward for each N card:
 reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=25
+Reward for each R, SR and SSR card:
+reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
 '''
 
     cursor.execute('''
 create table episode(
-    episode_id text primary key,
     user_id text,
     mst_card_id int,
     is_released int,
@@ -500,7 +507,8 @@ create table episode(
     reward_type int,
     reward_mst_item_id int,
     reward_item_type int,
-    reward_amount int
+    reward_amount int,
+    primary key (user_id, mst_card_id)
 )
 ''')
 
@@ -531,12 +539,12 @@ released_date: Unused. released_date=null for all costume blogs
 
     cursor.execute('''
 create table costume_adv(
-    costume_adv_id text primary key,
     user_id text,
     mst_theater_costume_blog_id int,
     is_released int,
     is_read int,
-    released_date int
+    released_date int,
+    primary key (user_id, mst_theater_costume_blog_id)
 )
 ''')
 
