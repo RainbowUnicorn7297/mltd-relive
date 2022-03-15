@@ -989,7 +989,23 @@ def create_mst_main_story(cursor):
     '''Master table for main stories
 
 mst_idol_id_list: comma-separated mst_idol_ids
-reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+reward_type_list: comma-separated values
+reward_mst_item_id_list: comma-separated mst_item_ids
+reward_item_type_list: comma-separated values
+reward_mst_costume_id_list: comma-separated mst_costume_ids
+reward_amount_list: comma-separated values
+For mst_main_story_id=41:
+    reward_type_list=4,4,8
+    reward_mst_item_id_list=3,705,0
+    reward_item_type_list=1,5,0
+    reward_mst_costume_id_list=0,0,102
+    reward_amount_list=50,1,1
+For other main stories:
+    reward_type_list=4
+    reward_mst_item_id_list=3
+    reward_item_type_list=1
+    reward_mst_costume_id_list=0
+    reward_amount_list=50
 '''
 
     cursor.execute('''
@@ -1001,10 +1017,11 @@ create table mst_main_story(
     release_level int,
     release_song_id int,
     reward_song_id int,
-    reward_type int,
-    reward_mst_item_id int,
-    reward_item_type int,
-    reward_amount int,
+    reward_type_list text,
+    reward_mst_item_id_list text,
+    reward_item_type_list text,
+    reward_mst_costume_id_list text,
+    reward_amount_list text,
     intro_contact_mst_idol_id int,
     blog_contact_mst_idol_id int,
     primary key (mst_main_story_id, number, chapter)
