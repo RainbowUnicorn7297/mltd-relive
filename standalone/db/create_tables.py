@@ -6,7 +6,7 @@ def create_mst_costume(cursor):
 mst_costume_group_id: ??? 0-993
 costume_name: ??? -,ex,ss,sr,gs, mostly ex
 costume_number: ??? 0-601
-exclude_album: true for 2nd anniversay costumes with butterfly wings (excluded
+exclude_album: true for 2nd anniversary costumes with butterfly wings (excluded
                from costume album), false for everything else
 exclude_random: true for mst_costume_id=0, false for everything else
 collabo_number: Unused. collabo_number=0 for all costumes
@@ -1429,6 +1429,13 @@ def create_mst_mission(cursor):
     '''Master table for missions
 
 premise_mst_mission_id_list: comma-separated mst_mission_ids
+reward_mst_item_id_list: comma-separated mst_item_ids
+reward_item_type_id_list: comma-separated values
+reward_amount_list: comma-separated values
+reward_mst_card_id_list: comma-separated mst_card_ids
+reward_mst_achievement_id_list: comma-separated mst_achievement_ids
+reward_mst_song_id_list: comma-separated mst_song_ids
+reward_resource_id_list: comma-separated values
 '''
 
     cursor.execute('''
@@ -1442,18 +1449,18 @@ create table mst_mission(
     option text,
     option2 text,
     premise_mst_mission_id_list text,
-    reward_mst_item_id int,
-    reward_item_type_id int,
-    reward_amount int,
-    reward_mst_card_id int,
-    reward_mst_achievement_id int,
-    reward_mst_song_id int,
-    reward_resource_id text,
+    reward_mst_item_id_list text,
+    reward_item_type_id_list text,
+    reward_amount_list text,
+    reward_mst_card_id_list text,
+    reward_mst_achievement_id_list text,
+    reward_mst_song_id_list text,
+    reward_resource_id_list text,
     create_date int,
     sort_id int,
     jump_type text,
     mission_operation_label text,
-    mst_mission_chedule_id int,
+    mst_mission_schedule_id int,
     mst_panel_mission_sheet_id int,
     primary key (mst_mission_id, mst_panel_mission_id, mst_idol_mission_id)
 )
@@ -1556,6 +1563,7 @@ create table mst_special_story(
     reward_type int,
     reward_amount int,
     story_type int,
+    mst_card_id int,
     special_mv_mst_song_id int,
     category int,
     begin_date int,
@@ -1597,7 +1605,20 @@ def create_mst_event_story(cursor):
     '''Master table for event stories
 
 mst_idol_id_list: comma-separated mst_idol_ids
-reward_type=4, reward_mst_item_id=3, reward_item_type=1, reward_amount=50
+reward_type_list: comma-separated values
+reward_mst_item_id_list: comma-separated mst_item_ids
+reward_item_type_list: comma-separated values
+reward_amount_list: comma-separated values
+For mst_event_story_id=168-175:
+    reward_type_list=4,4
+    reward_mst_item_id_list=3,0
+    reward_item_type_list=1,0
+    reward_amount_list=50,1-8
+For other event stories:
+    reward_type_list=4
+    reward_mst_item_id_list=3
+    reward_item_type_list=1
+    reward_amount_list=50
 '''
 
     cursor.execute('''
@@ -1615,10 +1636,10 @@ create table mst_event_story(
     end_date int,
     page_begin_date int,
     page_end_date int,
-    reward_type int,
-    reward_mst_item_id int,
-    reward_item_type int,
-    reward_amount int,
+    reward_type_list text,
+    reward_mst_item_id_list text,
+    reward_item_type_list text,
+    reward_amount_list text,
     release_mst_item_id int,
     release_item_amount int,
     release_item_begin_date int,
