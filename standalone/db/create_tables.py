@@ -1139,7 +1139,7 @@ def create_mst_lesson_wear_config(cursor):
     cursor.execute('''
 create table mst_lesson_wear_config(
     mst_lesson_wear_setting_id int primary key,
-    mst_lesson_wear_group_id int
+    mst_lesson_wear_group_id_list text
 )
 ''')
 
@@ -1214,6 +1214,66 @@ create table mst_title_image(
     sord_id int,
     begin_date int,
     end_date int
+)
+''')
+
+
+def create_mst_game_setting(cursor):
+    '''Master table for game settings
+
+lounge_chat_fetch_cycle: comma-separated values
+function_release_id_list: comma-separated values
+'''
+
+    cursor.execute('''
+create table mst_game_setting(
+    rank5_skill_level_max int,
+    awakening_bonus_level int,
+    max_master_rank int,
+    master_rank_bonus int,
+    card_lv_base int,
+    card_lv_diff int,
+    user_lv_base int,
+    user_lv_diff int,
+    recover_jewel_amount int,
+    recover_jewel_begin_date int,
+    recover_jewel_end_date int,
+    continue_jewel_amount int,
+    continue_jewel_begin_date int,
+    continue_jewel_end_date int,
+    enable_lounge int,
+    rehearsal_cost int,
+    live_ticket_scale int,
+    enable_sale int,
+    enable_sales_costume int,
+    enable_gasha_exchange_limit_point int,
+    enable_event_shop int,
+    enable_unit int,
+    overflow_date int,
+    enable_song_unit int,
+    enable_song_unit_duo int,
+    enable_song_full_random int,
+    enable_song_song_random int,
+    enable_a1st_card_shop int,
+    enable_training int,
+    lounge_chat_fetch_cycle text,
+    enable_comic_button int,
+    comic_button_url text,
+    enable_item_shop int,
+    enable_release_connection int,
+    board_write_limit_level int,
+    un_lock_song_jewel_amount int,
+    un_lock_song_jewel_begin_date int,
+    un_lock_song_jewel_end_date int,
+    mst_item_id_with_type_master_key int,
+    profile_achievement_list_limit_count int,
+    enable_thank_you_mode int,
+    enable_new_gasha_view int,
+    enable_flower_stand_multi int,
+    enable_n_t4 int,
+    function_release_id_list text,
+    default_release_all_song_difficulty_lv int,
+    max_training_point int
 )
 ''')
 
@@ -2060,6 +2120,7 @@ if __name__ == "__main__":
     create_mst_training_unit(cursor)
     create_mst_master_lesson_five_config(cursor)
     create_mst_title_image(cursor)
+    create_mst_game_setting(cursor)
     create_mst_loading_character(cursor)
     create_mst_campaign(cursor)
     create_campaign(cursor)
