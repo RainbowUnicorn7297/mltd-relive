@@ -20,6 +20,7 @@ methods = []
 requests = []
 responses = []
 selected_id = -1
+filter_text = ''
 
 request_data = ''
 request_raw = ''
@@ -104,7 +105,7 @@ def update_data():
         response_header = response_raw = response_json = ''
 
 def main():
-    global ids, methods, requests, responses, selected_id
+    global ids, methods, requests, responses, selected_id, filter_text
     global request_header, request_raw, request_json
     global response_header, response_raw, response_json
     global request_json_min, response_json_min
@@ -149,9 +150,12 @@ def main():
         imgui.columns(3, border=False)
 
         imgui.begin_child('methods')
+        _, filter_text = imgui.input_text('##filter', filter_text, 256)
         imgui.columns(2, border=False)
         imgui.set_column_offset(1, 40)
         for i in ids:
+            if filter_text not in methods[i]:
+                continue
             clicked, _ = imgui.selectable(
                 str(i), selected_id == i, imgui.SELECTABLE_SPAN_ALL_COLUMNS
             )
