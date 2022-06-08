@@ -2,17 +2,19 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from ssl import SSLContext, PROTOCOL_TLS_SERVER
 from os import path
 import sys, requests
+import urllib3
 
 port = 443
 api_port = 8443
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
     close_connection = True
 
     def do_POST(self):
-        host = self.headers.get('Host')
-        host = host.split(':')[0] + ':' + str(api_port)
+        host = 'localhost:' + str(api_port)
         url = f'https://{host}{self.path}'
         content_len = int(self.headers.get('Content-Length'))
         req_body = self.rfile.read(content_len)
