@@ -5,7 +5,7 @@
 MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方沒有提供轉移資料至日服的渠道，意味著大家花了不少時間和金錢收集回來的卡片、服裝和名牌在關服後也被永久刪除，也不能再以親切的中文和韓文介面來繼續培育偶像。本專案的目的是以運行本地伺服器的形式令海外版MLTD可以繼續遊玩，希望能給大家一點安慰，也不會讓官方的本地化翻譯白白浪費。
 
 ## 版本說明
-### Prototype版（最新版本：[prototype-v1.0.1](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/prototype-v1.0.1)）
+### Prototype版（最新版本：[prototype-v1.0.2](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/prototype-v1.0.2)）
 以本人帳號為基礎的版本，功能上比較局限，主要支援劇情（含mail及部落格）及演唱會（含自訂團體卡片及服裝）。具有以下特性：
 - 只支援繁中版。
 - 以靜態方式為主回應API請求。絕大部分數值不會在遊戲過程中改變，重啟遊戲後會重置所有遊戲內容。
@@ -32,9 +32,20 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    <img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
 
 4. 運行遊戲
+5. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
+
+   <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208608928-05a71f22-69a2-4ffc-b8d6-3451e06e77e8.png">
+
+6. 按＂使用密碼繼承＂，再按＂OK＂
+
+   <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208609764-a79d551b-fdf4-4da8-8a46-c6bad6e884f2.png">
+
+7. 隨意輸入長度為8個字元的密碼，最後按＂決定＂
+
+   <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208610514-01adc780-a92e-4f50-b459-e51361d7af49.png">
 
 ## 自行構建
-1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.10.5）
+1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.11.1）
 2. 以系統管理員身份（Run as administrator）打開命令提示字元（cmd.exe），安裝以下所需套件：
 ```
 pip install pyinstaller
@@ -68,7 +79,7 @@ pip install pycryptodome
 ### 第二階段（已完成）
 以本人帳號為藍本，在最短時間內讓劇情和演唱會，遊戲內最主要的兩個功能可以運作。
 
-### 第三階段（預計8月中完成）
+### 第三階段（預計2023年4月中完成）
 以一個通用帳號為基礎，已集齊全部卡片和服裝和解鎖所有劇情，將大部分社交類以外功能以最接近關服前的狀態呈現。活動和歌曲排名方面只有繁中服有備份，韓服則沒有。
 
 ### 第四階段（不定期更新）
