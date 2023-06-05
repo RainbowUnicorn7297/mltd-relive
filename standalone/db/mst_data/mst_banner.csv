@@ -1,6 +1,6 @@
 banner_id,jump,banner_type,open_date,close_date,banner_image_link,announce_web_view_link,is_gasha_view,url,simple_view_text
-339f5717-58c3-43ad-9d08-eb5d4681f1dc,Phpb,0,2020-07-11T16:00:00+0000,2099-01-04T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/16a69024-b04c-4d09-9157-4bfb19705a25,,FALSE,,
-4ff28925-714a-45a9-a790-adcba1b690ab,PanelMisson,0,2019-06-28T02:00:00+0000,2022-06-30T16:00:00+0000,https://storage.googleapis.com/image-theaterdays-zh/e7cfd8ef-07a3-49b0-afba-d8e3c9606128,,FALSE,,
-11c6693e-2682-4dab-ba6d-062eca45966b,"GashaJ,mst_item_id=719",0,2021-08-29T16:00:00+0000,2022-08-29T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/3b8f21cf-8497-4f01-98eb-3509044cb68c,,TRUE,,
-95ee67ba-a427-4501-be9f-9e33444f482b,"Gasha,Platinum",0,2021-10-01T07:00:00+0000,2024-01-06T06:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/21159c8d-f793-4192-89ac-9eeb49064cfb,,FALSE,,
-41e6fa4c-dc0c-4193-ae6f-5078fc422cbe,Shpb,0,2020-07-03T16:00:00+0000,2099-12-31T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/34af65c0-4014-43da-accf-d76b464eec1b,,FALSE,,
+339f5717-58c3-43ad-9d08-eb5d4681f1dc,Phpb,0,2020-07-11T16:00:00+0000,2099-01-04T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/16a69024-b04c-4d09-9157-4bfb19705a25,,0,,
+4ff28925-714a-45a9-a790-adcba1b690ab,PanelMisson,0,2019-06-28T02:00:00+0000,2022-06-30T16:00:00+0000,https://storage.googleapis.com/image-theaterdays-zh/e7cfd8ef-07a3-49b0-afba-d8e3c9606128,,0,,
+11c6693e-2682-4dab-ba6d-062eca45966b,"GashaJ,mst_item_id=719",0,2021-08-29T16:00:00+0000,2022-08-29T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/3b8f21cf-8497-4f01-98eb-3509044cb68c,,1,,
+95ee67ba-a427-4501-be9f-9e33444f482b,"Gasha,Platinum",0,2021-10-01T07:00:00+0000,2024-01-06T06:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/21159c8d-f793-4192-89ac-9eeb49064cfb,,0,,
+41e6fa4c-dc0c-4193-ae6f-5078fc422cbe,Shpb,0,2020-07-03T16:00:00+0000,2099-12-31T15:59:59+0000,https://storage.googleapis.com/image-theaterdays-zh/34af65c0-4014-43da-accf-d76b464eec1b,,0,,

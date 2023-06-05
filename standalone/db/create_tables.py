@@ -27,7 +27,7 @@ create table mst_costume(
     collabo_number int,
     replace_group_id int,
     sort_id int,
-    release_date int,
+    release_date text,
     gorgeous_appeal_type int
 )
 ''')
@@ -187,7 +187,6 @@ create table mst_card(
     visual_base int,
     visual_max int,
     visual_master_bonus int,
-    skill_level_max int,
     awakening_gauge_max int,
     master_rank_max int,
     cheer_point int,
@@ -195,9 +194,9 @@ create table mst_card(
     mst_card_skill_id_list int,
     ex_type int,
     variation int,
-    master_lesson_begin_date int,
+    master_lesson_begin_date text,
     training_item_list text,
-    begin_date int,
+    begin_date text,
     sort_id int,
     card_category int,
     extend_card_level_max int,
@@ -234,6 +233,7 @@ vocal_diff: Vocal bonus per level
         If R, vocal_diff += vocal_max * 10 / 100 / 50
         If SR, vocal_diff += vocal_max * 10 / 140 / 70
         If SSR, vocal_diff += vocal_max * 10 / 180 / 90
+skill_level_max: 12 only if trained to master rank 5, 10 otherwise
 skill_probability: Current skill probability in %
     For skill levels 1-10:
         skill_probability = probability_base + skill_level
@@ -265,11 +265,12 @@ create table card(
     after_awakened_dance int,
     after_awakened_visual int,
     skill_level int,
+    skill_level_max int,
     skill_probability int,
     is_awakened int,
     awakening_gauge int,
     master_rank int,
-    create_date int,
+    create_date text,
     is_new int
 )
 ''')
@@ -296,7 +297,7 @@ create table mst_direction_category(
     idol_detail_type int,
     direction_type int,
     resource_id text,
-    release_date int
+    release_date text
 )
 ''')
 
@@ -323,7 +324,7 @@ create table mst_voice_category(
     rarity int,
     label_header text,
     voice_label text,
-    release_date int,
+    release_date text,
     mst_direction_category_id int
 )
 ''')
@@ -464,7 +465,7 @@ create table mst_memorial(
     reward_item_type int,
     reward_amount int,
     is_available int,
-    begin_date int
+    begin_date text
 )
 ''')
 
@@ -481,7 +482,7 @@ create table memorial(
     mst_memorial_id int,
     is_released int,
     is_read int,
-    released_date int,
+    released_date text,
     primary key (user_id, mst_memorial_id)
 )
 ''')
@@ -503,7 +504,7 @@ create table episode(
     mst_card_id int,
     is_released int,
     is_read int,
-    released_date int,
+    released_date text,
     reward_type int,
     reward_mst_item_id int,
     reward_item_type int,
@@ -543,7 +544,7 @@ create table costume_adv(
     mst_theater_costume_blog_id int,
     is_released int,
     is_read int,
-    released_date int,
+    released_date text,
     primary key (user_id, mst_theater_costume_blog_id)
 )
 ''')
@@ -632,7 +633,7 @@ create table item(
     user_id text,
     mst_item_id int,
     amonut int,
-    expire_date int
+    expire_date text
 )
 ''')
 
@@ -651,8 +652,8 @@ create table mst_gasha(
     mst_gasha_ticket_item_id int,
     name text,
     display_category int,
-    begin_date int,
-    end_date int,
+    begin_date text,
+    end_date text,
     currency_type_list text,
     is_paid_jewel_only int,
     draw1_jewel_value int,
@@ -703,8 +704,8 @@ create table mst_job(
     reward_affection int,
     reward_money int,
     reward_live_ticket int,
-    begin_date int,
-    end_date int
+    begin_date text,
+    end_date text
 )
 ''')
 
@@ -840,7 +841,7 @@ create table song(
     is_released_horizontal_mv int,
     is_released_vertical_mv int,
     is_cleared int,
-    first_cleared_date int,
+    first_cleared_date text,
     is_played int,
     lp int,
     is_visible int,
@@ -1039,7 +1040,7 @@ create table main_story(
     mst_main_story_id int,
     number int,
     chapter int,
-    released_date int,
+    released_date text,
     is_released int,
     is_read int,
     primary key (user_id, mst_main_story_id, number, chapter)
@@ -1110,7 +1111,7 @@ create table mst_lesson_money_config(
 
 
 def create_mst_lesson_skill_level_up_config(cursor):
-    '''Required "skill EXP" for each skill level for guanranteed level up
+    '''Required "skill EXP" for each skill level for guaranteed level up
 
 skill_level: target skill level
 rarity: card rarity
@@ -1212,8 +1213,8 @@ create table mst_title_image(
     mst_title_image_id int primary key,
     title_image_type int,
     sord_id int,
-    begin_date int,
-    end_date int
+    begin_date text,
+    end_date text
 )
 ''')
 
@@ -1236,11 +1237,11 @@ create table mst_game_setting(
     user_lv_base int,
     user_lv_diff int,
     recover_jewel_amount int,
-    recover_jewel_begin_date int,
-    recover_jewel_end_date int,
+    recover_jewel_begin_date text,
+    recover_jewel_end_date text,
     continue_jewel_amount int,
-    continue_jewel_begin_date int,
-    continue_jewel_end_date int,
+    continue_jewel_begin_date text,
+    continue_jewel_end_date text,
     enable_lounge int,
     rehearsal_cost int,
     live_ticket_scale int,
@@ -1249,7 +1250,7 @@ create table mst_game_setting(
     enable_gasha_exchange_limit_point int,
     enable_event_shop int,
     enable_unit int,
-    overflow_date int,
+    overflow_date text,
     enable_song_unit int,
     enable_song_unit_duo int,
     enable_song_full_random int,
@@ -1263,8 +1264,8 @@ create table mst_game_setting(
     enable_release_connection int,
     board_write_limit_level int,
     un_lock_song_jewel_amount int,
-    un_lock_song_jewel_begin_date int,
-    un_lock_song_jewel_end_date int,
+    un_lock_song_jewel_begin_date text,
+    un_lock_song_jewel_end_date text,
     mst_item_id_with_type_master_key int,
     profile_achievement_list_limit_count int,
     enable_thank_you_mode int,
@@ -1286,8 +1287,8 @@ def create_mst_loading_character(cursor):
 create table mst_loading_character(
     resource_id text primary key,
     weight int,
-    begin_date int,
-    end_date int
+    begin_date text,
+    end_date text
 )
 ''')
 
@@ -1302,8 +1303,8 @@ create table mst_campaign(
     type int,
     value int,
     footer_button int,
-    start_date int,
-    end_date int
+    start_date text,
+    end_date text
 )
 ''')
 
@@ -1367,7 +1368,7 @@ def create_record_time(cursor):
 create table record_time(
     user_id text,
     kind text,
-    time int,
+    time text,
     primary key (user_id, kind)
 )
 ''')
@@ -1384,7 +1385,7 @@ create table mst_topics(
     topics_type int,
     mst_topics_icon_id int,
     number int,
-    release_date int
+    release_date text
 )
 ''')
 
@@ -1403,7 +1404,7 @@ create table mst_event_talk_story(
     mst_event_talk_speaker_id text,
     bg_id text,
     thumbnail_id text,
-    begin_date int
+    begin_date text
 )
 ''')
 
@@ -1416,7 +1417,7 @@ def create_event_talk_story(cursor):
 create table event_talk_story(
     user_id text,
     mst_event_talk_story_id int,
-    released_date int,
+    released_date text,
     is_released int,
     is_read int,
     primary key (user_id, mst_event_talk_story_id)
@@ -1466,12 +1467,12 @@ def create_mst_event(cursor):
     cursor.execute('''
 create table mst_event(
     mst_event_id int primary key,
-    begin_date int,
-    end_date int,
-    page_begin_date int,
-    page_end_date int,
-    boost_begin_date int,
-    boost_end_date int,
+    begin_date text,
+    end_date text,
+    page_begin_date text,
+    page_end_date text,
+    boost_begin_date text,
+    boost_end_date text,
     event_type int,
     cue_sheet text,
     cue_name text,
@@ -1516,7 +1517,7 @@ create table mst_mission(
     reward_mst_achievement_id_list text,
     reward_mst_song_id_list text,
     reward_resource_id_list text,
-    create_date int,
+    create_date text,
     sort_id int,
     jump_type text,
     mission_operation_label text,
@@ -1535,8 +1536,8 @@ def create_mission(cursor):
 create table mission(
     user_id text,
     mst_mission_id int,
-    update_date int,
-    finish_date int,
+    update_date text,
+    finish_date text,
     progress int,
     mission_state int,
     song_idol_type int,
@@ -1552,8 +1553,8 @@ def create_mst_mission_schedule(cursor):
     cursor.execute('''
 create table mst_mission_schedule(
     mst_mission_schedule_id int primary key,
-    begin_date int,
-    end_date int,
+    begin_date text,
+    end_date text,
     mission_type int
 )
 ''')
@@ -1566,8 +1567,8 @@ def create_mst_panel_mission_sheet(cursor):
     cursor.execute('''
 create table mst_panel_mission_sheet(
     mst_panel_mission_sheet_id int primary key,
-    begin_date int,
-    end_date int,
+    begin_date text,
+    end_date text,
     reward_mst_item_id int,
     reward_item_type_id int,
     reward_amount int,
@@ -1626,8 +1627,8 @@ create table mst_special_story(
     mst_card_id int,
     special_mv_mst_song_id int,
     category int,
-    begin_date int,
-    end_date int
+    begin_date text,
+    end_date text
 )
 ''')
 
@@ -1692,17 +1693,17 @@ create table mst_event_story(
     has_mv_twin int,
     event_story_mv_mst_song_id int,
     release_event_point int,
-    begin_date int,
-    end_date int,
-    page_begin_date int,
-    page_end_date int,
+    begin_date text,
+    end_date text,
+    page_begin_date text,
+    page_end_date text,
     reward_type_list text,
     reward_mst_item_id_list text,
     reward_item_type_list text,
     reward_amount_list text,
     release_mst_item_id int,
     release_item_amount int,
-    release_item_begin_date int,
+    release_item_begin_date text,
     before_scenario_id text
 )
 ''')
@@ -1716,7 +1717,7 @@ def create_event_story(cursor):
 create table event_story(
     user_id text,
     mst_event_story_id int,
-    released_date int,
+    released_date text,
     is_released int,
     is_read int,
     primary key (user_id, mst_event_story_id)
@@ -1734,7 +1735,7 @@ create table mst_event_memory(
     mst_event_id int,
     release_mst_item_id int,
     release_item_amount int,
-    release_item_begin_date int,
+    release_item_begin_date text,
     event_memory_type int,
     mst_song_id int,
     mst_song_unit_id int,
@@ -1794,19 +1795,19 @@ create table user(
     max_level int,
     lp int,
     theater_fan int,
-    last_login_date int,
+    last_login_date text,
     is_tutorial_finished int,
     lounge_id text,
     lounge_name text,
     lounger_user_state int,
     producer_rank int,
-    full_recover_date int,
+    full_recover_date text,
     auto_recover_interval int,
-    first_time_date int,
+    first_time_date text,
     produce_gauge int,
     max_friend int,
     daily_challenge_mst_song_id int,
-    challenge_song_update_date int,
+    challenge_song_update_date text,
     is_connected_bnid int,
     is_connected_facebook int,
     default_live_quality int,
@@ -1873,7 +1874,7 @@ create table login_bonus_item(
     mst_login_bonus_schedule_id int,
     day int,
     reward_item_state int,
-    next_login_date int,
+    next_login_date text,
     primary key (user_id, mst_login_bonus_schedule_id, day)
 )
 ''')
@@ -1913,7 +1914,7 @@ create table offer(
     mst_offer_id int,
     slot int,
     status int,
-    start_date int,
+    start_date text,
     card_list text,
     is_recommended int,
     is_text_completed int,
@@ -1931,8 +1932,8 @@ create table mst_banner(
     banner_id text primary key,
     jump text,
     banner_type int,
-    open_date int,
-    close_date int,
+    open_date text,
+    close_date text,
     banner_image_link text,
     announce_web_view_link text,
     is_gasha_view int,
@@ -2035,7 +2036,7 @@ def create_last_update_date(cursor):
 create table last_update_date(
     user_id text,
     last_update_date_type int,
-    last_update_date int,
+    last_update_date text,
     primary key (user_id, last_update_date_type)
 )
 ''')
