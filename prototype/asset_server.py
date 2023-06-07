@@ -1,7 +1,9 @@
 from wsgiref.simple_server import make_server
+
 from assets import asset
 
-port = 8080
+_port = 8080
+
 
 def application(environ, start_response):    
     status = '200 OK'
@@ -12,10 +14,13 @@ def application(environ, start_response):
     lang, platform = tokens[-2].split('-')
     return [asset(lang, platform, tokens[-1])]
 
+
 def start(port):
     with make_server('', port, application) as httpd:
         print(f'Serving HTTP on port {port}...')
         httpd.serve_forever()
 
+
 if __name__ == "__main__":
-    start(port)
+    start(_port)
+
