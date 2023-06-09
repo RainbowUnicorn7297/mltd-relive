@@ -21,6 +21,6 @@ def start(port):
         httpd.serve_forever()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     start(_port)
 

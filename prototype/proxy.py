@@ -22,10 +22,14 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('Content-Length'))
         req_body = self.rfile.read(content_len)
 
-        resp = requests.post(url, headers=self.headers,
-                             data=req_body, stream=True, verify=False)
-        content_len = int(resp.headers['Content-Length'])
-        content = resp.raw.read(content_len)
+        incomplete = True
+        while incomplete:
+            resp = requests.post(url, headers=self.headers, data=req_body,
+                                 stream=True, verify=False)
+            content_len = int(resp.headers['Content-Length'])
+            content = resp.raw.read(content_len)
+            if len(content) == content_len:
+                incomplete = False
 
         self.send_response(resp.status_code)
         for h in resp.headers:

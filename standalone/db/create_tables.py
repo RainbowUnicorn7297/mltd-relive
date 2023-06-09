@@ -1799,7 +1799,7 @@ create table user(
     is_tutorial_finished int,
     lounge_id text,
     lounge_name text,
-    lounger_user_state int,
+    lounge_user_state int,
     producer_rank int,
     full_recover_date text,
     auto_recover_interval int,

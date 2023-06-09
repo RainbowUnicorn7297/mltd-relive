@@ -10,7 +10,7 @@ _proxy_port = 443
 _dns_port = 53
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     freeze_support()
 
     api_process = Process(target=api_server.start,

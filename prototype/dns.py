@@ -23,10 +23,10 @@ def get_ip():
 
 def start(port):
     lan_ip = get_ip()
-    zone_record = cleandoc(f'''
+    zone_record = cleandoc(f"""
         theaterdays-zh.appspot.com. 60 IN A {lan_ip}
         theaterdays-ko.appspot.com. 60 IN A {lan_ip}
-    ''')
+    """)
 
     resolver = InterceptResolver(address='8.8.8.8',
                                  port=53,
