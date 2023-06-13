@@ -1,17 +1,13 @@
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import ForeignKey, ForeignKeyConstraint, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from engine import engine
-
-# TODO: move these globals to a proper package/module
-ZH_TIMEZONE = timezone(timedelta(hours=8))
-KO_TIMEZONE = timezone(timedelta(hours=9))
-server_timezone = ZH_TIMEZONE
+from mltd.models.engine import engine
+from mltd.servers.config import server_timezone
 
 
 class Base(DeclarativeBase):
@@ -37,24 +33,21 @@ class User(Base):
     max_level: Mapped[int] = mapped_column(default=999)
     lp: Mapped[int] = mapped_column(default=0)
     theater_fan: Mapped[int] = mapped_column(default=52)
-    last_login_date: Mapped[int] = mapped_column(
-        default=datetime.now(server_timezone))
+    last_login_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc))
     is_tutorial_finished: Mapped[bool] = mapped_column(default=False)
-    lounge_id: Mapped[str] = mapped_column(default='')
+    lounge_id: Mapped[Optional[UUID]] = mapped_column(default='',
+                                                      insert_default=None)
     lounge_name: Mapped[str] = mapped_column(default='')
     lounge_user_state: Mapped[int] = mapped_column(default=0)
     producer_rank: Mapped[int] = mapped_column(default=1)
     full_recover_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(server_timezone))
+        default=datetime.now(timezone.utc))
     auto_recover_interval: Mapped[int] = mapped_column(default=300)
     first_time_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(server_timezone))
+        default=datetime.now(timezone.utc))
     produce_gauge: Mapped[int] = mapped_column(default=0)
     max_friend: Mapped[int] = mapped_column(default=50)
-    daily_challenge_mst_song_id = mapped_column(
-        ForeignKey('mst_song.mst_song_id'), default=None)
-    challenge_song_update_date: Mapped[Optional[datetime]] = mapped_column(
-        default=None)
     is_connected_bnid: Mapped[bool] = mapped_column(default=False)
     is_connected_facebook: Mapped[bool] = mapped_column(default=False)
     default_live_quality: Mapped[int] = mapped_column(default=0)
@@ -63,18 +56,22 @@ class User(Base):
     mv_quality_limit: Mapped[int] = mapped_column(default=0)
     tutorial_live_quality: Mapped[int] = mapped_column(default=0)
     asset_tag: Mapped[str] = mapped_column(default='')
-    user_map_level: Mapped[int] = mapped_column(default=1)
-    user_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
-    actual_map_level: Mapped[int] = mapped_column(default=1)
-    actual_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
     user_id_hash: Mapped[str]
-    un_lock_song_count: Mapped[int] = mapped_column(default=0)
-    un_lock_song_max_count: Mapped[int] = mapped_column(default=3)
     disabled_massive_live: Mapped[bool] = mapped_column(default=False)
     disabled_massive_mv: Mapped[bool] = mapped_column(default=False)
     button_disabled: Mapped[bool] = mapped_column(default=False)
     training_point: Mapped[int] = mapped_column(default=0)
     total_training_point: Mapped[int] = mapped_column(default=0)
+
+    lps: Mapped[List['LP']] = relationship(back_populates='user')
+    challenge_song: Mapped['ChallengeSong'] = relationship(
+        back_populates='user', lazy='joined')
+    mission_summary: Mapped['PanelMissionSheet'] = relationship(
+        back_populates='user', lazy='joined')
+    map_level: Mapped['MapLevel'] = relationship(back_populates='user',
+                                                 lazy='joined')
+    un_lock_song_status: Mapped['UnLockSongStatus'] = relationship(
+        back_populates='user', lazy='joined')
 
 
 class MstIdol(Base):
@@ -1541,6 +1538,8 @@ class PanelMissionSheet(Base):
         default=1, nullable=False)
     current_panel_mission_sheet_state: Mapped[int] = mapped_column(default=1)
 
+    user: Mapped['User'] = relationship(back_populates='mission_summary')
+
 
 class MstMission(Base):
     """Master table for missions.
@@ -1640,6 +1639,17 @@ class MstSpecialMVUnitIdol(Base):
                                 primary_key=True)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
+
+
+class SpecialStory(Base):
+    """Special story states for each user."""
+    __tablename__ = 'special_story'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_special_story_id = mapped_column(
+        ForeignKey('mst_special_story.mst_special_story_id'), primary_key=True)
+    is_released: Mapped[bool] = mapped_column(default=True)
+    is_read: Mapped[bool] = mapped_column(default=False)
 
 
 class MstEventStory(Base):
@@ -1745,12 +1755,61 @@ class EventMemory(Base):
 class LP(Base):
     """LP list for each user."""
     __tablename__ = 'lp'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['mst_song_id', 'course'],
+            ['mst_course.mst_song_id', 'mst_course.course_id']
+        ),
+    )
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
                                 primary_key=True)
+    course: Mapped[int]
     lp: Mapped[int]
     is_playable: Mapped[bool] = mapped_column(default=True)
+
+    user: Mapped['User'] = relationship(back_populates='lps')
+    mst_course: Mapped['MstCourse'] = relationship(viewonly=True,
+                                                   lazy='joined')
+    mst_song: Mapped['MstSong'] = relationship(viewonly=True, lazy='joined')
+
+
+class ChallengeSong(Base):
+    """Daily challenge song for each user."""
+    __tablename__ = 'challenge_song'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    daily_challenge_mst_song_id = mapped_column(
+        ForeignKey('mst_song.mst_song_id'), primary_key=True)
+    update_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc))
+
+    user: Mapped['User'] = relationship(back_populates='challenge_song')
+
+
+class MapLevel(Base):
+    """Map level for each user."""
+    __tablename__ = 'map_level'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    user_map_level: Mapped[int] = mapped_column(default=1)
+    user_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
+    actual_map_level: Mapped[int] = mapped_column(default=1)
+    actual_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
+
+    user: Mapped['User'] = relationship(back_populates='map_level')
+
+
+class UnLockSongStatus(Base):
+    """Unlocked song status for each user."""
+    __tablename__ = 'un_lock_song_status'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    count: Mapped[int] = mapped_column(default=0)
+    max_count: Mapped[int] = mapped_column(default=3)
+
+    user: Mapped['User'] = relationship(back_populates='un_lock_song_status')
 
 
 class MstLoginBonusSchedule(Base):

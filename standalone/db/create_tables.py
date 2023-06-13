@@ -2147,6 +2147,7 @@ if __name__ == "__main__":
     create_mst_event_story(cursor)
     create_event_story(cursor)
     create_mst_event_memory(cursor)
+    create_event_memory(cursor)
     create_lp(cursor)
     create_user(cursor)
     create_mst_login_bonus_schedule(cursor)
