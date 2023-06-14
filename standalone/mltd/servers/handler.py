@@ -37,9 +37,11 @@ def application(environ, start_response):
 
         request_len = int(environ['CONTENT_LENGTH'])
         request = environ['wsgi.input'].read(request_len)
+        print(request)  # For debugging
         request = decrypt_request(request)
 
         response = JSONRPCResponseManager.handle(request, dispatcher)
+        print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))
         response = encrypt_response(response)

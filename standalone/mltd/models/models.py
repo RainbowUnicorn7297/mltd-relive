@@ -63,15 +63,20 @@ class User(Base):
     training_point: Mapped[int] = mapped_column(default=0)
     total_training_point: Mapped[int] = mapped_column(default=0)
 
-    lps: Mapped[List['LP']] = relationship(back_populates='user')
     challenge_song: Mapped['ChallengeSong'] = relationship(
-        back_populates='user', lazy='joined')
+        back_populates='user', lazy='joined', innerjoin=True)
     mission_summary: Mapped['PanelMissionSheet'] = relationship(
-        back_populates='user', lazy='joined')
+        back_populates='user', lazy='joined', innerjoin=True)
     map_level: Mapped['MapLevel'] = relationship(back_populates='user',
-                                                 lazy='joined')
+                                                 lazy='joined', innerjoin=True)
     un_lock_song_status: Mapped['UnLockSongStatus'] = relationship(
-        back_populates='user', lazy='joined')
+        back_populates='user', lazy='joined', innerjoin=True)
+    pending_song: Mapped['PendingSong'] = relationship(
+        back_populates='user', foreign_keys='[PendingSong.user_id]')
+    pending_job: Mapped['PendingJob'] = relationship(back_populates='user')
+    lps: Mapped[List['LP']] = relationship(
+        back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
+    songs: Mapped[List['Song']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -862,6 +867,8 @@ class Song(Base):
     is_disable: Mapped[bool] = mapped_column(default=False)
     is_off_vocal_released: Mapped[bool] = mapped_column(default=False)
     is_new: Mapped[bool] = mapped_column(default=True)
+
+    user: Mapped['User'] = relationship(back_populates='songs')
 
 
 class MstCourse(Base):
@@ -1768,11 +1775,14 @@ class LP(Base):
     course: Mapped[int]
     lp: Mapped[int]
     is_playable: Mapped[bool] = mapped_column(default=True)
+    update_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='lps')
-    mst_course: Mapped['MstCourse'] = relationship(viewonly=True,
-                                                   lazy='joined')
-    mst_song: Mapped['MstSong'] = relationship(viewonly=True, lazy='joined')
+    mst_course: Mapped['MstCourse'] = relationship(
+        viewonly=True, lazy='joined', innerjoin=True)
+    mst_song: Mapped['MstSong'] = relationship(viewonly=True, lazy='joined',
+                                               innerjoin=True)
 
 
 class ChallengeSong(Base):
@@ -1781,7 +1791,7 @@ class ChallengeSong(Base):
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     daily_challenge_mst_song_id = mapped_column(
-        ForeignKey('mst_song.mst_song_id'), primary_key=True)
+        ForeignKey('mst_song.mst_song_id'), nullable=False)
     update_date: Mapped[datetime] = mapped_column(
         default=datetime.now(timezone.utc))
 
@@ -1810,6 +1820,65 @@ class UnLockSongStatus(Base):
     max_count: Mapped[int] = mapped_column(default=3)
 
     user: Mapped['User'] = relationship(back_populates='un_lock_song_status')
+
+
+class PendingSong(Base):
+    """Pending song for each user."""
+    __tablename__ = 'pending_song'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    live_token: Mapped[str]
+    unit_num: Mapped[int] = mapped_column(default=0)
+    mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'), default=0,
+                                insert_default=None)
+    mode: Mapped[int] = mapped_column(default=0)
+    course: Mapped[int] = mapped_column(default=0)
+    guest_user_id = mapped_column(ForeignKey('user.user_id'), default='',
+                                  insert_default=None)
+    start_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc))
+    is_available: Mapped[bool] = mapped_column(default=True)
+    is_expired: Mapped[bool] = mapped_column(default=False)
+    is_rehearsal: Mapped[bool] = mapped_column(default=False)
+    is_event_tour: Mapped[bool] = mapped_column(default=False)
+    guest_idol_type: Mapped[int] = mapped_column(default=0)
+    use_song_unit: Mapped[bool] = mapped_column(default=False)
+    is_live_support: Mapped[bool] = mapped_column(default=False)
+    life: Mapped[int] = mapped_column(default=0)
+    appeal: Mapped[int] = mapped_column(default=0)
+    use_full_random: Mapped[bool] = mapped_column(default=False)
+    use_song_random: Mapped[bool] = mapped_column(default=False)
+    seed: Mapped[int] = mapped_column(default=0)
+    is_valid: Mapped[bool] = mapped_column(default=False)
+    retry_count: Mapped[int] = mapped_column(default=0)
+
+    user: Mapped['User'] = relationship(back_populates='pending_song',
+                                        foreign_keys=user_id)
+
+
+class PendingJob(Base):
+    """Pending job for each user."""
+    __tablename__ = 'pending_job'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    job_token: Mapped[str]
+    token: Mapped[str] = mapped_column(default='')
+    is_chance: Mapped[bool] = mapped_column(default=False)
+    mst_job_id = mapped_column(ForeignKey('mst_job.mst_job_id'), default=0,
+                               insert_default=None)
+    mst_idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'), default=0,
+                                insert_default=None)
+    text_scenario_id: Mapped[str] = mapped_column(default='')
+    adv_scenario_id: Mapped[str] = mapped_column(default='')
+    text_background_id: Mapped[str] = mapped_column(default='')
+    is_collab_available: Mapped[bool] = mapped_column(default=False)
+    is_adv_collab_available: Mapped[bool] = mapped_column(default=False)
+    adv_background_id: Mapped[str] = mapped_column(default='')
+    is_challenge: Mapped[bool] = mapped_column(default=False)
+    is_challenge_good: Mapped[bool] = mapped_column(default=False)
+    is_valid: Mapped[bool] = mapped_column(default=False)
+
+    user: Mapped['User'] = relationship(back_populates='pending_job')
 
 
 class MstLoginBonusSchedule(Base):

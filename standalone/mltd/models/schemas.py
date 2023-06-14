@@ -4,8 +4,7 @@ from marshmallow import post_dump, pre_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 from marshmallow_sqlalchemy.fields import Nested
 
-from mltd.models.models import (LP, ChallengeSong, MapLevel, PanelMissionSheet,
-                                UnLockSongStatus, User)
+from mltd.models.models import *
 from mltd.servers.config import server_timezone
 
 
@@ -13,9 +12,7 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = (
-            'lps',
-        )
+        exclude = ('pending_song', 'pending_job', 'lps', 'songs')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -67,6 +64,16 @@ class UserSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstSongSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstSong
+
+
+class MstCourseSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstCourse
+
+
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PanelMissionSheet
@@ -77,6 +84,30 @@ class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
 class LPSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = LP
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'update_date', 'user')
+
+    mst_course = Nested('MstCourseSchema', only=('level',))
+    mst_song = Nested('MstSongSchema',
+                      only=('idol_type', 'resource_id', 'sort_id'))
+
+    @post_dump(pass_many=True)
+    def _convert(self, data, many, **kwargs):
+        def _convert_single(data):
+            data['level'] = data['mst_course']['level']
+            data['idol_type'] = data['mst_song']['idol_type']
+            data['resourse_id'] = data['mst_song']['resource_id']
+            data['sort_id'] = data['mst_song']['sort_id']
+            del data['mst_course']
+            del data['mst_song']
+
+        if many:
+            for item in data:
+                _convert_single(item)
+        else:
+            _convert_single(data)
+        return data
 
 
 class ChallengeSongSchema(SQLAlchemyAutoSchema):

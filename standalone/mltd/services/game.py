@@ -1,6 +1,8 @@
+from datetime import datetime
 from jsonrpc import dispatcher
 
-from mltd.servers.config import server_language
+from mltd.servers.config import server_language, server_timezone
+from mltd.servers.utilities import format_datetime
 
 
 @dispatcher.add_method(name='GameService.GetVersion')
@@ -22,12 +24,12 @@ def get_version(params):
         'store_url': ('https://play.google.com/store/apps/details?id='
                       + 'com.bandainamcoent.imas_millionlive_theaterdays_'
                       + 'ch' if server_language == 'zh' else 'kr'),
-        'policy_last_update_date': '2017-09-06T18:00:00+0800',
+        'policy_last_update_date': format_datetime(
+            datetime(2017, 9, 6, 18, 0, 0, tzinfo=server_timezone)),
         'terms_url': 'https://legal.bandainamcoent.co.jp/terms/',
         'policy_url': 'https://legal.bandainamcoent.co.jp/privacy/',
         'title_image_url': '',
         'title_cue_name': '',
-        # TODO: Is this based on user's settings?
         'title_call_cue_name': 'title_call_001har',
         'hide_title_logo': False,
         'enable_button': False,
