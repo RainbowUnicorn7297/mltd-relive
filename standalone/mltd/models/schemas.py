@@ -12,42 +12,20 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'lps', 'songs')
+        exclude = ('pending_song', 'pending_job', 'songs')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
     mission_summary = Nested('PanelMissionSheetSchema')
     map_level = Nested('MapLevelSchema')
     un_lock_song_status = Nested('UnLockSongStatusSchema')
-
-    # @pre_dump
-    # def get_datetimes(self, user: User, **kwargs):
-    #     # dt = user.last_login_date
-    #     # dt = dt.replace(microsecond=0, tzinfo=timezone.utc)
-    #     # user.last_login_date = dt
-    #     # print(user.last_login_date.__class__.__name__)
-    #     # print(user.last_login_date)
-    #     # print(user.last_login_date.strftime('%Y-%m-%dT%H:%M:%S+0000'))
-    #     self.last_login_date = user.last_login_date
-    #     self.full_recover_date = user.full_recover_date
-    #     self.first_time_date = user.first_time_date
-    #     return user
+    lps = Nested('LPSchema', many=True)
 
     @post_dump(pass_many=True)
     def _convert(self, data, many, **kwargs):
-        # if 'user_id' in in_data:
-        #     in_data['user_id'] = str(in_data['user_id'])
-        # in_data['last_login_date'] = self.last_login_date.replace(
-        #     tzinfo=timezone.utc)
-        # # print(in_data['last_login_date'])
-        # in_data['full_recover_date'] = self.full_recover_date.replace(
-        #     tzinfo=timezone.utc)
-        # in_data['first_time_date'] = self.first_time_date.replace(
-        #     tzinfo=timezone.utc)
         def _convert_single(data):
             dt = datetime.fromisoformat(data['last_login_date'])
             data['last_login_date'] = dt.replace(tzinfo=timezone.utc)
-            # data['last_login_date'] = dt.replace(tzinfo=timezone.utc).astimezone(server_timezone)
             dt = datetime.fromisoformat(data['full_recover_date'])
             data['full_recover_date'] = dt.replace(tzinfo=timezone.utc)
             dt = datetime.fromisoformat(data['first_time_date'])
@@ -55,6 +33,22 @@ class UserSchema(SQLAlchemyAutoSchema):
             if data['lounge_id'] is None:
                 data['lounge_id'] = ''
             data['user_recognition'] = data['map_level']['user_recognition']
+            # Populate lp_list.
+            data['lp_list'] = None if not data['lps'] else data['lps'][:10]
+            # Populate type_lp_list.
+            type_lp_map = {i: [] for i in range(1, 5)}
+            for lp in data['lps']:
+                type_lp_map[lp['idol_type']].append(lp)
+            type_lp_list = []
+            for i in range(1, 5):
+                type_lp_list.append({
+                    'idol_type': i,
+                    'lp_song_status_list': (None if not type_lp_map[i]
+                                            else type_lp_map[i]),
+                    'lp': sum(lp['lp'] for lp in type_lp_map[i][:10])
+                })
+            data['type_lp_list'] = type_lp_list
+            del data['lps']
 
         if many:
             for item in data:
@@ -133,17 +127,6 @@ class ChallengeSongSchema(SQLAlchemyAutoSchema):
 class MapLevelSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MapLevel
-
-    # @post_dump
-    # def serialize_decimals(self, in_data, **kwargs):
-    #     with localcontext() as ctx:
-    #         ctx.prec = 3
-    #         if 'user_recognition' in in_data:
-    #             in_data['user_recognition'] = str(in_data['user_recognition'])
-    #         if 'actual_recognition' in in_data:
-    #             in_data['actual_recognition'] = str(
-    #                 in_data['actual_recognition'])
-    #     return in_data
 
 
 class UnLockSongStatusSchema(SQLAlchemyAutoSchema):

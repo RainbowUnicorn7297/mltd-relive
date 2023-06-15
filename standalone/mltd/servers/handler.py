@@ -6,6 +6,7 @@ from uuid import UUID
 from jsonrpc import JSONRPCResponseManager, dispatcher
 
 from mltd.servers.encryption import decrypt_request, encrypt_response
+from mltd.servers.utilities import format_datetime
 from mltd.services import *
 
 
@@ -14,9 +15,9 @@ class CustomJSONEncoder(json.JSONEncoder):
         if isinstance(o, UUID):
             return str(o)
         elif isinstance(o, Decimal):
-            return str(o.normalize())
+            return float(o.normalize())
         elif isinstance(o, datetime):
-            return o.strftime('%Y-%m-%dT%H:%M:%S%z')
+            return format_datetime(o)
         return json.JSONEncoder.default(self, o)
 
 
@@ -40,7 +41,10 @@ def application(environ, start_response):
         print(request)  # For debugging
         request = decrypt_request(request)
 
-        response = JSONRPCResponseManager.handle(request, dispatcher)
+        context = {
+            'user_id': environ.get('HTTP_X_APPLICATION_USER_ID'),
+        }
+        response = JSONRPCResponseManager.handle(request, dispatcher, context)
         print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))

@@ -8,8 +8,43 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import Song, User
-from mltd.models.schemas import LPSchema, UserSchema
+from mltd.models.schemas import UserSchema
 from mltd.servers.config import server_timezone
+
+
+@dispatcher.add_method(name='AuthService.TransferPassword')
+def transfer_password(params):
+    """Service for transferring an existing account using a password.
+    
+    Invoked after doing a clean installation and entering user ID and
+    password.
+    Args:
+        params: A dict containing the following keys.
+            user_id: Entered user ID. Corresponds to search_id of the
+                     existing user (8 characters).
+            password: Entered password. This must match the password
+                      previously entered for the transfer to be
+                      successful.
+            platform: Platform of the mobile device (google/apple).
+            platform_user_id: A 16-character hex value. Seems to be
+                              device-specific. This value is the same as
+                              the header value 'X-Platform-User-Id' for
+                              all requests sent from the device.
+            device_name: Name of the mobile device the game is running
+                         on.
+    Returns:
+        A dict containing the following keys.
+            success: A boolean flag indicating whether the transfer was
+                     successful.
+            user_id: The user ID in UUID format (if successful).
+            secret: The user secret (if successful).
+    """
+    # Return a static user_id for now.
+    return {
+        'success': True,
+        'user_id': 'ffffffff-ffff-ffff-ffff-ffffffffffff',
+        'secret': 'abcdefghijklmnopqrstuvwxyz012345'
+    }
 
 
 @dispatcher.add_method(name='AuthService.Login')
@@ -204,27 +239,7 @@ def login(params):
             user.challenge_song.update_date = now
 
         user_schema = UserSchema()
-        user_dict = user_schema.dump(user)
-
-        # Populate lp_list.
-        lp_schema = LPSchema()
-        lp_dicts = lp_schema.dump(user.lps, many=True)
-        user_dict['lp_list'] = None if not user.lps else lp_dicts[:10]
-        # Populate type_lp_list.
-        type_lp_map = {i: [] for i in range(1, 5)}
-        for lp_dict in lp_dicts:
-            type_lp_map[lp_dict['idol_type']].append(lp_dict)
-        type_lp_list = []
-        for i in range(1, 5):
-            type_lp_list.append({
-                'idol_type': i,
-                'lp_song_status_list': (None if not type_lp_map[i]
-                                        else type_lp_map[i]),
-                'lp': sum(lp_dict['lp'] for lp_dict in type_lp_map[i][:10])
-            })
-        user_dict['type_lp_list'] = type_lp_list
-
-        result['user'] = user_dict
+        result['user'] = user_schema.dump(user)
 
         session.commit()
 
