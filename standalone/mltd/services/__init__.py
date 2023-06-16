@@ -1,1 +1,1 @@
-__all__ = ['asset', 'auth', 'game', 'greco', 'user']
+__all__ = ['asset', 'auth', 'card', 'game', 'greco', 'user']

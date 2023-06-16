@@ -77,6 +77,7 @@ class User(Base):
     lps: Mapped[List['LP']] = relationship(
         back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
+    cards: Mapped[List['Card']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -274,7 +275,7 @@ class MstCard(Base):
     vocal_master_bonus: Vocal bonus per master rank
         vocal_master_bonus = round(vocal_max * 0.03)
     cheer_point: Unused. cheer_point=0 for all cards
-    mst_card_skill_id_list: null or one skill per card (not a list)
+    mst_card_skill_id: null or one skill per card (not a list)
     variation: ??? 1-16, older=smaller, newer=larger
     master_lesson_begin_date: master lessons became available for
                               PST card
@@ -315,7 +316,7 @@ class MstCard(Base):
     cheer_point: Mapped[int] = mapped_column(default=0)
     mst_center_effect_id = mapped_column(
         ForeignKey('mst_center_effect.mst_center_effect_id'), nullable=False)
-    mst_card_skill_id_list = mapped_column(
+    mst_card_skill_id = mapped_column(
         ForeignKey('mst_card_skill.mst_card_skill_id'))
     ex_type: Mapped[int]
     variation: Mapped[int]
@@ -337,6 +338,17 @@ class MstCard(Base):
     training_point: Mapped[int] = mapped_column(default=0)
     sign_type: Mapped[int] = mapped_column(default=0)
     sign_type2: Mapped[int] = mapped_column(default=0)
+
+    mst_center_effect: Mapped['MstCenterEffect'] = relationship(
+        lazy='joined', innerjoin='true')
+    mst_card_skill: Mapped[Optional['MstCardSkill']] = relationship(
+        lazy='joined')
+    mst_costume: Mapped['MstCostume'] = relationship(
+        lazy='joined', innerjoin=True, foreign_keys=mst_costume_id)
+    bonus_costume: Mapped['MstCostume'] = relationship(
+        lazy='joined', innerjoin=True, foreign_keys=bonus_costume_id)
+    rank5_costume: Mapped['MstCostume'] = relationship(
+        lazy='joined', innerjoin=True, foreign_keys=rank5_costume_id)
 
 
 class Card(Base):
@@ -379,11 +391,9 @@ class Card(Base):
     dance_diff: Mapped[float]
     visual: Mapped[int]
     visual_diff: Mapped[float]
-    before_awakened_life: Mapped[int]
     before_awakened_vocal: Mapped[int]
     before_awakened_dance: Mapped[int]
     before_awakened_visual: Mapped[int]
-    after_awakened_life: Mapped[int]
     after_awakened_vocal: Mapped[int]
     after_awakened_dance: Mapped[int]
     after_awakened_visual: Mapped[int]
@@ -396,6 +406,9 @@ class Card(Base):
     create_date: Mapped[datetime] = mapped_column(
         default=datetime.now(server_timezone))
     is_new: Mapped[bool] = mapped_column(default=False)
+
+    mst_card: Mapped['MstCard'] = relationship(lazy='joined', innerjoin=True)
+    user: Mapped['User'] = relationship(back_populates='cards')
 
 
 class MstDirectionCategory(Base):
@@ -617,7 +630,7 @@ class MstMemorial(Base):
     reward_type: Mapped[int]
     reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                        nullable=False)
-    reward_type: Mapped[int]
+    reward_item_type: Mapped[int]
     reward_amount: Mapped[int]
     is_available: Mapped[bool]
     begin_date: Mapped[datetime]
@@ -794,7 +807,7 @@ class MstSong(Base):
     google_song_url: Mapped[str] = mapped_column(default='')
     song_open_type: Mapped[int]
     song_open_type_value: Mapped[int]
-    song_opel_level: Mapped[int]
+    song_open_level: Mapped[int]
     song_unit_idol_id_list: Mapped[str]
     mst_song_unit_id: Mapped[int]
     idol_count: Mapped[int]
@@ -1595,10 +1608,25 @@ class MstMission(Base):
 class Mission(Base):
     """Mission states for each user."""
     __tablename__ = 'mission'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'mst_mission_id',
+                'mst_panel_mission_id',
+                'mst_idol_mission_id'
+            ],
+            [
+                'mst_mission.mst_mission_id',
+                'mst_mission.mst_panel_mission_id',
+                'mst_mission.mst_idol_mission_id'
+            ]
+        ),
+    )
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
-    mst_mission_id = mapped_column(ForeignKey('mst_mission.mst_mission_id'),
-                                   primary_key=True)
+    mst_mission_id: Mapped[int] = mapped_column(primary_key=True)
+    mst_panel_mission_id: Mapped[int] = mapped_column(primary_key=True)
+    mst_idol_mission_id: Mapped[int] = mapped_column(primary_key=True)
     create_date: Mapped[datetime] = mapped_column(
         default=datetime.now(timezone.utc))
     update_date: Mapped[datetime] = mapped_column(
@@ -1903,7 +1931,7 @@ class MstLoginBonusItem(Base):
     mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                 nullable=False)
     item_type: Mapped[int]
-    amonut: Mapped[int]
+    amount: Mapped[int]
     day: Mapped[int] = mapped_column(primary_key=True)
 
 
