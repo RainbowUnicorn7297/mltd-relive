@@ -1,4 +1,0 @@
-mst_panel_mission_sheet_id,begin_date,end_date,reward_mst_item_id,reward_item_type_id,reward_amount,reward_mst_card_id,reward_mst_achievement_id,reward_mst_song_id,reward_resource_id
-1,2018-01-01T00:00:00+0800,2099-12-31T23:59:59+0800,3,1,250,0,0,0,
-2,2018-01-01T00:00:00+0800,2099-12-31T23:59:59+0800,3,1,250,0,0,0,
-3,2018-01-01T00:00:00+0800,2099-12-31T23:59:59+0800,0,0,1,0,0,12,theims
