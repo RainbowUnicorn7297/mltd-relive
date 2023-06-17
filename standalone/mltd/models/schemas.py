@@ -10,7 +10,7 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'songs', 'cards')
+        exclude = ('pending_song', 'pending_job', 'songs', 'cards', 'items',)
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -189,6 +189,39 @@ class CardSchema(SQLAlchemyAutoSchema):
         data['sign_type'] = mst_card['sign_type']
         data['sign_type2'] = mst_card['sign_type2']
         del data['mst_card']
+        return data
+
+
+class MstItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstItem
+
+
+class ItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Item
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_item = Nested('MstItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_item = data['mst_item']
+        data['name'] = mst_item['name']
+        data['item_navi_type'] = mst_item['item_navi_type']
+        data['max_amount'] = mst_item['max_amount']
+        data['item_type'] = mst_item['item_type']
+        data['sort_id'] = mst_item['sort_id']
+        data['value1'] = mst_item['value1']
+        data['value2'] = mst_item['value2']
+        data['expire_date'] = str_to_datetime(data['expire_date']).astimezone(
+            server_timezone) if not mst_item['is_extend'] else None
+        data['expire_date_list'] = [] if not mst_item['is_extend'] else None
+        data['is_extend'] = mst_item['is_extend']
+        del data['mst_item']
         return data
 
 

@@ -197,7 +197,7 @@ if __name__ == '__main__':
             max_friend=100
         )
         user.user_id_hash = b64encode(
-            bytes(user.user_id.hex, encoding='ascii') + bytes.fromhex(
+            bytes(str(user.user_id), encoding='ascii') + bytes.fromhex(
             'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
         )
         user.challenge_song = ChallengeSong(
@@ -242,6 +242,18 @@ if __name__ == '__main__':
             ))
 
         _insert_cards(session, user)
+
+        # TODO: Filter and set amount properly
+        mst_item_ids = session.scalars(
+            select(MstItem.mst_item_id)
+        ).all()
+        for mst_item_id in mst_item_ids:
+            session.add(Item(
+                item_id=f'{user.user_id}_{mst_item_id}',
+                user_id=user.user_id,
+                mst_item_id=mst_item_id,
+                amount=0
+            ))
 
         result = session.execute(
             select(MstSong.mst_song_id, MstSong.is_off_vocal_available)

@@ -78,6 +78,7 @@ class User(Base):
         back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
     cards: Mapped[List['Card']] = relationship(back_populates='user')
+    items: Mapped[List['Item']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -602,8 +603,23 @@ class Item(Base):
     mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                 nullable=False)
     amount: Mapped[int]
-    expire_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
+    expire_date: Mapped[Optional[datetime]] = mapped_column(
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
+
+    user: Mapped['User'] = relationship(back_populates='items')
+    mst_item: Mapped['MstItem'] = relationship(lazy='joined', innerjoin=True)
+
+
+# class ExtendItem(Base):
+#     """Extended info for items obtained by user."""
+#     __tablename__ = 'extend_item'
+
+#     extend_item_id: Mapped[int] = mapped_column(primary_key=True)
+#     item_id: Mapped[str] = mapped_column(ForeignKey('item.item_id'))
+#     expire_date: Mapped[Optional[datetime]] = mapped_column(
+#         default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
 
 
 class MstMemorial(Base):
