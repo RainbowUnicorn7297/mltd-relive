@@ -53,7 +53,8 @@ class MstCostumeSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def _convert(self, data, **kwargs):
-        data['release_date'] = str_to_datetime(data['release_date'])
+        data['release_date'] = str_to_datetime(
+            data['release_date']).astimezone(server_timezone)
         return data
 
 
@@ -74,17 +75,18 @@ class MstCardSchema(SQLAlchemyAutoSchema):
         include_fk = True
         include_relationships = True
 
-        mst_center_effect = Nested('MstCenterEffectSchema')
-        mst_card_skill = Nested('MstCardSkillSchema')
-        mst_costume = Nested('MstCostumeSchema')
-        bonus_costume = Nested('MstCostumeSchema')
-        rank5_costume = Nested('MstCostumeSchema')
+    mst_center_effect = Nested('MstCenterEffectSchema')
+    mst_card_skill = Nested('MstCardSkillSchema')
+    mst_costume = Nested('MstCostumeSchema')
+    bonus_costume = Nested('MstCostumeSchema')
+    rank5_costume = Nested('MstCostumeSchema')
 
     @post_dump
     def _convert(self, data, **kwargs):
         data['master_lesson_begin_date'] = str_to_datetime(
             data['master_lesson_begin_date'])
-        data['begin_date'] = str_to_datetime(data['begin_date'])
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
         return data
 
 
@@ -137,7 +139,7 @@ class CardSchema(SQLAlchemyAutoSchema):
         del data['after_awakened_vocal']
         del data['after_awakened_dance']
         del data['after_awakened_visual']
-        data['awakening_gauge_max'] = mst_card['awakening_guage_max']
+        data['awakening_gauge_max'] = mst_card['awakening_gauge_max']
         data['master_rank_max'] = mst_card['master_rank_max']
         data['cheer_point'] = mst_card['cheer_point']
         data['center_effect'] = mst_card['mst_center_effect']

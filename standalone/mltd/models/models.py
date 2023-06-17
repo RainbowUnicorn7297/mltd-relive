@@ -22,7 +22,7 @@ class User(Base):
     search_id: Mapped[str] = mapped_column(String(8), unique=True)
     name: Mapped[str] = mapped_column(String(10), default='')
     money: Mapped[int] = mapped_column(default=0)
-    max_money: Mapped[int] = mapped_column(default=9999999)
+    max_money: Mapped[int] = mapped_column(default=9_999_999)
     vitality: Mapped[int] = mapped_column(default=60)
     max_vitality: Mapped[int] = mapped_column(default=60)
     live_ticket: Mapped[int] = mapped_column(default=0)
