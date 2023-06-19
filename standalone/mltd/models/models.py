@@ -72,13 +72,15 @@ class User(Base):
     un_lock_song_status: Mapped['UnLockSongStatus'] = relationship(
         back_populates='user', lazy='joined', innerjoin=True)
     pending_song: Mapped['PendingSong'] = relationship(
-        back_populates='user', foreign_keys='[PendingSong.user_id]')
+        back_populates='user', foreign_keys='PendingSong.user_id')
     pending_job: Mapped['PendingJob'] = relationship(back_populates='user')
     lps: Mapped[List['LP']] = relationship(
         back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
     cards: Mapped[List['Card']] = relationship(back_populates='user')
     items: Mapped[List['Item']] = relationship(back_populates='user')
+    idols: Mapped[List['Idol']] = relationship(back_populates='user')
+    costumes: Mapped[List['Costume']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -102,9 +104,12 @@ class MstIdol(Base):
     area: Mapped[int]
     offer_type: Mapped[int]
     mst_agency_id: Mapped[int]
-    default_costume = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
-                                    nullable=False)
-    birthday_live: Mapped[bool]
+    default_costume_id = mapped_column(
+        ForeignKey('mst_costume.mst_costume_id'), nullable=False)
+    birthday_live: Mapped[int]
+
+    default_costume: Mapped['MstCostume'] = relationship(
+        foreign_keys=default_costume_id, lazy='joined', innerjoin=True)
 
 
 class Idol(Base):
@@ -123,6 +128,29 @@ class Idol(Base):
     affection: Mapped[int] = mapped_column(default=0)
     has_another_appeal: Mapped[bool] = mapped_column(default=False)
     can_perform: Mapped[bool] = mapped_column(default=True)
+
+    user: Mapped['User'] = relationship(back_populates='idols')
+    mst_idol: Mapped['MstIdol'] = relationship(lazy='joined', innerjoin=True)
+    lesson_wear_config: Mapped['LessonWearConfig'] = relationship(
+        primaryjoin='Idol.user_id == LessonWearConfig.user_id',
+        foreign_keys=user_id,
+        viewonly=True, lazy='joined', innerjoin=True)
+    mst_costumes: Mapped[List['MstCostume']] = relationship(
+        secondary='costume',
+        primaryjoin='and_(Idol.user_id == Costume.user_id, '
+            + 'Idol.mst_idol_id == MstCostume.mst_idol_id)',
+        viewonly=True, lazy='selectin')
+    mst_voice_categories: Mapped[List['MstVoiceCategory']] = relationship(
+        uselist=True,
+        primaryjoin='and_(MstVoiceCategory.idol_detail_type == 3, '
+            + 'Idol.affection >= MstVoiceCategory.value)',
+        foreign_keys=affection,
+        viewonly=True, lazy='selectin')
+    mst_lesson_wears: Mapped[List['MstLessonWear']] = relationship(
+        uselist=True,
+        primaryjoin='Idol.mst_idol_id == MstLessonWear.mst_idol_id',
+        foreign_keys=mst_idol_id,
+        viewonly=True, lazy='selectin')
 
 
 class MstCostume(Base):
@@ -165,6 +193,10 @@ class Costume(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
+
+    user: Mapped['User'] = relationship(back_populates='costumes')
+    mst_costume: Mapped['MstCostume'] = relationship(lazy='joined',
+                                                     innerjoin=True)
 
 
 class MstCenterEffect(Base):
@@ -342,7 +374,7 @@ class MstCard(Base):
 
     mst_center_effect: Mapped['MstCenterEffect'] = relationship(
         lazy='joined', innerjoin='true')
-    mst_card_skill: Mapped[Optional['MstCardSkill']] = relationship(
+    mst_card_skill: Mapped['MstCardSkill'] = relationship(
         lazy='joined')
     mst_costume: Mapped['MstCostume'] = relationship(
         lazy='joined', innerjoin=True, foreign_keys=mst_costume_id)

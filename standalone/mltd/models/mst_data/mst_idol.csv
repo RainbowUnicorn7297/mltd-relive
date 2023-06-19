@@ -1,4 +1,4 @@
-mst_idol_id,resource_id,idol_type,tension,is_best_condition,area,offer_type,mst_agency_id,default_costume,birthday_live
+mst_idol_id,resource_id,idol_type,tension,is_best_condition,area,offer_type,mst_agency_id,default_costume_id,birthday_live
 1,001har,1,100,0,2,1,1,1,1
 2,002chi,2,100,0,2,1,1,2,1
 3,003mik,3,100,0,2,2,1,3,1

@@ -10,7 +10,8 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'songs', 'cards', 'items',)
+        exclude = ('pending_song', 'pending_job', 'songs', 'cards', 'items',
+                   'idols', 'costumes')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -27,8 +28,10 @@ class UserSchema(SQLAlchemyAutoSchema):
         if data['lounge_id'] is None:
             data['lounge_id'] = ''
         data['user_recognition'] = data['map_level']['user_recognition']
+
         # Populate lp_list.
         data['lp_list'] = None if not data['lps'] else data['lps'][:10]
+
         # Populate type_lp_list.
         type_lp_map = {i: [] for i in range(1, 5)}
         for lp in data['lps']:
@@ -43,6 +46,77 @@ class UserSchema(SQLAlchemyAutoSchema):
             })
         data['type_lp_list'] = type_lp_list
         del data['lps']
+
+        return data
+
+
+class MstIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstIdol
+        include_relationships = True
+
+    default_costume = Nested('MstCostumeSchema')
+
+
+class IdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Idol
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_idol = Nested('MstIdolSchema')
+    lesson_wear_config = Nested('LessonWearConfigSchema')
+    mst_costumes = Nested('MstCostumeSchema', many=True)
+    mst_voice_categories = Nested('MstVoiceCategorySchema', many=True)
+    mst_lesson_wears = Nested('MstLessonWearSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_idol = data['mst_idol']
+        data['resource_id'] = mst_idol['resource_id']
+        data['idol_type'] = mst_idol['idol_type']
+        data['tension'] = mst_idol['tension']
+        data['is_best_condition'] = mst_idol['is_best_condition']
+        data['area'] = mst_idol['area']
+        data['offer_type'] = mst_idol['offer_type']
+        data['mst_costume_id'] = 0
+
+        # Populate having_costume_list.
+        data['having_costume_list'] = [
+            costume['mst_costume_id'] for costume in data['mst_costumes']]
+
+        # Populate costume_list.
+        data['costume_list'] = data['mst_costumes']
+        del data['mst_costumes']
+
+        data['favorite_costume_list'] = None
+
+        # Populate voice_category_list.
+        data['voice_category_list'] = data['mst_voice_categories']
+        del data['mst_voice_categories']
+
+        # Populate lesson_wear_list.
+        data['lesson_wear_list'] = data['mst_lesson_wears']
+        default_group_id = (
+            data['lesson_wear_config']['mst_lesson_wear_setting_id'])
+        found = False
+        for lesson_wear in data['lesson_wear_list']:
+            if lesson_wear['mst_lesson_wear_group_id'] == default_group_id:
+                lesson_wear['default_flag'] = True
+                found = True
+            else:
+                lesson_wear['default_flag'] = False
+        if not found:
+            data['lesson_wear_list'][0]['default_flag'] = True
+        del data['lesson_wear_config']
+        del data['mst_lesson_wears']
+
+        data['mst_agency_id_list'] = [mst_idol['mst_agency_id']]
+        data['default_costume'] = mst_idol['default_costume']
+        data['birthday_live'] = mst_idol['birthday_live']
+        del data['mst_idol']
         return data
 
 
@@ -144,6 +218,7 @@ class CardSchema(SQLAlchemyAutoSchema):
         data['cheer_point'] = mst_card['cheer_point']
         data['center_effect'] = mst_card['mst_center_effect']
         mst_card_skill = mst_card['mst_card_skill']
+
         # Populate card_skill_list.
         if not mst_card_skill:
             data['card_skill_list'] = None
@@ -151,6 +226,7 @@ class CardSchema(SQLAlchemyAutoSchema):
             mst_card_skill['probability'] = data['skill_probability']
             data['card_skill_list'] = [mst_card_skill]
         del data['skill_probability']
+
         data['ex_type'] = mst_card['ex_type']
         data['create_date'] = str_to_datetime(data['create_date'])
         data['variation'] = mst_card['variation']
@@ -158,6 +234,7 @@ class CardSchema(SQLAlchemyAutoSchema):
         data['training_item_list'] = mst_card['training_item_list']
         data['begin_date'] = mst_card['begin_date']
         data['sort_id'] = mst_card['sort_id']
+
         # Populate costume_list.
         costume_list = []
         if mst_card['mst_costume_id']:
@@ -167,6 +244,7 @@ class CardSchema(SQLAlchemyAutoSchema):
         if mst_card['rank5_costume_id']:
             costume_list.append(mst_card['rank5_costume'])
         data['costume_list'] = None if not costume_list else costume_list
+
         data['card_category'] = mst_card['card_category']
         data['extend_card_params'] = {
             'level_max': mst_card['extend_card_level_max'],
@@ -190,6 +268,25 @@ class CardSchema(SQLAlchemyAutoSchema):
         data['sign_type2'] = mst_card['sign_type2']
         del data['mst_card']
         return data
+
+
+class MstVoiceCategorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstVoiceCategory
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['release_date'] = str_to_datetime(
+            data['release_date']).astimezone(server_timezone)
+        return data
+
+
+class MstLessonWearSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLessonWear
+        include_fk = True
+        ordered = True
 
 
 class MstItemSchema(SQLAlchemyAutoSchema):
@@ -233,6 +330,13 @@ class MstSongSchema(SQLAlchemyAutoSchema):
 class MstCourseSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstCourse
+
+
+class LessonWearConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = LessonWearConfig
+        include_fk = True
+        exclude = ('user_id',)
 
 
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):

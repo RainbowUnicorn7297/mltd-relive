@@ -1,6 +1,6 @@
-from jsonrpc import dispatcher
 from uuid import UUID
 
+from jsonrpc import dispatcher
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -85,10 +85,9 @@ def get_item_list(params, context):
                                 Lesson ticket SSR: value1=5000,
                                     value2=2000
                             For gifts used to increase idol affection,
-                            value1 is the amount of affection increased
-                            by consuming the gift. value2 has no
-                            meaning.
-                                Throat lozenge: value1=50, value2=0
+                            value1 is the affection value increased by
+                            consuming the gift. value2 has no meaning.
+                                Throat lozenges: value1=50, value2=0
                                 Tapioca drink: value1=100, value2=0
                                 High cocoa chocolate: value1=150,
                                     value2=0

@@ -282,5 +282,10 @@ if __name__ == '__main__':
                 course_id=course_id,
                 is_released=True
             ))
+
+        session.add(LessonWearConfig(
+            user_id=user.user_id,
+            mst_lesson_wear_setting_id=1
+        ))
         session.commit()
 
