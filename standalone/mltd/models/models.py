@@ -81,6 +81,10 @@ class User(Base):
     items: Mapped[List['Item']] = relationship(back_populates='user')
     idols: Mapped[List['Idol']] = relationship(back_populates='user')
     costumes: Mapped[List['Costume']] = relationship(back_populates='user')
+    memorials: Mapped[List['Memorial']] = relationship(back_populates='user')
+    episodes: Mapped[List['Episode']] = relationship(back_populates='user')
+    costume_advs: Mapped[List['CostumeAdv']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -654,6 +658,31 @@ class Item(Base):
 #         default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
 
 
+class MstRewardItem(Base):
+    """Reward items given for completing certain tasks.
+
+    is_new: Unused. is_new=False for all reward items
+    """
+    __tablename__ = 'mst_reward_item'
+
+    mst_reward_item_id: Mapped[int] = mapped_column(primary_key=True)
+    reward_type: Mapped[int]
+    mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'), default=0,
+                                insert_default=None)
+    mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'), default=0,
+                                nullable=False)
+    item_type: Mapped[int] = mapped_column(default=0)
+    mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
+                                   default=0, nullable=False)
+    mst_achievement_id: Mapped[int] = mapped_column(default=0)
+    amount: Mapped[int]
+    is_new: Mapped[bool] = mapped_column(default=False)
+
+    # mst_card: Mapped[Optional['MstCard']] = relationship(lazy='joined')
+    mst_costume: Mapped['MstCostume'] = relationship(lazy='joined',
+                                                     innerjoin=True)
+
+
 class MstMemorial(Base):
     """Master table for memorials.
 
@@ -675,13 +704,13 @@ class MstMemorial(Base):
                                 nullable=False)
     release_affection: Mapped[int]
     number: Mapped[int]
-    reward_type: Mapped[int]
-    reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
-                                       nullable=False)
-    reward_item_type: Mapped[int]
-    reward_amount: Mapped[int]
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
     is_available: Mapped[bool]
     begin_date: Mapped[datetime]
+
+    mst_reward_item: Mapped['MstRewardItem'] = relationship(lazy='joined',
+                                                            innerjoin=True)
 
 
 class Memorial(Base):
@@ -697,6 +726,10 @@ class Memorial(Base):
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
     released_date: Mapped[Optional[datetime]] = mapped_column(default=None)
+
+    user: Mapped['User'] = relationship(back_populates='memorials')
+    mst_memorial: Mapped['MstMemorial'] = relationship(lazy='joined',
+                                                       innerjoin=True)
 
 
 class Episode(Base):
@@ -718,11 +751,13 @@ class Episode(Base):
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
     released_date: Mapped[Optional[datetime]] = mapped_column(default=None)
-    reward_type: Mapped[int] = mapped_column(default=4)
-    reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
-                                       default=3, nullable=False)
-    reward_item_type: Mapped[int] = mapped_column(default=1)
-    reward_amount: Mapped[int]
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+
+    user: Mapped['User'] = relationship(back_populates='episodes')
+    mst_card: Mapped['MstCard'] = relationship(lazy='joined', innerjoin=True)
+    mst_reward_item: Mapped['MstRewardItem'] = relationship(lazy='joined',
+                                                            innerjoin=True)
 
 
 class MstTheaterCostumeBlog(Base):
@@ -736,11 +771,12 @@ class MstTheaterCostumeBlog(Base):
     mst_theater_costume_blog_id: Mapped[int] = mapped_column(primary_key=True)
     mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'),
                                 nullable=False)
-    reward_type: Mapped[int] = mapped_column(default=4)
-    reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
-                                       default=3, nullable=False)
-    reward_item_type: Mapped[int] = mapped_column(default=1)
-    reward_amount: Mapped[int] = mapped_column(default=50)
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+
+    mst_card: Mapped['MstCard'] = relationship(lazy='joined', innerjoin=True)
+    mst_reward_item: Mapped['MstRewardItem'] = relationship(lazy='joined',
+                                                            innerjoin=True)
 
 
 class CostumeAdv(Base):
@@ -757,6 +793,11 @@ class CostumeAdv(Base):
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
     released_date: Mapped[Optional[datetime]] = mapped_column(default=None)
+
+    user: Mapped['User'] = relationship(back_populates='costume_advs')
+    mst_theater_costume_blog: Mapped['MstTheaterCostumeBlog'] = relationship(
+        lazy='joined', innerjoin=True
+    )
 
 
 class MstGasha(Base):

@@ -256,6 +256,40 @@ if __name__ == '__main__':
             ))
 
         result = session.execute(
+            select(MstMemorial.mst_memorial_id, MstMemorial.is_available)
+        )
+        for mst_memorial_id, is_available in result:
+            session.add(Memorial(
+                user_id=user.user_id,
+                mst_memorial_id=mst_memorial_id,
+                is_released=is_available,
+                is_read=is_available
+            ))
+
+        result = session.execute(
+            select(MstCard.mst_card_id, MstCard.rarity)
+        )
+        for mst_card_id, rarity in result:
+            session.add(Episode(
+                user_id=user.user_id,
+                mst_card_id=mst_card_id,
+                is_released=True,
+                is_read=True,
+                mst_reward_item_id=2 if rarity == 1 else 3
+            ))
+
+        mst_theater_costume_blog_ids = session.scalars(
+            select(MstTheaterCostumeBlog.mst_theater_costume_blog_id)
+        ).all()
+        for mst_theater_costume_blog_id in mst_theater_costume_blog_ids:
+            session.add(CostumeAdv(
+                user_id=user.user_id,
+                mst_theater_costume_blog_id=mst_theater_costume_blog_id,
+                is_released=True,
+                is_read=True
+            ))
+
+        result = session.execute(
             select(MstSong.mst_song_id, MstSong.is_off_vocal_available)
         )
         for mst_song_id, is_off_vocal_available in result:

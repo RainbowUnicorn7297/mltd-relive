@@ -124,6 +124,7 @@ class MstCostumeSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstCostume
         include_fk = True
+        ordered = True
 
     @post_dump
     def _convert(self, data, **kwargs):
@@ -319,6 +320,226 @@ class ItemSchema(SQLAlchemyAutoSchema):
         data['expire_date_list'] = [] if not mst_item['is_extend'] else None
         data['is_extend'] = mst_item['is_extend']
         del data['mst_item']
+        return data
+
+
+class MstRewardItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstRewardItem
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_reward_item_id',)
+        ordered = True
+
+    mst_costume = Nested('MstCostumeSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        if data['mst_card_id'] != 0:
+            raise NotImplementedError(
+                'mst_card_id not expected to be non-zero')
+
+        # Populate empty card_status.
+        data['card_status'] = {
+            'card_id': '',
+            'mst_card_id': 0,
+            'mst_idol_id': 0,
+            'mst_costume_id': 0,
+            'bonus_costume_id': 0,
+            'rank5_costume_id': 0,
+            'resource_id': '',
+            'rarity': 0,
+            'idol_type': 0,
+            'exp': 0,
+            'level': 0,
+            'level_max': 0,
+            'life': 0,
+            'vocal': 0,
+            'vocal_base': 0,
+            'vocal_diff': 0,
+            'vocal_max': 0,
+            'vocal_master_bonus': 0,
+            'dance': 0,
+            'dance_base': 0,
+            'dance_diff': 0,
+            'dance_max': 0,
+            'dance_master_bonus': 0,
+            'visual': 0,
+            'visual_base': 0,
+            'visual_diff': 0,
+            'visual_max': 0,
+            'visual_master_bonus': 0,
+            'before_awakened_params': {
+                'life': 0,
+                'vocal': 0,
+                'dance': 0,
+                'visual': 0
+            },
+            'after_awakened_params': {
+                'life': 0,
+                'vocal': 0,
+                'dance': 0,
+                'visual': 0
+            },
+            'skill_level': 0,
+            'skill_level_max': 0,
+            'is_awakened': False,
+            'awakening_gauge': 0,
+            'awakening_gauge_max': 0,
+            'master_rank': 0,
+            'master_rank_max': 0,
+            'cheer_point': 0,
+            'center_effect': {
+                'mst_center_effect_id': 0,
+                'effect_id': 0,
+                'idol_type': 0,
+                'specific_idol_type': 0,
+                'attribute': 0,
+                'value': 0,
+                'song_idol_type': 0,
+                'attribute2': 0,
+                'value2': 0
+            },
+            'card_skill_list': None,
+            'ex_type': 0,
+            'create_date': None,
+            'variation': 0,
+            'master_lesson_begin_date': None,
+            'training_item_list': None,
+            'begin_date': None,
+            'sort_id': 0,
+            'is_new': False,
+            'costume_list': None,
+            'card_category': 0,
+            'extend_card_params': {
+                'level_max': 0,
+                'life': 0,
+                'vocal_max': 0,
+                'vocal_master_bonus': 0,
+                'dance_max': 0,
+                'dance_master_bonus': 0,
+                'visual_max': 0,
+                'visual_master_bonus': 0
+            },
+            'is_master_lesson_five_available': False,
+            'barrier_mission_list': None,
+            'training_point': 0,
+            'sign_type': 0,
+            'sign_type2': 0
+        }
+
+        # Populate costume_status.
+        data['costume_status'] = data['mst_costume']
+        if data['mst_costume_id'] == 0:
+            data['costume_status']['resource_id'] = ''
+            data['costume_status']['costume_name'] = ''
+            data['costume_status']['exclude_random'] = False
+            data['costume_status']['release_date'] = None
+        del data['mst_costume']
+
+        return data
+
+
+class MstMemorialSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMemorial
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_reward_item_id',)
+        ordered = True
+
+    mst_reward_item = Nested('MstRewardItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class MemorialSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Memorial
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_memorial = Nested('MstMemorialSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_memorial = data['mst_memorial']
+        data['scenario_id'] = mst_memorial['scenario_id']
+        data['mst_idol_id'] = mst_memorial['mst_idol_id']
+        data['release_affection'] = mst_memorial['release_affection']
+        data['number'] = mst_memorial['number']
+        if data['released_date']:
+            data['released_date'] = str_to_datetime(data['released_date'])
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = [mst_memorial['mst_reward_item']]
+
+        data['is_available'] = mst_memorial['is_available']
+        data['begin_date'] = mst_memorial['begin_date']
+        del data['mst_memorial']
+        return data
+
+
+class EpisodeSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Episode
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'mst_reward_item_id', 'user')
+        ordered = True
+
+    mst_card = Nested('MstCardSchema')
+    mst_reward_item = Nested('MstRewardItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['mst_idol_id'] = data['mst_card']['mst_idol_id']
+        del data['mst_card']
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = [data['mst_reward_item']]
+        del data['mst_reward_item']
+
+        return data
+
+
+class MstTheaterCostumeBlogSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTheaterCostumeBlog
+        include_relationships = True
+
+    mst_card = Nested('MstCardSchema')
+    mst_reward_item = Nested('MstRewardItemSchema')
+
+
+class CostumeAdvSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = CostumeAdv
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_theater_costume_blog = Nested('MstTheaterCostumeBlogSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_theater_costume_blog = data['mst_theater_costume_blog']
+        mst_card = mst_theater_costume_blog['mst_card']
+        mst_reward_item = mst_theater_costume_blog['mst_reward_item']
+        data['mst_card_id'] = mst_card['mst_card_id']
+        data['mst_idol_id'] = mst_card['mst_idol_id']
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = [mst_reward_item]
+        del data['mst_theater_costume_blog']
+
         return data
 
 
