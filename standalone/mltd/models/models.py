@@ -85,6 +85,7 @@ class User(Base):
     episodes: Mapped[List['Episode']] = relationship(back_populates='user')
     costume_advs: Mapped[List['CostumeAdv']] = relationship(
         back_populates='user')
+    gashas: Mapped[List['Gasha']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -804,10 +805,9 @@ class MstGasha(Base):
     """Master table for gachas.
 
     currency_type_list: comma-separated currency types
-    ticket_item_list: comma-separated mst_item_ids
-    TODO:
-        1. identify user-specific columns
-        2. normalize lists if required
+                        1 = Paid jewels
+                        2 = Gacha medals
+                        6 = Free jewels
     """
     __tablename__ = 'mst_gasha'
 
@@ -832,8 +832,6 @@ class MstGasha(Base):
     has_new_idol: Mapped[bool]
     has_limited: Mapped[bool] = mapped_column(default=False)
     notify_num: Mapped[int] = mapped_column(default=0)
-    today_count: Mapped[int] = mapped_column(default=0)
-    total_count: Mapped[int]
     mst_gasha_kind_id: Mapped[int]
     mst_gasha_bonus_id: Mapped[int] = mapped_column(default=0)
     gasha_bonus_item_list: Mapped[Optional[str]] = mapped_column(default=None)
@@ -841,17 +839,38 @@ class MstGasha(Base):
         default=None)
     gasha_bonus_costume_list: Mapped[Optional[str]] = mapped_column(
         default=None)
-    ticket_item_list: Mapped[Optional[str]]
     is_limit: Mapped[bool]
     draw_point_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                            default=40, nullable=False)
-    draw_point: Mapped[int]
     draw_point_max: Mapped[int] = mapped_column(default=300)
-    draw1_free_count: Mapped[int]
-    draw10_free_count: Mapped[int] = mapped_column(default=0)
     pickup_signature: Mapped[str] = mapped_column(default='')
     pickup_gasha_card_list: Mapped[Optional[str]] = mapped_column(default=None)
-    balloon: Mapped[int]
+
+
+class Gasha(Base):
+    """Gacha info specific to each user."""
+    __tablename__ = 'gasha'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_gasha_id = mapped_column(ForeignKey('mst_gasha.mst_gasha_id'),
+                                 primary_key=True)
+    today_count: Mapped[int] = mapped_column(default=0)
+    total_count: Mapped[int] = mapped_column(default=0)
+    draw_point: Mapped[int] = mapped_column(default=0)
+    draw1_free_count: Mapped[int] = mapped_column(default=0)
+    draw10_free_count: Mapped[int] = mapped_column(default=0)
+    balloon: Mapped[int] = mapped_column(default=0)
+
+    user: Mapped['User'] = relationship(back_populates='gashas')
+    mst_gasha: Mapped['MstGasha'] = relationship(lazy='joined', innerjoin=True)
+    draw1_item: Mapped['Item'] = relationship(
+        secondary='mst_gasha',
+        primaryjoin='and_(Gasha.user_id == Item.user_id, '
+            +'Gasha.mst_gasha_id == MstGasha.mst_gasha_id)',
+        secondaryjoin='MstGasha.draw1_mst_item_id == Item.mst_item_id',
+        # secondaryjoin='and_(MstGasha.draw1_mst_item_id == Item.mst_item_id, '
+        #     + 'Gasha.user_id == Item.user_id)',
+        viewonly=True, lazy='selectin')
 
 
 class MstJob(Base):

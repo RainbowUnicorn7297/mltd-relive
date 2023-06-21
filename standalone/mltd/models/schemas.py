@@ -11,7 +11,8 @@ class UserSchema(SQLAlchemyAutoSchema):
         model = User
         include_relationships = True
         exclude = ('pending_song', 'pending_job', 'songs', 'cards', 'items',
-                   'idols', 'costumes')
+                   'idols', 'costumes', 'memorials', 'episodes',
+                   'costume_advs', 'gashas')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -540,6 +541,82 @@ class CostumeAdvSchema(SQLAlchemyAutoSchema):
         data['reward_item_list'] = [mst_reward_item]
         del data['mst_theater_costume_blog']
 
+        return data
+
+
+class MstGashaSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstGasha
+        include_fk = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class GashaSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Gasha
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_gasha = Nested('MstGashaSchema')
+    draw1_item = Nested('ItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_gasha = data['mst_gasha']
+        data['mst_gasha_ticket_item_id'] = mst_gasha[
+            'mst_gasha_ticket_item_id']
+        data['name'] = mst_gasha['name']
+        data['display_category'] = mst_gasha['display_category']
+        data['begin_date'] = mst_gasha['begin_date']
+        data['end_date'] = mst_gasha['end_date']
+
+        # Populate currency_type_list.
+        data['currency_type_list'] = []
+        if mst_gasha['currency_type_list']:
+            data['currency_type_list'] = [
+                int(x) for x in mst_gasha['currency_type_list'].split(',')]
+
+        data['is_paid_jewel_only'] = mst_gasha['is_paid_jewel_only']
+        data['draw1_jewel_value'] = mst_gasha['draw1_jewel_value']
+        data['draw10_jewel_value'] = mst_gasha['draw10_jewel_value']
+        data['draw1_mst_item_id'] = mst_gasha['draw1_mst_item_id']
+        data['draw10_mst_item_id'] = mst_gasha['draw10_mst_item_id']
+        data['daily_limit'] = mst_gasha['daily_limit']
+        data['total_limit'] = mst_gasha['total_limit']
+        data['sr_passport'] = mst_gasha['sr_passport']
+        data['ssr_passport'] = mst_gasha['ssr_passport']
+        data['has_new_idol'] = mst_gasha['has_new_idol']
+        data['has_limited'] = mst_gasha['has_limited']
+        data['notify_num'] = mst_gasha['notify_num']
+        data['mst_gasha_kind_id'] = mst_gasha['mst_gasha_kind_id']
+        data['mst_gasha_bonus_id'] = mst_gasha['mst_gasha_bonus_id']
+        data['gasha_bonus_item_list'] = mst_gasha['gasha_bonus_item_list']
+        data['gasha_bonus_mst_achievement_id_list'] = mst_gasha[
+            'gasha_bonus_mst_achievement_id_list']
+        data['gasha_bonus_costume_list'] = mst_gasha[
+            'gasha_bonus_costume_list']
+
+        # Populate ticket_item_list.
+        data['ticket_item_list'] = []
+        if mst_gasha['draw1_mst_item_id']:
+            data['ticket_item_list'] = [data['draw1_item']]
+        del data['draw1_item']
+
+        data['is_limit'] = mst_gasha['is_limit']
+        data['draw_point_mst_item_id'] = mst_gasha['draw_point_mst_item_id']
+        data['draw_point_max'] = mst_gasha['draw_point_max']
+        data['pickup_signature'] = mst_gasha['pickup_signature']
+        data['pickup_gasha_card_list'] = mst_gasha['pickup_gasha_card_list']
+        del data['mst_gasha']
         return data
 
 

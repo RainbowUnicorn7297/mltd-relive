@@ -223,12 +223,12 @@ def login(params):
         result['is_join_lounge'] = True if user.lounge_id else False
 
         now = datetime.now(timezone.utc)
+        last_login_date = user.last_login_date.replace(tzinfo=timezone.utc)
         user.last_login_date = now
-        # Update challenge_song based on user's unlocked songs after
-        # daily reset.
-        if (user.challenge_song.update_date.replace(tzinfo=timezone.utc)
-                .astimezone(server_timezone).date()
+        # Perform daily reset.
+        if (last_login_date.astimezone(server_timezone).date()
                 < now.astimezone(server_timezone).date()):
+            # Update challenge_song based on user's unlocked songs.
             unlocked_song_ids = session.scalars(
                 select(Song.mst_song_id)
                 .where(Song.user == user)
@@ -237,6 +237,11 @@ def login(params):
             user.challenge_song.daily_challenge_mst_song_id = random.choice(
                 unlocked_song_ids)
             user.challenge_song.update_date = now
+            # Reset daily free draws.
+            for gasha in user.gashas:
+                if gasha.mst_gasha_id == 99002:
+                    gasha.draw1_free_count = 1
+                    gasha.balloon = 1
 
         user_schema = UserSchema()
         result['user'] = user_schema.dump(user)

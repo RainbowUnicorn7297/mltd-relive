@@ -289,6 +289,17 @@ if __name__ == '__main__':
                 is_read=True
             ))
 
+        mst_gasha_ids = session.scalars(
+            select(MstGasha.mst_gasha_id)
+        ).all()
+        for mst_gasha_id in mst_gasha_ids:
+            session.add(Gasha(
+                user_id=user.user_id,
+                mst_gasha_id=mst_gasha_id,
+                draw1_free_count=1 if mst_gasha_id == 99002 else 0,
+                balloon=1 if mst_gasha_id == 99002 else 0
+            ))
+
         result = session.execute(
             select(MstSong.mst_song_id, MstSong.is_off_vocal_available)
         )
