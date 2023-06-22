@@ -84,8 +84,8 @@ def get_gasha_list(params, context):
                                    currently has (0).
                 pickup_signature: An empty string.
                 pickup_gasha_card_list: null.
-                balloon: Whether the UI should place a balloon (red
-                         circle) on the gacha button. This value is 1 if
+                balloon: Whether the UI should place a balloon (alert
+                         icon) on the gacha button. This value is 1 if
                          the user has free draws remaining. Otherwise,
                          this value is 0.
             has_need_refresh_gasha_draw_point: false.

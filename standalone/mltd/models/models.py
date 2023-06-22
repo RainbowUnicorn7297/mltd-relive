@@ -77,6 +77,7 @@ class User(Base):
     lps: Mapped[List['LP']] = relationship(
         back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
+    courses: Mapped[List['Course']] = relationship(back_populates='user')
     cards: Mapped[List['Card']] = relationship(back_populates='user')
     items: Mapped[List['Item']] = relationship(back_populates='user')
     idols: Mapped[List['Idol']] = relationship(back_populates='user')
@@ -442,7 +443,7 @@ class Card(Base):
     awakening_gauge: Mapped[int] = mapped_column(default=1)
     master_rank: Mapped[int] = mapped_column(default=0)
     create_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(server_timezone))
+        default=datetime.now(timezone.utc))
     is_new: Mapped[bool] = mapped_column(default=False)
 
     mst_card: Mapped['MstCard'] = relationship(lazy='joined', innerjoin=True)
@@ -656,7 +657,9 @@ class Item(Base):
 #     extend_item_id: Mapped[int] = mapped_column(primary_key=True)
 #     item_id: Mapped[str] = mapped_column(ForeignKey('item.item_id'))
 #     expire_date: Mapped[Optional[datetime]] = mapped_column(
-#         default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
+#         default=datetime(
+#             2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+#         ).astimezone(timezone.utc))
 
 
 class MstRewardItem(Base):
@@ -866,10 +869,8 @@ class Gasha(Base):
     draw1_item: Mapped['Item'] = relationship(
         secondary='mst_gasha',
         primaryjoin='and_(Gasha.user_id == Item.user_id, '
-            +'Gasha.mst_gasha_id == MstGasha.mst_gasha_id)',
+            + 'Gasha.mst_gasha_id == MstGasha.mst_gasha_id)',
         secondaryjoin='MstGasha.draw1_mst_item_id == Item.mst_item_id',
-        # secondaryjoin='and_(MstGasha.draw1_mst_item_id == Item.mst_item_id, '
-        #     + 'Gasha.user_id == Item.user_id)',
         viewonly=True, lazy='selectin')
 
 
@@ -888,29 +889,34 @@ class MstJob(Base):
     reward_money: Mapped[int] = mapped_column(default=630)
     reward_live_ticket: Mapped[int] = mapped_column(default=20)
     begin_date: Mapped[datetime] = mapped_column(
-        default=datetime(2019, 3, 30, tzinfo=server_timezone))
+        default=datetime(
+            2019, 3, 30, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
     end_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
 
 
 class MstSong(Base):
     """Master table for songs.
     
     song_unit_idol_id_list: comma-separated mst_idol_ids
-    part_permitted_mst_idol_id_list: null or one idol
-    TODO: normalize lists if required
+    part_permitted_mst_idol_id_list: null or one mst_idol_id
     """
     __tablename__ = 'mst_song'
 
     mst_song_id: Mapped[int] = mapped_column(primary_key=True)
     song_type: Mapped[int]
     sort_id: Mapped[int]
+    is_released_mv: Mapped[bool] = mapped_column(default=True)
     resource_id: Mapped[str]
     idol_type: Mapped[int]
     kind: Mapped[int]
     stage_id: Mapped[int]
     stage_ts_id: Mapped[int]
     bpm: Mapped[int] = mapped_column(default=234)
+    is_visible: Mapped[bool] = mapped_column(default=True)
     apple_song_url: Mapped[str] = mapped_column(default='')
     google_song_url: Mapped[str] = mapped_column(default='')
     song_open_type: Mapped[int]
@@ -935,17 +941,18 @@ class MstSong(Base):
     live_start_voice_mst_idol_id_list: Mapped[Optional[str]] = mapped_column(
         default=None)
     is_enable_random: Mapped[bool]
-    part_permitted_mst_idol_id_list = mapped_column(
-        ForeignKey('mst_idol.mst_idol_id'))
+    part_permitted_mst_idol_id_list: Mapped[Optional[str]] = mapped_column(
+        default=None)
     is_recommend: Mapped[bool] = mapped_column(default=False)
     song_parts_type: Mapped[int]
+
+    mst_extend_song: Mapped['MstExtendSong'] = relationship(lazy='joined')
 
 
 class MstExtendSong(Base):
     """Master table for extend songs.
 
     song_unit_idol_id_list: comma-separated mst_idol_ids
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_extend_song'
 
@@ -976,7 +983,6 @@ class Song(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)
     mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
                                 nullable=False)
-    is_released_mv: Mapped[bool] = mapped_column(default=True)
     is_released_horizontal_mv: Mapped[bool] = mapped_column(default=False)
     is_released_vertical_mv: Mapped[bool] = mapped_column(default=False)
     is_cleared: Mapped[bool] = mapped_column(default=False)
@@ -984,12 +990,18 @@ class Song(Base):
         default=datetime(1, 1, 1))
     is_played: Mapped[bool] = mapped_column(default=False)
     lp: Mapped[int] = mapped_column(default=0)
-    is_visible: Mapped[bool] = mapped_column(default=True)
     is_disable: Mapped[bool] = mapped_column(default=False)
     is_off_vocal_released: Mapped[bool] = mapped_column(default=False)
     is_new: Mapped[bool] = mapped_column(default=True)
 
     user: Mapped['User'] = relationship(back_populates='songs')
+    mst_song: Mapped['MstSong'] = relationship(lazy='joined', innerjoin=True)
+    courses: Mapped[List['Course']] = relationship(
+        uselist=True,
+        primaryjoin='and_(Song.user_id == Course.user_id, '
+            + 'Song.mst_song_id == Course.mst_song_id)',
+        foreign_keys=[user_id, mst_song_id],
+        viewonly=True, lazy='selectin')
 
 
 class MstCourse(Base):
@@ -1035,6 +1047,10 @@ class Course(Base):
     combo_rank: Mapped[int] = mapped_column(default=0)
     clear_rank: Mapped[int] = mapped_column(default=0)
     is_released: Mapped[bool]
+
+    user: Mapped['User'] = relationship(back_populates='courses')
+    mst_course: Mapped['MstCourse'] = relationship(lazy='joined',
+                                                   innerjoin=True)
 
 
 class Unit(Base):
@@ -1631,7 +1647,9 @@ class MstMissionSchedule(Base):
     mst_mission_schedule_id: Mapped[int] = mapped_column(primary_key=True)
     begin_date: Mapped[datetime]
     end_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
     mission_type: Mapped[int]
 
 
@@ -1641,9 +1659,13 @@ class MstPanelMissionSheet(Base):
 
     mst_panel_mission_sheet_id: Mapped[int] = mapped_column(primary_key=True)
     begin_date: Mapped[datetime] = mapped_column(
-        default=datetime(2018, 1, 1, tzinfo=server_timezone))
+        default=datetime(
+            2018, 1, 1, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
     end_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, 23, 59, 59, tzinfo=server_timezone))
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
     reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                        nullable=False)
     reward_item_type_id: Mapped[int]
@@ -1769,7 +1791,9 @@ class MstSpecialStory(Base):
     category: Mapped[int]
     begin_date: Mapped[datetime]
     end_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, tzinfo=server_timezone))
+        default=datetime(
+            2099, 12, 31, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
 
 
 class MstSpecialMVUnitIdol(Base):
@@ -2064,7 +2088,9 @@ class LoginBonusItem(Base):
     day: Mapped[int] = mapped_column(primary_key=True)
     reward_item_state: Mapped[int] = mapped_column(default=1)
     next_login_date: Mapped[datetime] = mapped_column(
-        default=(datetime.now(server_timezone) + timedelta(days=1)).date())
+        default=(datetime.now(server_timezone) + timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ).astimezone(timezone.utc))
 
 
 class MstOffer(Base):

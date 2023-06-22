@@ -191,6 +191,7 @@ if __name__ == '__main__':
             next_exp=40_500_000,
             level=900,
             theater_fan=3_978_000_000,
+            last_login_date=datetime(2022, 1, 28, 4, 0, 0),
             is_tutorial_finished=True,
             producer_rank=8,
             first_time_date=datetime(2019, 8, 30, 3, 0, 0),

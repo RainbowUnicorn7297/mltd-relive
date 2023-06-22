@@ -10,8 +10,8 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'songs', 'cards', 'items',
-                   'idols', 'costumes', 'memorials', 'episodes',
+        exclude = ('pending_song', 'pending_job', 'songs', 'courses', 'cards',
+                   'items', 'idols', 'costumes', 'memorials', 'episodes',
                    'costume_advs', 'gashas')
         ordered = True
 
@@ -620,14 +620,193 @@ class GashaSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstJobSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstJob
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
 class MstSongSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstSong
+        include_relationships = True
+
+    mst_extend_song = Nested('MstExtendSongSchema')
+
+
+class MstExtendSongSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstExtendSong
+
+
+class SongSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Song
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_song = Nested('MstSongSchema')
+    courses = Nested('CourseSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_song = data['mst_song']
+        del data['mst_song']
+
+        # Populate mst_song.
+        data['mst_song'] = {
+            'mst_song_id': data['mst_song_id'],
+            'sort_id': mst_song['sort_id'],
+            'resource_id': mst_song['resource_id'],
+            'idol_type': mst_song['idol_type'],
+            'song_type': mst_song['song_type'],
+            'kind': mst_song['kind'],
+            'stage_id': mst_song['stage_id'],
+            'stage_ts_id': mst_song['stage_ts_id'],
+            'bpm': mst_song['bpm']
+        }
+
+        data['song_type'] = mst_song['song_type']
+        data['sort_id'] = mst_song['sort_id']
+
+        # Populate released_course_list.
+        courses = data['courses']
+        data['released_course_list'] = [
+            course['course_id'] for course in courses if course['is_released']]
+
+        # Populate course_list.
+        data['course_list'] = []
+        for course in data['courses']:
+            del course['is_released']
+            data['course_list'].append(course)
+        del data['courses']
+
+        data['is_released_mv'] = mst_song['is_released_mv']
+        data['resource_id'] = mst_song['resource_id']
+        data['idol_type'] = mst_song['idol_type']
+        data['kind'] = mst_song['kind']
+        data['stage_id'] = mst_song['stage_id']
+        data['stage_ts_id'] = mst_song['stage_ts_id']
+        data['bpm'] = mst_song['bpm']
+        data['first_cleared_date'] = str_to_datetime(
+            data['first_cleared_date'])
+        data['is_visible'] = mst_song['is_visible']
+        data['apple_song_url'] = mst_song['apple_song_url']
+        data['google_song_url'] = mst_song['google_song_url']
+        data['song_open_type'] = mst_song['song_open_type']
+        data['song_open_type_value'] = mst_song['song_open_type_value']
+        data['song_open_level'] = mst_song['song_open_level']
+
+        # Populate song_unit_idol_id_list.
+        data['song_unit_idol_id_list'] = [
+            int(x) for x in mst_song['song_unit_idol_id_list'].split(',')]
+
+        data['mst_song_unit_id'] = mst_song['mst_song_unit_id']
+        data['idol_count'] = mst_song['idol_count']
+        data['icon_type'] = mst_song['icon_type']
+
+        # Populate extend_song_status.
+        mst_extend_song = mst_song['mst_extend_song']
+        data['extend_song_status'] = None if not mst_extend_song else {
+            'resource_id': mst_extend_song['resource_id'],
+            'kind': mst_extend_song['kind'],
+            'stage_id': mst_extend_song['stage_id'],
+            'stage_ts_id': mst_extend_song['stage_ts_id'],
+            'mst_song_unit_id': mst_extend_song['mst_song_unit_id'],
+
+            #Populate song_unit_idol_id_list.
+            'song_unit_idol_id_list': [
+                int(x) for x in mst_extend_song[
+                    'song_unit_idol_id_list'].split(',')],
+
+            'unit_selection_type': mst_extend_song['unit_selection_type'],
+            'unit_song_type': mst_extend_song['unit_song_type'],
+            'icon_type': mst_extend_song['icon_type'],
+            'idol_count': mst_extend_song['idol_count'],
+            'extend_type': mst_extend_song['extend_type'],
+            'filter_type': mst_extend_song['filter_type'],
+            'song_open_type': mst_extend_song['song_open_type'],
+            'song_open_type_value': mst_extend_song['song_open_type_value'],
+            'song_open_level': mst_extend_song['song_open_level']
+        }
+
+        data['unit_selection_type'] = mst_song['unit_selection_type']
+        data['only_default_unit'] = mst_song['only_default_unit']
+        data['only_extend'] = mst_song['only_extend']
+        data['is_off_vocal_available'] = mst_song['is_off_vocal_available']
+
+        # Populate off_vocal_status.
+        if not data['is_off_vocal_available']:
+            data['off_vocal_status'] = {
+                'is_released': False,
+                'cue_sheet': '',
+                'cue_name': ''
+            }
+        else:
+            data['off_vocal_status'] = {
+                'is_released': data['is_off_vocal_released'],
+                'cue_sheet': mst_song['off_vocal_cue_sheet'],
+                'cue_name': mst_song['off_vocal_cue_name']
+            }
+        del data['is_off_vocal_released']
+
+        data['song_permit_control'] = mst_song['song_permit_control']
+        data['permitted_mst_idol_id_list'] = mst_song[
+            'permitted_mst_idol_id_list']
+        data['permitted_mst_agency_id_list'] = mst_song[
+            'permitted_mst_agency_id_list']
+        data['extend_song_playable_status'] = mst_song[
+            'extend_song_playable_status']
+        data['live_start_voice_mst_idol_id_list'] = mst_song[
+            'live_start_voice_mst_idol_id_list']
+        data['is_enable_random'] = mst_song['is_enable_random']
+
+        # Populate part_permitted_mst_idol_id_list.
+        if not mst_song['part_permitted_mst_idol_id_list']:
+            data['part_permitted_mst_idol_id_list'] = None
+        else:
+            data['part_permitted_mst_idol_id_list'] = [
+                int(x) for x in mst_song[
+                    'part_permitted_mst_idol_id_list'].split(',')]
+
+        data['is_recommend'] = mst_song['is_recommend']
+        data['song_parts_type'] = mst_song['song_parts_type']
+        return data
 
 
 class MstCourseSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstCourse
+
+
+class CourseSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Course
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'mst_song_id', 'user')
+        ordered = True
+
+    mst_course = Nested('MstCourseSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['cost'] = data['mst_course']['cost']
+        data['level'] = data['mst_course']['level']
+        data['appeal'] = data['mst_course']['appeal']
+        data['notes'] = data['mst_course']['notes']
+        del data['mst_course']
+        return data
 
 
 class LessonWearConfigSchema(SQLAlchemyAutoSchema):
