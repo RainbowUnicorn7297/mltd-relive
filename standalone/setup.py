@@ -329,6 +329,60 @@ if __name__ == '__main__':
                 is_released=True
             ))
 
+        for unit_num in range(1, 19):
+            unit = Unit(
+                user_id=user.user_id,
+                unit_num=unit_num,
+                name=f'團體{unit_num}'
+            )
+            # TODO: Default center for a new user depends on the idol
+            #   type they picked during tutorial.
+            unit.unit_idols.append(UnitIdol(
+                position=1,
+                card_id=f'{user.user_id}_59',
+                mst_costume_id=14,
+                mst_lesson_wear_id=14
+            ))
+            unit.unit_idols.append(UnitIdol(
+                position=2,
+                card_id=f'{user.user_id}_60',
+                mst_costume_id=15,
+                mst_lesson_wear_id=15
+            ))
+            unit.unit_idols.append(UnitIdol(
+                position=3,
+                card_id=f'{user.user_id}_61',
+                mst_costume_id=16,
+                mst_lesson_wear_id=16
+            ))
+            unit.unit_idols.append(UnitIdol(
+                position=4,
+                card_id=f'{user.user_id}_50',
+                mst_costume_id=51,
+                mst_lesson_wear_id=51
+            ))
+            unit.unit_idols.append(UnitIdol(
+                position=5,
+                card_id=f'{user.user_id}_51',
+                mst_costume_id=52,
+                mst_lesson_wear_id=52
+            ))
+            session.add(unit)
+
+        result = session.execute(
+            select(MstMainStoryChapter.mst_main_story_id,
+                   MstMainStoryChapter.chapter)
+        )
+        for mst_main_story_id, chapter in result:
+            session.add(MainStoryChapter(
+                user_id=user.user_id,
+                mst_main_story_id=mst_main_story_id,
+                chapter=chapter,
+                released_date=user.first_time_date,
+                is_released=True,
+                is_read=True
+            ))
+
         session.add(LessonWearConfig(
             user_id=user.user_id,
             mst_lesson_wear_setting_id=1

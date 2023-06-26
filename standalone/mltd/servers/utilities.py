@@ -10,5 +10,7 @@ def format_datetime(dt):
 
 def str_to_datetime(s):
     """Convert a str into a UTC datetime."""
+    if not s:
+        return None
     return datetime.fromisoformat(s).replace(tzinfo=timezone.utc)
 

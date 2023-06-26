@@ -809,6 +809,202 @@ class CourseSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class UnitSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Unit
+        include_relationships = True
+        exclude = ('user',)
+
+    unit_idols = Nested('UnitIdolSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate idol_list.
+        data['idol_list'] = data['unit_idols']
+        del data['unit_idols']
+
+        return data
+
+
+class UnitIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = UnitIdol
+        include_fk = True
+        exclude = ('user_id', 'unit_num', 'position')
+        ordered = True
+
+
+class MstMainStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMainStory
+        include_fk = True
+        include_relationships = True
+
+    reward_song = Nested('MstSongSchema')
+    mst_reward_items = Nested('MstRewardItemSchema', many=True)
+
+
+class MainStoryChapterSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MainStoryChapter
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_main_story = Nested('MstMainStorySchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_main_story = data['mst_main_story']
+
+        # Populate mst_idol_id_list.
+        data['mst_idol_id_list'] = [
+            int(x) for x in mst_main_story['mst_idol_id_list'].split(',')]
+
+        data['release_level'] = mst_main_story['release_level']
+        data['release_song_id'] = mst_main_story['release_song_id']
+        data['released_date'] = str_to_datetime(data['released_date'])
+        data['reward_song_id'] = mst_main_story['reward_song_id']
+
+        # Populate reward_song.
+        reward_song = mst_main_story['reward_song']
+        data['reward_song'] = {
+            'mst_song_id': reward_song['mst_song_id'],
+            'sort_id': reward_song['sort_id'],
+            'resource_id': reward_song['resource_id'],
+            'idol_type': reward_song['idol_type'],
+            'song_type': reward_song['song_type'],
+            'kind': reward_song['kind'],
+            'stage_id': reward_song['stage_id'],
+            'stage_ts_id': reward_song['stage_ts_id'],
+            'bpm': reward_song['bpm']
+        }
+
+        # Populate reward_extend_song.
+        reward_extend_song = reward_song['mst_extend_song']
+        if not reward_extend_song:
+            data['reward_extend_song'] = {
+                'resource_id': '',
+                'kind': 0,
+                'stage_id': 0,
+                'stage_ts_id': 0,
+                'mst_song_unit_id': 0,
+                'song_unit_idol_id_list': None,
+                'unit_selection_type': 0,
+                'unit_song_type': 0,
+                'icon_type': 0,
+                'idol_count': 0,
+                'extend_type': 0,
+                'filter_type': 0,
+                'song_open_type': 0,
+                'song_open_type_value': 0,
+                'song_open_level': 0
+            }
+        else:
+            data['reward_extend_song'] =  {
+                'resource_id': reward_extend_song['resource_id'],
+                'kind': reward_extend_song['kind'],
+                'stage_id': reward_extend_song['stage_id'],
+                'stage_ts_id': reward_extend_song['stage_ts_id'],
+                'mst_song_unit_id': reward_extend_song['mst_song_unit_id'],
+
+                #Populate song_unit_idol_id_list.
+                'song_unit_idol_id_list': [
+                    int(x) for x in reward_extend_song[
+                        'song_unit_idol_id_list'].split(',')],
+
+                'unit_selection_type': reward_extend_song[
+                    'unit_selection_type'],
+                'unit_song_type': reward_extend_song['unit_song_type'],
+                'icon_type': reward_extend_song['icon_type'],
+                'idol_count': reward_extend_song['idol_count'],
+                'extend_type': reward_extend_song['extend_type'],
+                'filter_type': reward_extend_song['filter_type'],
+                'song_open_type': reward_extend_song['song_open_type'],
+                'song_open_type_value': reward_extend_song[
+                    'song_open_type_value'],
+                'song_open_level': reward_extend_song['song_open_level']
+            }
+
+        data['number'] = mst_main_story['number']
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = mst_main_story['mst_reward_items']
+
+        data['intro_contact_mst_idol_id'] = mst_main_story[
+            'intro_contact_mst_idol_id']
+        data['blog_contact_mst_idol_id'] = mst_main_story[
+            'blog_contact_mst_idol_id']
+        del data['mst_main_story']
+        return data
+
+
+class MstTheaterRoomStatusSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTheaterRoomStatus
+        include_fk = True
+        include_relationships = True
+
+    mst_theater_room_idols = Nested('MstTheaterRoomIdolSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        return {
+            'mst_room_id': data['mst_room_id'],
+            'balloon': {
+                'theater_contact_category_type': data[
+                    'theater_contact_category_type'],
+                'room_idol_list': data['mst_theater_room_idols'],
+                'resource_id': data['resource_id'],
+                'mst_theater_contact_schedule_id': data[
+                    'mst_theater_contact_schedule_id'],
+                'mst_theater_contact_id': data['mst_theater_contact_id'],
+                'mst_theater_main_story_id': data['mst_theater_main_story_id'],
+                'mst_theater_guest_main_story_id': data[
+                    'mst_theater_guest_main_story_id'],
+                'guest_main_story_has_intro': data[
+                    'guest_main_story_has_intro'],
+                'mst_guest_main_story_id': data['mst_guest_main_story_id'],
+                'mst_theater_blog_id': data['mst_theater_blog_id'],
+                'mst_theater_costume_blog_id': data[
+                    'mst_theater_costume_blog_id'],
+                'mst_costume_id': data['mst_costume_id'],
+                'mst_theater_event_story_id': data[
+                    'mst_theater_event_story_id'],
+                'mst_event_story_id': data['mst_event_story_id'],
+                'mst_event_id': data['mst_event_id']
+            }
+        }
+
+
+class MstTheaterRoomIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTheaterRoomIdol
+        include_fk = True
+        exclude = ('mst_theater_contact_id', 'mst_theater_main_story_id',
+                   'mst_theater_guest_main_story_id', 'mst_theater_blog_id',
+                   'mst_theater_costume_blog_id', 'mst_theater_event_story_id')
+        ordered = True
+
+
+class MstMainStoryContactStatusSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMainStoryContactStatus
+        include_fk = True
+        include_relationships = True
+
+    mst_theater_room_status = Nested('MstTheaterRoomStatusSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        return {
+            'mst_main_story_id': data['mst_main_story_id'],
+            'theater_room_status': data['mst_theater_room_status'],
+            'duration': data['duration']
+        }
+
+
 class LessonWearConfigSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = LessonWearConfig

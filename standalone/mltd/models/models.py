@@ -87,6 +87,10 @@ class User(Base):
     costume_advs: Mapped[List['CostumeAdv']] = relationship(
         back_populates='user')
     gashas: Mapped[List['Gasha']] = relationship(back_populates='user')
+    units: Mapped[List['Unit']] = relationship(back_populates='user',
+                                               order_by='[Unit.unit_num]')
+    main_story_chapters: Mapped[List['MainStoryChapter']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -1010,9 +1014,9 @@ class MstCourse(Base):
     course_id: 
         1=Solo 2M?
         2=2M?
-        3=Solo 2M+?
+        3=Solo 2M+
         4=4M
-        5=6M?
+        5=6M
         6=MM
     TODO: add score/combo/clear rank requirements?
     """
@@ -1061,6 +1065,10 @@ class Unit(Base):
     unit_num: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(20))
 
+    user: Mapped['User'] = relationship(back_populates='units')
+    unit_idols: Mapped[List['UnitIdol']] = relationship(
+        lazy='selectin', order_by='[UnitIdol.position]')
+
 
 class UnitIdol(Base):
     """Idol list (selected card & costume) for each unit for each user."""
@@ -1074,7 +1082,8 @@ class UnitIdol(Base):
 
     user_id: Mapped[UUID] = mapped_column(primary_key=True)
     unit_num: Mapped[int] = mapped_column(primary_key=True)
-    card_id = mapped_column(ForeignKey('card.card_id'), primary_key=True)
+    position: Mapped[int] = mapped_column(primary_key=True)
+    card_id = mapped_column(ForeignKey('card.card_id'), nullable=False)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
     mst_lesson_wear_id = mapped_column(
@@ -1119,11 +1128,42 @@ class MstMainStory(Base):
     """Master table for main stories.
 
     mst_idol_id_list: comma-separated mst_idol_ids
-    reward_type_list: comma-separated values
-    reward_mst_item_id_list: comma-separated mst_item_ids
-    reward_item_type_list: comma-separated values
-    reward_mst_costume_id_list: comma-separated mst_costume_ids
-    reward_amount_list: comma-separated values
+    """
+    __tablename__ = 'mst_main_story'
+
+    mst_main_story_id: Mapped[int] = mapped_column(primary_key=True)
+    number: Mapped[int]
+    mst_idol_id_list: Mapped[str]
+    release_level: Mapped[int]
+    release_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
+                                    nullable=False)
+    reward_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
+                                   nullable=False)
+    intro_contact_mst_idol_id = mapped_column(
+        ForeignKey('mst_idol.mst_idol_id'), nullable=False)
+    blog_contact_mst_idol_id = mapped_column(
+        ForeignKey('mst_idol.mst_idol_id'), nullable=False)
+
+    reward_song: Mapped['MstSong'] = relationship(
+        foreign_keys=reward_song_id,
+        viewonly=True, lazy='joined', innerjoin=True)
+    mst_reward_items: Mapped[List['MstRewardItem']] = relationship(
+        secondary='mst_main_story_reward',
+        viewonly=True, lazy='selectin')
+
+
+class MstMainStoryChapter(Base):
+    """Master table for main story chapters."""
+    __tablename__ = 'mst_main_story_chapter'
+
+    mst_main_story_id = mapped_column(
+        ForeignKey('mst_main_story.mst_main_story_id'), primary_key=True)
+    chapter: Mapped[int] = mapped_column(primary_key=True)
+
+
+class MstMainStoryReward(Base):
+    """Master table for main story reward items.
+
     For mst_main_story_id=41:
         reward_type_list=4,4,8
         reward_mst_item_id_list=3,705,0
@@ -1136,69 +1176,51 @@ class MstMainStory(Base):
         reward_item_type_list=1
         reward_mst_costume_id_list=0
         reward_amount_list=50
-    TODO:
-        1. normalize lists if required
-        2. add another table for chapters, so that mst_main_story_id is
-            unique here and can be referenced by other tables as
-            foreign key constraints
     """
-    __tablename__ = 'mst_main_story'
+    __tablename__ = 'mst_main_story_reward'
 
-    mst_main_story_id: Mapped[int] = mapped_column(primary_key=True)
-    number: Mapped[int] = mapped_column(primary_key=True)
-    chapter: Mapped[int] = mapped_column(primary_key=True)
-    mst_idol_id_list: Mapped[str]
-    release_level: Mapped[int]
-    release_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
-                                    nullable=False)
-    reward_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
-                                   nullable=False)
-    reward_type_list: Mapped[str]
-    reward_mst_item_id_list: Mapped[str]
-    reward_item_type_list: Mapped[str]
-    reward_mst_costume_id_list: Mapped[str]
-    reward_amount_list: Mapped[str]
-    intro_contact_mst_idol_id = mapped_column(
-        ForeignKey('mst_idol.mst_idol_id'), nullable=False)
-    blog_contact_mst_idol_id = mapped_column(
-        ForeignKey('mst_idol.mst_idol_id'), nullable=False)
+    mst_main_story_id = mapped_column(
+        ForeignKey('mst_main_story.mst_main_story_id'), primary_key=True)
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), primary_key=True)
 
 
-class MainStory(Base):
-    """Main story states specific to each user."""
-    __tablename__ = 'main_story'
+class MainStoryChapter(Base):
+    """Main story chapter states specific to each user."""
+    __tablename__ = 'main_story_chapter'
     __table_args__ = (
         ForeignKeyConstraint(
             [
                 'mst_main_story_id',
-                'number',
                 'chapter'
             ],
             [
-                'mst_main_story.mst_main_story_id',
-                'mst_main_story.number',
-                'mst_main_story.chapter'
+                'mst_main_story_chapter.mst_main_story_id',
+                'mst_main_story_chapter.chapter'
             ]
         ),
     )
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     mst_main_story_id: Mapped[int] = mapped_column(primary_key=True)
-    number: Mapped[int] = mapped_column(primary_key=True)
     chapter: Mapped[int] = mapped_column(primary_key=True)
     released_date: Mapped[Optional[datetime]] = mapped_column(default=None)
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
 
+    user: Mapped['User'] = relationship(back_populates='main_story_chapters')
+    mst_main_story: Mapped['MstMainStory'] = relationship(
+        secondary='mst_main_story_chapter', lazy='joined', innerjoin=True)
 
-class MstTheaterContactStatus(Base):
-    """Master table for theater contact status.
+
+class MstTheaterRoomStatus(Base):
+    """Master table for theater room status.
 
     TODO: Some columns for theater_room_status seem to be designed for
           other purposes. API is returning everything using a common
           data structure. May need to refactor later.
     """
-    __tablename__ = 'mst_theater_contact_status'
+    __tablename__ = 'mst_theater_room_status'
 
     mst_room_id: Mapped[int]
     theater_contact_category_type: Mapped[int]
@@ -1225,14 +1247,13 @@ class MstTheaterContactStatus(Base):
         nullable=False)
     mst_event_id = mapped_column(ForeignKey('mst_event.mst_event_id'),
                                  default=0, nullable=False)
-    duration: Mapped[int]
-    mst_main_story_id: Mapped[int] = mapped_column(default=None)
-    # mst_main_story_id = mapped_column(
-    #     ForeignKey('mst_main_story.mst_main_story_id'), default=None)
+
+    mst_theater_room_idols: Mapped[List['MstTheaterRoomIdol']] = relationship(
+        lazy='selectin')
 
 
 class MstTheaterRoomIdol(Base):
-    """Master table for theater room idol list for each contact status."""
+    """Master table for room idol list for each theater room status."""
     __tablename__ = 'mst_theater_room_idol'
     __table_args__ = (
         ForeignKeyConstraint(
@@ -1245,12 +1266,12 @@ class MstTheaterRoomIdol(Base):
                 'mst_theater_event_story_id'
             ],
             [
-                'mst_theater_contact_status.mst_theater_contact_id',
-                'mst_theater_contact_status.mst_theater_main_story_id',
-                'mst_theater_contact_status.mst_theater_guest_main_story_id',
-                'mst_theater_contact_status.mst_theater_blog_id',
-                'mst_theater_contact_status.mst_theater_costume_blog_id',
-                'mst_theater_contact_status.mst_theater_event_story_id'
+                'mst_theater_room_status.mst_theater_contact_id',
+                'mst_theater_room_status.mst_theater_main_story_id',
+                'mst_theater_room_status.mst_theater_guest_main_story_id',
+                'mst_theater_room_status.mst_theater_blog_id',
+                'mst_theater_room_status.mst_theater_costume_blog_id',
+                'mst_theater_room_status.mst_theater_event_story_id'
             ]
         ),
     )
@@ -1273,6 +1294,93 @@ class MstTheaterRoomIdol(Base):
     motion_id: Mapped[str]
     reaction_id: Mapped[str] = mapped_column(default='')
     reaction_id_2: Mapped[str] = mapped_column(default='')
+
+
+class MstMainStoryContactStatus(Base):
+    """Master table for main story contact statuses."""
+    __tablename__ = 'mst_main_story_contact_status'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'mst_theater_contact_id',
+                'mst_theater_main_story_id',
+                'mst_theater_guest_main_story_id',
+                'mst_theater_blog_id',
+                'mst_theater_costume_blog_id',
+                'mst_theater_event_story_id'
+            ],
+            [
+                'mst_theater_room_status.mst_theater_contact_id',
+                'mst_theater_room_status.mst_theater_main_story_id',
+                'mst_theater_room_status.mst_theater_guest_main_story_id',
+                'mst_theater_room_status.mst_theater_blog_id',
+                'mst_theater_room_status.mst_theater_costume_blog_id',
+                'mst_theater_room_status.mst_theater_event_story_id'
+            ]
+        ),
+    )
+
+    mst_theater_contact_id: Mapped[int] = mapped_column(default=0,
+                                                        primary_key=True)
+    mst_theater_main_story_id: Mapped[int] = mapped_column(default=0,
+                                                           primary_key=True)
+    mst_theater_guest_main_story_id: Mapped[int] = mapped_column(
+        default=0, primary_key=True)
+    mst_theater_blog_id: Mapped[int] = mapped_column(default=0,
+                                                     primary_key=True)
+    mst_theater_costume_blog_id: Mapped[int] = mapped_column(default=0,
+                                                             primary_key=True)
+    mst_theater_event_story_id: Mapped[int] = mapped_column(default=0,
+                                                            primary_key=True)
+    mst_main_story_id = mapped_column(
+        ForeignKey('mst_main_story.mst_main_story_id'), nullable=False)
+    duration: Mapped[int]
+
+    mst_theater_room_status: Mapped['MstTheaterRoomStatus'] = relationship(
+        lazy='joined', innerjoin=True)
+
+
+class MstEventContactStatus(Base):
+    """Master table for event contact statuses."""
+    __tablename__ = 'mst_event_contact_status'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'mst_theater_contact_id',
+                'mst_theater_main_story_id',
+                'mst_theater_guest_main_story_id',
+                'mst_theater_blog_id',
+                'mst_theater_costume_blog_id',
+                'mst_theater_event_story_id'
+            ],
+            [
+                'mst_theater_room_status.mst_theater_contact_id',
+                'mst_theater_room_status.mst_theater_main_story_id',
+                'mst_theater_room_status.mst_theater_guest_main_story_id',
+                'mst_theater_room_status.mst_theater_blog_id',
+                'mst_theater_room_status.mst_theater_costume_blog_id',
+                'mst_theater_room_status.mst_theater_event_story_id'
+            ]
+        ),
+    )
+
+    mst_theater_contact_id: Mapped[int] = mapped_column(default=0,
+                                                        primary_key=True)
+    mst_theater_main_story_id: Mapped[int] = mapped_column(default=0,
+                                                           primary_key=True)
+    mst_theater_guest_main_story_id: Mapped[int] = mapped_column(
+        default=0, primary_key=True)
+    mst_theater_blog_id: Mapped[int] = mapped_column(default=0,
+                                                     primary_key=True)
+    mst_theater_costume_blog_id: Mapped[int] = mapped_column(default=0,
+                                                             primary_key=True)
+    mst_theater_event_story_id: Mapped[int] = mapped_column(default=0,
+                                                            primary_key=True)
+    mst_event_id: Mapped[int]
+    duration: Mapped[int]
+
+    mst_theater_room_status: Mapped['MstTheaterRoomStatus'] = relationship(
+        lazy='joined', innerjoin=True)
 
 
 class MstAwakeningConfig(Base):
@@ -2212,12 +2320,12 @@ class TheaterRoom(Base):
                 'mst_theater_event_story_id'
             ],
             [
-                'mst_theater_contact_status.mst_theater_contact_id',
-                'mst_theater_contact_status.mst_theater_main_story_id',
-                'mst_theater_contact_status.mst_theater_guest_main_story_id',
-                'mst_theater_contact_status.mst_theater_blog_id',
-                'mst_theater_contact_status.mst_theater_costume_blog_id',
-                'mst_theater_contact_status.mst_theater_event_story_id'
+                'mst_theater_room_status.mst_theater_contact_id',
+                'mst_theater_room_status.mst_theater_main_story_id',
+                'mst_theater_room_status.mst_theater_guest_main_story_id',
+                'mst_theater_room_status.mst_theater_blog_id',
+                'mst_theater_room_status.mst_theater_costume_blog_id',
+                'mst_theater_room_status.mst_theater_event_story_id'
             ]
         ),
     )
