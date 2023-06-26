@@ -387,5 +387,10 @@ if __name__ == '__main__':
             user_id=user.user_id,
             mst_lesson_wear_setting_id=1
         ))
+
+        session.add(Campaign(
+            user_id=user.user_id,
+            mst_campain_id=90011
+        ))
         session.commit()
 

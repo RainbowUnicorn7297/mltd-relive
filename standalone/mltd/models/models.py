@@ -91,6 +91,7 @@ class User(Base):
                                                order_by='[Unit.unit_num]')
     main_story_chapters: Mapped[List['MainStoryChapter']] = relationship(
         back_populates='user')
+    campaigns: Mapped[List['Campaign']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -1670,6 +1671,10 @@ class Campaign(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     mst_campain_id = mapped_column(ForeignKey('mst_campaign.mst_campain_id'),
                                    primary_key=True)
+
+    user: Mapped['User'] = relationship(back_populates='campaigns')
+    mst_campaign: Mapped['MstCampaign'] = relationship(lazy='joined',
+                                                       innerjoin=True)
 
 
 class GashaMedal(Base):

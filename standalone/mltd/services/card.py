@@ -12,7 +12,7 @@ from mltd.models.schemas import CardSchema
 @dispatcher.add_method(name='CardService.GetCardList', context_arg='context')
 def get_card_list(params, context):
     """Service for getting a list of cards obtained by the user.
-    
+
     Invoked as part of the initial batch requests after logging in.
     Args:
         params: An empty dict.

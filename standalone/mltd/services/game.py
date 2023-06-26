@@ -9,7 +9,7 @@ from mltd.servers.utilities import format_datetime
 @dispatcher.add_method(name='GameService.GetVersion')
 def get_version(params):
     """Service for static game version info.
-    
+
     Invoked at title screen, either at app boot or server daily reset.
     Args:
         params: An empty dict.

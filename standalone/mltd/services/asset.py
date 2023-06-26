@@ -6,7 +6,7 @@ from mltd.servers.config import server_language
 @dispatcher.add_method(name='AssetService.GetAssetVersion')
 def get_asset_version(params):
     """Service for getting current asset version.
-    
+
     Invoked after logging in.
     Args:
         params: A dict containing the following keys.
@@ -20,12 +20,11 @@ def get_asset_version(params):
                    game client version.
     Returns:
         A dict containing the following keys.
-            asset_url: The URL from which assets are downloaded.
-            asset_index_name: The name of the index/manifest file
-                              containing file names and other info of
-                              all other assets.
-            asset_version: Asset version (last version before EoS is
-                           120000).
+        asset_url: The URL from which assets are downloaded.
+        asset_index_name: The name of the index/manifest file containing
+                          file names and other info of all other assets.
+        asset_version: Asset version (last version before EoS is
+                       120000).
     """
     os_name = 'android' if params['os_name'] == 'Android' else 'ios'
     return {

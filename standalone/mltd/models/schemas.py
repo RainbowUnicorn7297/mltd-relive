@@ -1253,6 +1253,42 @@ class MstLoadingCharacterSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstCampaignSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstCampaign
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['start_date'] = str_to_datetime(data['start_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class CampaignSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Campaign
+        include_relationships = True
+        exclude = ('user',)
+
+    mst_campaign = Nested('MstCampaignSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['mst_campain_id'] = data['mst_campaign']['mst_campain_id']
+        data['type'] = data['mst_campaign']['type']
+        data['value'] = data['mst_campaign']['value']
+
+        # Populate footer_button.
+        data['footer_button'] = [data['mst_campaign']['footer_button']]
+
+        data['start_date'] = data['mst_campaign']['start_date']
+        data['end_date'] = data['mst_campaign']['end_date']
+        del data['mst_campaign']
+        return data
+
+
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PanelMissionSheet

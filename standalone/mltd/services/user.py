@@ -12,7 +12,7 @@ from mltd.models.schemas import UserSchema
 @dispatcher.add_method(name='UserService.GetSelf', context_arg='context')
 def get_self(params, context):
     """Service for getting self user info.
-    
+
     Invoked as part of the initial batch requests after logging in.
     Args:
         params: An empty dict.
