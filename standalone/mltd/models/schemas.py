@@ -1005,11 +1005,252 @@ class MstMainStoryContactStatusSchema(SQLAlchemyAutoSchema):
         }
 
 
+class MstAwakeningConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstAwakeningConfig
+        include_fk = True
+        include_relationships = True
+        ordered = True
+
+    mst_awakening_config_items = Nested('MstAwakeningConfigItemSchema',
+                                        many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate required_item_list.
+        data['required_item_list'] = data['mst_awakening_config_items']
+        del data['mst_awakening_config_items']
+
+        if not data['mst_card_id']:
+            data['mst_card_id'] = 0
+        return data
+
+
+class MstAwakeningConfigItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstAwakeningConfigItem
+        include_fk = True
+        exclude = ('rarity', 'idol_type')
+        ordered = True
+
+
+class MstMasterLesson2ConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMasterLesson2Config
+        include_relationships = True
+        ordered = True
+
+    mst_master_lesson2_config_items = Nested(
+        'MstMasterLesson2ConfigItemSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate master_piece_list.
+        data['master_piece_list'] = data['mst_master_lesson2_config_items']
+        del data['mst_master_lesson2_config_items']
+
+        return data
+
+
+class MstMasterLesson2ConfigItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMasterLesson2ConfigItem
+        include_fk = True
+        exclude = ('rarity', 'idol_type')
+        ordered = True
+
+
+class MstExMasterLessonConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstExMasterLessonConfig
+        include_fk = True
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate amount.
+        data['amount'] = [int(x) for x in data['amount'].split(',')]
+
+        if not data['mst_card_id']:
+            data['mst_card_id'] = 0
+        return data
+
+
+class MstLessonMoneyConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLessonMoneyConfig
+        include_fk = True
+        ordered = True
+
+
+class MstLessonSkillLevelUpConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLessonSkillLevelUpConfig
+        ordered = True
+
+
+class MstLessonWearConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLessonWearConfig
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate mst_lesson_wear_group_id_list.
+        data['mst_lesson_wear_group_id_list'] = [
+            data['mst_lesson_wear_group_id_list']]
+
+        return data
+
+
 class LessonWearConfigSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = LessonWearConfig
         include_fk = True
         exclude = ('user_id',)
+
+
+class MstComicMenuSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstComicMenu
+        ordered = True
+
+
+class MstTrainingUnitSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTrainingUnit
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate idol_id_list.
+        data['idol_id_list'] = [
+            int(x) for x in data['idol_id_list'].split(',')]
+
+        return data
+
+
+class MstMasterLessonFiveConfigSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMasterLessonFiveConfig
+        include_relationships = True
+        sorted = True
+
+    mst_master_lesson_five_config_items = Nested(
+        'MstMasterLessonFiveConfigItemSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate required_item_list.
+        data['required_item_list'] = data[
+            'mst_master_lesson_five_config_items']
+        del data['mst_master_lesson_five_config_items']
+
+        return data
+
+
+class MstMasterLessonFiveConfigItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMasterLessonFiveConfigItem
+        include_fk = True
+        ordered = True
+        exclude = ('ex_type', 'idol_type')
+
+
+class MstTitleImageSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTitleImage
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class MstGameSettingSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstGameSetting
+        include_relationships = True
+        exclude = ('mst_game_setting_id',)
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate recover_jewel.
+        data['recover_jewel'] = [
+            {
+                'amount': data['recover_jewel_amount'],
+                'begin_date': str_to_datetime(
+                    data['recover_jewel_begin_date']).astimezone(
+                    server_timezone),
+                'end_date': str_to_datetime(
+                    data['recover_jewel_end_date']).astimezone(server_timezone)
+            }
+        ]
+        del data['recover_jewel_amount']
+        del data['recover_jewel_begin_date']
+        del data['recover_jewel_end_date']
+
+        # Populate continue_jewel.
+        data['continue_jewel'] = [
+            {
+                'amount': data['continue_jewel_amount'],
+                'begin_date': str_to_datetime(
+                    data['continue_jewel_begin_date']).astimezone(
+                    server_timezone),
+                'end_date': str_to_datetime(
+                    data['continue_jewel_end_date']).astimezone(
+                    server_timezone)
+            }
+        ]
+        del data['continue_jewel_amount']
+        del data['continue_jewel_begin_date']
+        del data['continue_jewel_end_date']
+
+        data['overflow_date'] = str_to_datetime(
+            data['overflow_date']).astimezone(server_timezone)
+
+        # Populate lounge_chat_fetch_cycle.
+        data['lounge_chat_fetch_cycle'] = [
+            int(x) for x in data['lounge_chat_fetch_cycle'].split(',')]
+
+        # Populate un_lock_song_jewel.
+        data['un_lock_song_jewel'] = [
+            {
+                'amount': data['un_lock_song_jewel_amount'],
+                'begin_date': str_to_datetime(
+                    data['un_lock_song_jewel_begin_date']).astimezone(
+                    server_timezone),
+                'end_date': str_to_datetime(
+                    data['un_lock_song_jewel_end_date']).astimezone(
+                    server_timezone)
+            }
+        ]
+        del data['un_lock_song_jewel_amount']
+        del data['un_lock_song_jewel_begin_date']
+        del data['un_lock_song_jewel_end_date']
+
+        # Populate function_release_id_list.
+        data['function_release_id_list'] = [
+            int(x) for x in data['function_release_id_list'].split(',')]
+
+        return data
+
+
+class MstLoadingCharacterSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLoadingCharacter
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
 
 
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):

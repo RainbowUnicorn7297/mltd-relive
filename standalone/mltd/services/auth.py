@@ -228,15 +228,31 @@ def login(params):
         # Perform daily reset.
         if (last_login_date.astimezone(server_timezone).date()
                 < now.astimezone(server_timezone).date()):
-            # Update challenge_song based on user's unlocked songs.
-            unlocked_song_ids = session.scalars(
+            # Update challenge_song based on user's unplayed and
+            # unlocked songs, idols' birthdays and server date.
+            unlocked_stmt = (
                 select(Song.mst_song_id)
                 .where(Song.user == user)
                 .where(Song.is_disable == False)
-            ).all()
-            user.challenge_song.daily_challenge_mst_song_id = random.choice(
-                unlocked_song_ids)
+            )
+            unplayed_stmt = unlocked_stmt.where(Song.is_played == False)
+            unplayed_song_ids = session.scalars(unplayed_stmt).all()
+            if unlocked_song_ids:
+                user.challenge_song.daily_challenge_mst_song_id = (
+                    random.choice(unplayed_song_ids))
+            else:
+                server_month = now.astimezone(server_timezone).month
+                server_day = now.astimezone(server_timezone).day
+                unlocked_song_ids = session.scalars(unlocked_stmt).all()
+                # TODO: check idols' birthdays
+                if (server_month == 2 and server_day == 27
+                    and 1 in unlocked_song_ids):
+                    user.challenge_song.daily_challenge_mst_song_id = 1
+                else:
+                    user.challenge_song.daily_challenge_mst_song_id = (
+                        random.choice(unlocked_song_ids))
             user.challenge_song.update_date = now
+
             # Reset daily free draws.
             for gasha in user.gashas:
                 if gasha.mst_gasha_id == 99002:

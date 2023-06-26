@@ -1384,21 +1384,61 @@ class MstEventContactStatus(Base):
 
 
 class MstAwakeningConfig(Base):
-    """Required items for awakening."""
+    """Awakening config."""
     __tablename__ = 'mst_awakening_config'
 
     rarity: Mapped[int] = mapped_column(primary_key=True)
     idol_type: Mapped[int] = mapped_column(primary_key=True)
     mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'),
                                 default=0, insert_default=None)
+
+    mst_awakening_config_items: Mapped[
+        List['MstAwakeningConfigItem']] = relationship(lazy='selectin')
+
+
+class MstAwakeningConfigItem(Base):
+    """Required items for awakening."""
+    __tablename__ = 'mst_awakening_config_item'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['rarity', 'idol_type'],
+            ['mst_awakening_config.rarity', 'mst_awakening_config.idol_type']
+        ),
+    )
+
+    rarity: Mapped[int] = mapped_column(primary_key=True)
+    idol_type: Mapped[int] = mapped_column(primary_key=True)
     mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                 primary_key=True)
     amount: Mapped[int]
 
 
 class MstMasterLesson2Config(Base):
-    """Required master pieces for master lessons."""
+    """Master lesson config."""
     __tablename__ = 'mst_master_lesson2_config'
+
+    rarity: Mapped[int] = mapped_column(primary_key=True)
+    idol_type: Mapped[int] = mapped_column(primary_key=True)
+
+    mst_master_lesson2_config_items: Mapped[
+        List['MstMasterLesson2ConfigItem']] = relationship(lazy='selectin')
+
+
+class MstMasterLesson2ConfigItem(Base):
+    """Required master pieces for master lessons."""
+    __tablename__ = 'mst_master_lesson2_config_item'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'rarity',
+                'idol_type'
+            ],
+            [
+                'mst_master_lesson2_config.rarity',
+                'mst_master_lesson2_config.idol_type'
+            ]
+        ),
+    )
 
     rarity: Mapped[int] = mapped_column(primary_key=True)
     idol_type: Mapped[int] = mapped_column(primary_key=True)
@@ -1410,10 +1450,9 @@ class MstMasterLesson2Config(Base):
 class MstExMasterLessonConfig(Base):
     """Required items for ex master lessons.
 
-    ex_type: ??? 2-6
-        2=PST
+    ex_type:
+        2=PST (Ranking), 3=PST (Event Pt), 4=FES, 5=1st, 6=Ex
     amount: comma-separated values, one for each master rank
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_ex_master_lesson_config'
 
@@ -1479,14 +1518,13 @@ class MstComicMenu(Base):
     mst_comic_menu_id: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str]
     resource_id: Mapped[str]
-    enable_button: Mapped[int]
+    enable_button: Mapped[bool]
 
 
 class MstTrainingUnit(Base):
     """Required songs and idols for anniversary training mission.
 
     idol_id_list: comma-separated mst_idol_ids
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_training_unit'
 
@@ -1495,11 +1533,34 @@ class MstTrainingUnit(Base):
 
 
 class MstMasterLessonFiveConfig(Base):
-    """Required items for master rank 5 lessons.
+    """Master rank 5 lesson config.
 
-    ex_type: ??? 0 or 4
+    ex_type: 0=Normal, 4=FES
     """
     __tablename__ = 'mst_master_lesson_five_config'
+
+    ex_type: Mapped[int] = mapped_column(primary_key=True)
+    idol_type: Mapped[int] = mapped_column(primary_key=True)
+
+    mst_master_lesson_five_config_items: Mapped[
+        List['MstMasterLessonFiveConfigItem']] = relationship(lazy='selectin')
+
+
+class MstMasterLessonFiveConfigItem(Base):
+    """Required items for master rank 5 lessons."""
+    __tablename__ = 'mst_master_lesson_five_config_item'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'ex_type',
+                'idol_type'
+            ],
+            [
+                'mst_master_lesson_five_config.ex_type',
+                'mst_master_lesson_five_config.idol_type'
+            ]
+        ),
+    )
 
     ex_type: Mapped[int] = mapped_column(primary_key=True)
     idol_type: Mapped[int] = mapped_column(primary_key=True)
@@ -1527,7 +1588,6 @@ class MstGameSetting(Base):
 
     lounge_chat_fetch_cycle: comma-separated values
     function_release_id_list: comma-separated values
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_game_setting'
 

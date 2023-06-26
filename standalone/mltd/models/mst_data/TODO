@@ -3,7 +3,7 @@ include jewel? (mst_item_id=3, item_type=1)
 what is mst_item_id=502, item_type=4? (dropped from theater contact)
 is mst_item_id=405, item_type=2 money? (dropped from memorial, amount=3000)
 
-mst_theater_contact_status & mst_theater_room_idol
+mst_theater_room_status & mst_theater_room_idol
 currently contain main story & event story only
 
 mst_event
