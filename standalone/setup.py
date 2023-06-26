@@ -392,5 +392,13 @@ if __name__ == '__main__':
             user_id=user.user_id,
             mst_campain_id=90011
         ))
+
+        session.add(GashaMedal(
+            user_id=user.user_id
+        ))
+
+        session.add(Jewel(
+            user_id=user.user_id
+        ))
         session.commit()
 

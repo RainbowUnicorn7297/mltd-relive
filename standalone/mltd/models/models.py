@@ -74,6 +74,8 @@ class User(Base):
     pending_song: Mapped['PendingSong'] = relationship(
         back_populates='user', foreign_keys='PendingSong.user_id')
     pending_job: Mapped['PendingJob'] = relationship(back_populates='user')
+    gasha_medal: Mapped['GashaMedal'] = relationship(back_populates='user')
+    jewel: Mapped['Jewel'] = relationship(back_populates='user')
     lps: Mapped[List['LP']] = relationship(
         back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
@@ -92,6 +94,8 @@ class User(Base):
     main_story_chapters: Mapped[List['MainStoryChapter']] = relationship(
         back_populates='user')
     campaigns: Mapped[List['Campaign']] = relationship(back_populates='user')
+    record_times: Mapped[List['RecordTime']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -1678,16 +1682,26 @@ class Campaign(Base):
 
 
 class GashaMedal(Base):
-    """Gacha medals and expiry dates for each user.
-
-    expire_date_list: comma-separated dates
-    TODO: normalize lists if required
-    """
+    """Gacha medals and expiry dates for each user."""
     __tablename__ = 'gasha_medal'
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     point_amount: Mapped[int] = mapped_column(default=0)
-    expire_date_list: Mapped[Optional[str]] = mapped_column(default=None)
+
+    user: Mapped['User'] = relationship(back_populates='gasha_medal')
+    gasha_medal_expire_dates: Mapped[
+        List['GashaMedalExpireDate']] = relationship(
+            order_by='[GashaMedalExpireDate.expire_date]')
+
+
+class GashaMedalExpireDate(Base):
+    """Gacha medal expiry dates for each user."""
+    __tablename__ = 'gasha_medal_expire_date'
+
+    user_id = mapped_column(ForeignKey('gasha_medal.user_id'),
+                            primary_key=True)
+    expire_date: Mapped[datetime] = mapped_column(
+        primary_key=True, default=datetime.now(timezone.utc))
 
 
 class Jewel(Base):
@@ -1697,6 +1711,8 @@ class Jewel(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     free_jewel_amount: Mapped[int] = mapped_column(default=0)
     paid_jewel_amount: Mapped[int] = mapped_column(default=0)
+
+    user: Mapped['User'] = relationship(back_populates='jewel')
 
 
 # class MstRecordTime(Base):
@@ -1714,6 +1730,8 @@ class RecordTime(Base):
     kind: Mapped[str] = mapped_column(primary_key=True)
     time: Mapped[datetime] = mapped_column(
         default=datetime.now(timezone.utc))
+
+    user: Mapped['User'] = relationship(back_populates='record_times')
 
 
 class MstTopics(Base):

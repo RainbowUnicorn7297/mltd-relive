@@ -227,22 +227,22 @@ def login(params):
                 .where(Song.user == user)
                 .where(Song.is_disable == False)
             )
+            unlocked_song_ids = session.scalars(unlocked_stmt).all()
             unplayed_stmt = unlocked_stmt.where(Song.is_played == False)
             unplayed_song_ids = session.scalars(unplayed_stmt).all()
-            if unlocked_song_ids:
-                user.challenge_song.daily_challenge_mst_song_id = (
-                    random.choice(unplayed_song_ids))
+            server_month = now.astimezone(server_timezone).month
+            server_day = now.astimezone(server_timezone).day
+            # TODO: check idols' birthdays
+            if (server_month == 2 and server_day == 27
+                and 1 in unlocked_song_ids):
+                user.challenge_song.daily_challenge_mst_song_id = 1
             else:
-                server_month = now.astimezone(server_timezone).month
-                server_day = now.astimezone(server_timezone).day
-                unlocked_song_ids = session.scalars(unlocked_stmt).all()
-                # TODO: check idols' birthdays
-                if (server_month == 2 and server_day == 27
-                    and 1 in unlocked_song_ids):
-                    user.challenge_song.daily_challenge_mst_song_id = 1
-                else:
-                    user.challenge_song.daily_challenge_mst_song_id = (
-                        random.choice(unlocked_song_ids))
+                song_ids = unlocked_song_ids
+                if unplayed_song_ids:
+                    song_ids = random.choice([unplayed_song_ids,
+                                              unlocked_song_ids])
+                user.challenge_song.daily_challenge_mst_song_id = (
+                    random.choice(song_ids))
             user.challenge_song.update_date = now
 
             # Reset daily free draws.

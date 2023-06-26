@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 from jsonrpc import dispatcher
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -21,6 +23,8 @@ from mltd.models.schemas import (MstAwakeningConfigSchema, MstComicMenuSchema,
                                  MstMasterLesson2ConfigSchema,
                                  MstMasterLessonFiveConfigSchema,
                                  MstTitleImageSchema, MstTrainingUnitSchema)
+from mltd.servers.config import server_timezone
+from mltd.servers.utilities import format_datetime
 
 
 @dispatcher.add_method(name='GameSettingService.GetSetting')
@@ -326,4 +330,48 @@ def get_setting(params):
         'theater_poster_list': None,
         'loading_character_list': loading_character_list
     }
+
+
+@dispatcher.add_method(name='GameSettingService.GetItemDays')
+def get_item_days(params):
+    """Service for getting the daily idol types for the next 7 days.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing a single key named 'item_day_list', whose
+        value is a list of 7 dicts representing the daily idol types for
+        the next 7 days (including today). The rules to determine the
+        daily idol type are as follows.
+            Monday/Thursday=Princess (idol_type=1)
+            Tuesday/Friday=Fairy (idol_type=2)
+            Wednesday/Saturday=Angel (idol_type=3)
+            Sunday=All (idol_type=4)
+        Each dict contains the following keys.
+            idol_type: Idol type for this day (1-4).
+            begin_date: Starting datetime for this day (time=00:00:00).
+            end_date: Ending datetime for this day (time=23:59:59).
+    """
+    item_day_list = []
+    begin_date = datetime.now(timezone.utc).astimezone(server_timezone)
+    begin_date = begin_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    for i in range(7):
+        weekday = begin_date.weekday()
+        if weekday in [0, 3]:
+            idol_type = 1
+        elif weekday in [1, 4]:
+            idol_type = 2
+        elif weekday in [2, 5]:
+            idol_type = 3
+        else:
+            idol_type = 4
+        item_day_list.append({
+            'idol_type': idol_type,
+            'begin_date': format_datetime(begin_date),
+            'end_date': format_datetime(begin_date.replace(
+                hour=23, minute=59, second=59))
+        })
+        begin_date += timedelta(days=1)
+    return {'item_day_list': item_day_list}
 

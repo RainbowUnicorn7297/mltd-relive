@@ -1289,6 +1289,52 @@ class CampaignSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class GashaMedalSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = GashaMedal
+        include_relationships = True
+        exclude = ('user',)
+
+    gasha_medal_expire_dates = Nested('GashaMedalExpireDateSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate expire_date_list.
+        data['expire_date_list'] = [
+            expire_date['expire_date']
+            for expire_date in data['gasha_medal_expire_dates']]
+        del data['gasha_medal_expire_dates']
+
+        return data
+
+
+class GashaMedalExpireDateSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = GashaMedalExpireDate
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['expire_date'] = str_to_datetime(data['expire_date'])
+        return data
+
+
+class JewelSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Jewel
+        ordered = True
+
+
+class RecordTimeSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = RecordTime
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['time'] = str_to_datetime(data['time'])
+        return data
+
+
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PanelMissionSheet
