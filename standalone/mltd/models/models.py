@@ -91,6 +91,7 @@ class User(Base):
     gashas: Mapped[List['Gasha']] = relationship(back_populates='user')
     units: Mapped[List['Unit']] = relationship(back_populates='user',
                                                order_by='[Unit.unit_num]')
+    song_units: Mapped[List['SongUnit']] = relationship(back_populates='user')
     main_story_chapters: Mapped[List['MainStoryChapter']] = relationship(
         back_populates='user')
     campaigns: Mapped[List['Campaign']] = relationship(back_populates='user')
@@ -1107,6 +1108,10 @@ class SongUnit(Base):
     unit_song_type: Mapped[int]
     is_new: Mapped[bool] = mapped_column(default=True)
 
+    user: Mapped['User'] = relationship(back_populates='song_units')
+    song_unit_idols: Mapped[List['SongUnitIdol']] = relationship(
+        lazy='selectin', order_by='[SongUnitIdol.position]')
+
 
 class SongUnitIdol(Base):
     """Idol list (selected card & costume) for each song unit for each user."""
@@ -1120,7 +1125,8 @@ class SongUnitIdol(Base):
 
     user_id: Mapped[UUID] = mapped_column(primary_key=True)
     mst_song_id: Mapped[int] = mapped_column(primary_key=True)
-    card_id = mapped_column(ForeignKey('card.card_id'), primary_key=True)
+    position: Mapped[int] = mapped_column(primary_key=True)
+    card_id = mapped_column(ForeignKey('card.card_id'), nullable=False)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
     mst_lesson_wear_id = mapped_column(

@@ -1,13 +1,18 @@
+from datetime import timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import MainStoryChapter, MstMainStoryContactStatus
+from mltd.models.models import (MainStoryChapter, MstMainStoryContactStatus,
+                                MstTopics)
 from mltd.models.schemas import (MainStoryChapterSchema,
-                                 MstMainStoryContactStatusSchema)
+                                 MstMainStoryContactStatusSchema,
+                                 MstTopicsSchema)
+from mltd.servers.config import server_timezone
+from mltd.servers.utilities import format_datetime
 
 
 @dispatcher.add_method(name='StoryService.GetStoryList', context_arg='context')
@@ -117,5 +122,54 @@ def get_story_list(params, context):
     return {
         'main_story_list': main_story_list,
         'main_story_contact_status_list': main_story_contact_status_list
+    }
+
+
+@dispatcher.add_method(name='StoryService.GetTopicsList')
+def get_topics_list(params):
+    """Service for getting a list of (loading screen) topics.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing the following keys.
+        recent_release_date: The most recent release date from the list.
+        topics_status_list: A list of dicts representing available
+                            topics (tidbits that appear during loading
+                            screen). Each dict contains the following
+                            keys.
+            mst_topics_id: Master topic ID.
+            topics_category: Topic category.
+                             1 = Secrets (小秘密)
+                             2 = Candid shots (休閒照)
+                             3 = General tips?
+            topics_type: Topic type.
+                         1 = Idol topics
+                         2 = Secretary (事務員) topics
+                         3 = Theater topics
+            mst_topics_icon_id: Master topic icon ID (1-52, 101-102,
+                                903-908).
+            number: A unique number (not necessary sequential) per idol/
+                    secretary/theater per category.
+            release_date: Release date of this topic.
+    """
+    with Session(engine) as session:
+        recent_release_date = session.scalar(
+            select(func.max(MstTopics.release_date))
+        )
+        recent_release_date = recent_release_date.replace(
+            tzinfo=timezone.utc).astimezone(server_timezone)
+
+        mst_topics = session.scalars(
+            select(MstTopics)
+        ).all()
+
+        mst_topics_schema = MstTopicsSchema()
+        topics_status_list = mst_topics_schema.dump(mst_topics, many=True)
+
+    return {
+        'recent_release_date': format_datetime(recent_release_date),
+        'topics_status_list': topics_status_list
     }
 

@@ -370,6 +370,58 @@ if __name__ == '__main__':
             session.add(unit)
 
         result = session.execute(
+            select(MstExtendSong.mst_song_id, MstExtendSong.unit_song_type,
+                   MstExtendSong.song_unit_idol_id_list)
+        )
+        n_card_ids = session.scalars(
+            select(Card.card_id)
+            .join(Card.mst_card)
+            .where(Card.user == user)
+            .where(MstCard.rarity == 1)
+            .order_by(MstCard.mst_idol_id)
+        ).all()
+        for mst_song_id, unit_song_type, song_unit_idol_id_list in result:
+            song_unit = SongUnit(
+                user_id=user.user_id,
+                mst_song_id=mst_song_id,
+                unit_song_type=unit_song_type,
+                is_new=False
+            )
+            song_unit_idols = [
+                int(x) for x in song_unit_idol_id_list.split(',')][
+                :5 if unit_song_type == 1 else 13]
+            unused_idols = [i for i in range(1, 53)]
+            for i in range(len(song_unit_idols)):
+                if song_unit_idols[i]:
+                    unused_idols.remove(song_unit_idols[i])
+                else:
+                    song_unit_idols[i] = unused_idols.pop(0)
+            position = 1
+            for idol in song_unit_idols:
+                song_unit.song_unit_idols.append(SongUnitIdol(
+                    position=position,
+                    card_id=n_card_ids[idol-1],
+                    mst_costume_id=idol,
+                    mst_lesson_wear_id=idol
+                ))
+                position += 1
+            session.add(song_unit)
+        song_unit = SongUnit(
+            user_id=user.user_id,
+            mst_song_id=10021,
+            unit_song_type=2,
+            is_new=True
+        )
+        for i in range(1, 14):
+            song_unit.song_unit_idols.append(SongUnitIdol(
+                position=i,
+                card_id=n_card_ids[i-1],
+                mst_costume_id=i,
+                mst_lesson_wear_id=i
+            ))
+        session.add(song_unit)
+
+        result = session.execute(
             select(MstMainStoryChapter.mst_main_story_id,
                    MstMainStoryChapter.chapter)
         )

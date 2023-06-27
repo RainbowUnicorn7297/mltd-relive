@@ -834,6 +834,33 @@ class UnitIdolSchema(SQLAlchemyAutoSchema):
         ordered = True
 
 
+class SongUnitSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = SongUnit
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    song_unit_idols = Nested('SongUnitIdolSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate idol_list.
+        data['idol_list'] = data['song_unit_idols']
+        del data['song_unit_idols']
+
+        return data
+
+
+class SongUnitIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = SongUnitIdol
+        include_fk = True
+        exclude = ('user_id', 'mst_song_id', 'position')
+        ordered = True
+
+
 class MstMainStorySchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstMainStory
@@ -1332,6 +1359,18 @@ class RecordTimeSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['time'] = str_to_datetime(data['time'])
+        return data
+
+
+class MstTopicsSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstTopics
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['release_date'] = str_to_datetime(
+            data['release_date']).astimezone(server_timezone)
         return data
 
 
