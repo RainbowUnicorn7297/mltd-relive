@@ -12,3 +12,11 @@ are platinum star theater and platinum star tour necessary?
 
 mst_offer
 incomplete (166/208)
+
+mst_mission
+these are manually reconstructed; need to verify with actual JP data
+mst_mission_id=105: 50 idols reached 10000 affection
+mst_mission_id=111, 158-169: producer level reached 400-950
+mst_mission_id=152-153: LP reached 4900-5000
+mst_idol_mission_id=103-260: idol affection reached 25000-100000
+is "login for 1000 days" JP only?

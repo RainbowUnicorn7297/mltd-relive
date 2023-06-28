@@ -44,6 +44,12 @@ def application(environ, start_response):
             request = decrypt_request(request)
             story_id = request['params'][0]['event_talk_story_id']
             response = f'{service}.response.{story_id}'
+        elif service == 'BatchReqest_MakeCache':
+            request_len = int(environ['CONTENT_LENGTH'])
+            request = environ['wsgi.input'].read(request_len)
+            request = decrypt_request(request)
+            if len(request) == 1:
+                response = f'{request[0]["method"]}.response'
         response = path.join(response_path(), response)
 
         ret = b''
