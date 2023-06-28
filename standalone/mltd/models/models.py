@@ -1784,12 +1784,18 @@ class MstEventTalkStory(Base):
     __tablename__ = 'mst_event_talk_story'
 
     mst_event_talk_story_id: Mapped[int] = mapped_column(primary_key=True)
+    mst_event_talk_control_id = mapped_column(
+        ForeignKey('mst_event_talk_control.mst_event_talk_control_id'),
+        nullable=False)
     episode: Mapped[int]
     release_event_point: Mapped[int]
     mst_event_talk_speaker_id: Mapped[str]
     bg_id: Mapped[str]
     thumbnail_id: Mapped[str]
     begin_date: Mapped[datetime]
+
+    mst_event_talk_control: Mapped['MstEventTalkControl'] = relationship(
+        lazy='joined', innerjoin=True)
 
 
 class EventTalkStory(Base):
@@ -1803,6 +1809,9 @@ class EventTalkStory(Base):
     released_date: Mapped[datetime] = mapped_column(default=datetime(1, 1, 1))
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
+
+    mst_event_talk_story: Mapped['MstEventTalkStory'] = relationship(
+        lazy='joined', innerjoin=True)
 
 
 class MstEventTalkCallText(Base):
@@ -1830,11 +1839,12 @@ class MstEventTalkControl(Base):
     release_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                     default=3001, nullable=False)
     release_item_amount: Mapped[int] = mapped_column(default=1)
-    reward_type: Mapped[int] = mapped_column(default=4)
-    reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
-                                       default=3, nullable=False)
-    reward_item_type: Mapped[int] = mapped_column(default=1)
-    reward_amount: Mapped[int] = mapped_column(default=25)
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+
+    mst_reward_item: Mapped['MstRewardItem'] = relationship(lazy='joined',
+                                                            innerjoin=True)
+    mst_event: Mapped['MstEvent'] = relationship(lazy='joined', innerjoin=True)
 
 
 class MstMissionSchedule(Base):

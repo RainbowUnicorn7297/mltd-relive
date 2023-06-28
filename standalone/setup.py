@@ -452,5 +452,18 @@ if __name__ == '__main__':
         session.add(Jewel(
             user_id=user.user_id
         ))
+
+        result = session.execute(
+            select(MstEventTalkStory.mst_event_talk_story_id,
+                   MstEventTalkStory.begin_date)
+        )
+        for mst_event_talk_story_id, begin_date in result:
+            session.add(EventTalkStory(
+                user_id=user.user_id,
+                mst_event_talk_story_id=mst_event_talk_story_id,
+                released_date=begin_date,
+                is_released=True,
+                is_read=True
+            ))
         session.commit()
 

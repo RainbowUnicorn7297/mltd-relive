@@ -1374,6 +1374,92 @@ class MstTopicsSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstEventSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEvent
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        data['page_begin_date'] = str_to_datetime(
+            data['page_begin_date']).astimezone(server_timezone)
+        data['page_end_date'] = str_to_datetime(
+            data['page_end_date']).astimezone(server_timezone)
+        data['boost_begin_date'] = str_to_datetime(data['boost_begin_date'])
+        data['boost_end_date'] = str_to_datetime(data['boost_end_date'])
+        return data
+
+
+class MstEventTalkStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventTalkStory
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate mst_event_talk_speaker_id.
+        data['mst_event_talk_speaker_id'] = [
+            int(x) for x in data['mst_event_talk_speaker_id'].split(',')]
+
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class EventTalkStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = EventTalkStory
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id',)
+        ordered = True
+
+    mst_event_talk_story = Nested('MstEventTalkStorySchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_event_talk_story = data['mst_event_talk_story']
+        data['episode'] = mst_event_talk_story['episode']
+        data['release_event_point'] = mst_event_talk_story[
+            'release_event_point']
+        data['mst_event_talk_speaker_id'] = mst_event_talk_story[
+            'mst_event_talk_speaker_id']
+        data['bg_id'] = mst_event_talk_story['bg_id']
+        data['thumbnail_id'] = mst_event_talk_story['thumbnail_id']
+        data['begin_date'] = mst_event_talk_story['begin_date']
+        del data['mst_event_talk_story']
+        data['released_date'] = str_to_datetime(data['released_date'])
+        return data
+
+
+class MstEventTalkCallTextSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventTalkCallText
+        ordered = True
+
+
+class MstEventTalkControlSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventTalkControl
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_reward_item_id', 'mst_event')
+        ordered = True
+
+    mst_reward_item = Nested('MstRewardItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate reward_item_list.
+        data['reward_item_list'] = [data['mst_reward_item']]
+        del data['mst_reward_item']
+
+        return data
+
+
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PanelMissionSheet
