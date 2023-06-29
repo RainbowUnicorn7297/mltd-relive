@@ -182,3 +182,51 @@ def get_event_talk_archive_list(params, context):
 
     return {'event_talk_archive_list': event_talk_archive_list}
 
+
+@dispatcher.add_method(name='EventService.GetEventLiveInfo')
+def get_event_live_info(params):
+    """Service for getting event live info.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing event live info (see implementation below).
+    """
+    return {
+        'event_live_info': {
+            'mst_event_id': 0,
+            'mst_song_id': 0,
+            'mst_item_id': 0,
+            'mst_event_macaroon_cost_list': None,
+            'ratio': 0,
+            'is_boost': False,
+            'event_appeal_type': 0,
+            'appeal_ratio': 0
+        }
+    }
+
+
+@dispatcher.add_method(name='EventService.GetEventMacaroon')
+def get_event_macaroon(params):
+    """Service for getting event macaroon.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing event macaroon info (see implementation below).
+    """
+    return {
+        'event_macaroon': {
+            'event_macaroon_id': '',
+            'user_id': '',
+            'mst_event_id': 0,
+            'amount': 0,
+            'create_date': None,
+            'max_event_item_count': 0,
+            'vitality_scale_list': None,
+            'event_item_scale_list': None
+        }
+    }
+

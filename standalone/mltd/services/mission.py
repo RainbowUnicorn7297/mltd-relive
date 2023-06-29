@@ -2,7 +2,7 @@ from uuid import UUID
 
 from jsonrpc import dispatcher
 from sqlalchemy import and_, or_, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, contains_eager
 
 from mltd.models.engine import engine
 from mltd.models.models import (Mission, MstMission, MstMissionSchedule,
@@ -163,20 +163,13 @@ def get_mission_list(params, context):
         if mission_type_list:
             mission_stmt = (
                 mission_stmt
-                .options(joinedload(
-                    Mission.mst_mission.and_(
-                        or_(
-                            MstMission.mission_type.in_(mission_type_list),
-                            and_(
-                                ~MstMission.mission_type.in_(
-                                    mission_type_list),
-                                Mission.mission_state == 3
-                            )
-                        ),
-                        MstMission.mission_type != 2
-                    ),
-                    innerjoin=True
-                ))
+                .join(Mission.mst_mission)
+                .options(contains_eager(Mission.mst_mission))
+                .where(or_(
+                    MstMission.mission_type.in_(mission_type_list),
+                    and_(~MstMission.mission_type.in_(mission_type_list),
+                         Mission.mission_state == 3)))
+                .where(MstMission.mission_type != 2)
             )
         missions = session.scalars(mission_stmt).all()
         mission_summary = session.scalars(

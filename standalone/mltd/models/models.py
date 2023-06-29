@@ -98,6 +98,8 @@ class User(Base):
     record_times: Mapped[List['RecordTime']] = relationship(
         back_populates='user')
     missions: Mapped[List['Mission']] = relationship(back_populates='user')
+    special_stories: Mapped[List['SpecialStory']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -2002,7 +2004,6 @@ class MstSpecialStory(Base):
     """Master table for special stories.
 
     mst_idol_id_list: comma-separated mst_idol_ids
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_special_story'
 
@@ -2012,8 +2013,8 @@ class MstSpecialStory(Base):
     cue_name: Mapped[str]
     scenario_id: Mapped[str]
     number: Mapped[int]
-    reward_type: Mapped[Optional[int]]
-    reward_amount: Mapped[Optional[int]]
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'))
     story_type: Mapped[int]
     mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'), default=0,
                                 insert_default=None)
@@ -2026,6 +2027,11 @@ class MstSpecialStory(Base):
             2099, 12, 31, tzinfo=server_timezone
         ).astimezone(timezone.utc))
 
+    mst_special_mv_unit_idols: Mapped[List[
+        'MstSpecialMVUnitIdol']] = relationship(
+            lazy='selectin', order_by='[MstSpecialMVUnitIdol.position]')
+    mst_reward_item: Mapped['MstRewardItem'] = relationship(lazy='joined')
+
 
 class MstSpecialMVUnitIdol(Base):
     """Master table for unit idols in special MVs."""
@@ -2033,10 +2039,14 @@ class MstSpecialMVUnitIdol(Base):
 
     mst_special_story_id = mapped_column(
         ForeignKey('mst_special_story.mst_special_story_id'), primary_key=True)
+    position: Mapped[int] = mapped_column(primary_key=True)
     mst_idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'),
-                                primary_key=True)
+                                nullable=False)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
+
+    mst_costume: Mapped['MstCostume'] = relationship(lazy='joined',
+                                                     innerjoin=True)
 
 
 class SpecialStory(Base):
@@ -2048,6 +2058,17 @@ class SpecialStory(Base):
         ForeignKey('mst_special_story.mst_special_story_id'), primary_key=True)
     is_released: Mapped[bool] = mapped_column(default=True)
     is_read: Mapped[bool] = mapped_column(default=False)
+
+    user: Mapped['User'] = relationship(back_populates='special_stories')
+    mst_special_story: Mapped['MstSpecialStory'] = relationship(lazy='joined',
+                                                                innerjoin=True)
+    card: Mapped['Card'] = relationship(
+        secondary='mst_special_story',
+        primaryjoin='and_(SpecialStory.user_id == Card.user_id, '
+            + 'SpecialStory.mst_special_story_id '
+            + '== MstSpecialStory.mst_special_story_id)',
+        secondaryjoin='MstSpecialStory.mst_card_id == Card.mst_card_id',
+        viewonly=True, lazy='selectin')
 
 
 class MstEventStory(Base):

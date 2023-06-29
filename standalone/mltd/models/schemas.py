@@ -102,7 +102,7 @@ class UserSchema(SQLAlchemyAutoSchema):
                    'songs', 'courses', 'cards', 'items', 'idols', 'costumes',
                    'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
                    'song_units', 'main_story_chapters', 'campaigns',
-                   'record_times', 'missions')
+                   'record_times', 'missions', 'special_stories')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -1496,6 +1496,7 @@ class MstPanelMissionSheetSchema(SQLAlchemyAutoSchema):
         # Populate sheet_reward_list.
         data['sheet_reward_list'] = [data['mst_mission_reward']]
         del data['mst_mission_reward']
+
         return data
 
 
@@ -1598,6 +1599,7 @@ class MstMissionRewardSchema(SQLAlchemyAutoSchema):
                 'is_recommend': False,
                 'song_parts_type': 0
             }
+
         return data
 
 
@@ -1639,6 +1641,104 @@ class MissionSchema(SQLAlchemyAutoSchema):
         data['mission_operation_label'] = mst_mission[
             'mission_operation_label']
         del data['mst_mission']
+        return data
+
+
+class MstSpecialStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstSpecialStory
+        include_fk = True
+        include_relationships = True
+
+    mst_special_mv_unit_idols = Nested('MstSpecialMVUnitIdolSchema', many=True)
+    mst_reward_item = Nested('MstRewardItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class MstSpecialMVUnitIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstSpecialMVUnitIdol
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_special_story_id', 'position', 'mst_costume_id')
+
+    mst_costume = Nested('MstCostumeSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate costume_status.
+        data['costume_status'] = data['mst_costume']
+        del data['mst_costume']
+
+        return data
+
+
+class SpecialStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = SpecialStory
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_special_story = Nested('MstSpecialStorySchema')
+    card = Nested('CardSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_special_story = data['mst_special_story']
+        data['mst_special_id'] = mst_special_story['mst_special_id']
+
+        # Populate mst_idol_id_list.
+        if not mst_special_story['mst_idol_id_list']:
+            data['mst_idol_id_list'] = None
+        else:
+            data['mst_idol_id_list'] = [
+                int(x)
+                for x in mst_special_story['mst_idol_id_list'].split(',')]
+
+        data['cue_name'] = mst_special_story['cue_name']
+        data['scenario_id'] = mst_special_story['scenario_id']
+        data['number'] = mst_special_story['number']
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = (
+            None if not mst_special_story['mst_reward_item_id']
+            else [mst_special_story['mst_reward_item']])
+
+        data['story_type'] = mst_special_story['story_type']
+
+        # Populate card_status.
+        data['card_status'] = (
+            _empty_card if not mst_special_story['mst_card_id']
+            else data['card'])
+        del data['card']
+
+        # Populate special_mv_status.
+        data['special_mv_status'] = {
+            'mst_special_id': 0,
+            'mst_special_mv_id': 0,
+            'mst_song_id': (
+                0 if not mst_special_story['special_mv_mst_song_id']
+                else mst_special_story['special_mv_mst_song_id']),
+
+            # Populate mv_unit_idol_list.
+            'mv_unit_idol_list': (
+                None if not mst_special_story['mst_special_mv_unit_idols']
+                else mst_special_story['mst_special_mv_unit_idols'])
+        }
+
+        data['category'] = mst_special_story['category']
+        data['begin_date'] = mst_special_story['begin_date']
+        data['end_date'] = mst_special_story['end_date']
+        del data['mst_special_story']
         return data
 
 

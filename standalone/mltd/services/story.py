@@ -7,10 +7,10 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import (MainStoryChapter, MstMainStoryContactStatus,
-                                MstTopics)
+                                MstTopics, SpecialStory)
 from mltd.models.schemas import (MainStoryChapterSchema,
                                  MstMainStoryContactStatusSchema,
-                                 MstTopicsSchema)
+                                 MstTopicsSchema, SpecialStorySchema)
 from mltd.servers.config import server_timezone
 from mltd.servers.utilities import format_datetime
 
@@ -172,4 +172,79 @@ def get_topics_list(params):
         'recent_release_date': format_datetime(recent_release_date),
         'topics_status_list': topics_status_list
     }
+
+
+@dispatcher.add_method(name='StoryService.GetSpecialStoryList',
+                       context_arg='context')
+def get_special_story_list(params, context):
+    """Service for getting a list of special stories.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing a single key named
+        'special_story_status_list', whose value is a list of dicts
+        representing special story info. Each dict contains the
+        following keys.
+            mst_special_story_id: Master special story ID.
+            mst_special_id: Master special ID.
+            mst_idol_id_list: A list of 5 master idol IDs representing
+                              the idols in this special story (null if
+                              mst_special_stoy_id=0). If there are less
+                              than 5 idols in this story, zeros are
+                              appended to the list.
+            cue_name: Cue name.
+            scenario_id: Scenario ID.
+            number: A sequential number representing the special story
+                    episode number, starting from number 1 (0 if
+                    mst_special_story_id=0).
+            is_released: Whether the user has unlocked this special
+                         story.
+            is_read: Whether the user has read this special story.
+            reward_item_list: A list of dicts representing the rewards
+                              for reading this special story (null if
+                              no rewards). See the return value
+                              'reward_item_list' of the method
+                              'IdolService.GetIdolList' for the dict
+                              definition.
+            story_type: Story type (1-5).
+            card_status: Unknown (Shika's EX card if
+                         mst_special_story_id=0, null card for
+                         everything else). See the return value
+                         'card_list' of the method
+                         'CardService.GetCardList' for the dict
+                         definition.
+            special_mv_status: A dict representing the MV info for this
+                               special story. Contains the following
+                               keys.
+                mst_special_id: 0.
+                mst_special_mv_id: 0.
+                mst_song_id: Master song ID of the song performed during
+                             this special story (0 if none).
+                mv_unit_idol_list: A list of dicts representing the
+                                   idols performing in the MV (null if
+                                   none). Each dict contains the
+                                   following keys.
+                    mst_idol_id: Master idol ID.
+                    costume_status: A dict representing the costume of
+                                    this idol. See the return value
+                                    'costume_list' of the method
+                                    'CardService.GetCardList' for the
+                                    dict definition.
+            category: Category (2, 3 or 5).
+            begin_date: Date when this special story becomes available.
+            end_date: Date when this special story becomes unavailable.
+    """
+    with Session(engine) as session:
+        special_stories = session.scalars(
+            select(SpecialStory)
+            .where(SpecialStory.user_id == UUID(context['user_id']))
+        ).all()
+
+        special_story_schema = SpecialStorySchema()
+        special_story_status_list = special_story_schema.dump(special_stories,
+                                                              many=True)
+
+    return {'special_story_status_list': special_story_status_list}
 

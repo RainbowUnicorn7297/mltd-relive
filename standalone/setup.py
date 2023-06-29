@@ -242,6 +242,13 @@ if __name__ == '__main__':
                 mst_costume_id=mst_costume_id
             ))
 
+        # TODO: For a new user, Shika's card is already at max level.
+        # level=60 (level=70 after awakened)
+        # exp=47610
+        # skill_level=10
+        # awakening_gauge=300
+        # master_rank=0
+        # skill_probability=45
         _insert_cards(session, user)
 
         # TODO: Filter and set amount properly
@@ -480,6 +487,17 @@ if __name__ == '__main__':
                 finish_date=datetime.now(timezone.utc),
                 progress=goal,
                 mission_state=3
+            ))
+
+        mst_special_story_ids = session.scalars(
+            select(MstSpecialStory.mst_special_story_id)
+        ).all()
+        for mst_special_story_id in mst_special_story_ids:
+            session.add(SpecialStory(
+                user_id=user.user_id,
+                mst_special_story_id=mst_special_story_id,
+                is_released=True if mst_special_story_id != 0 else False,
+                is_read=True if mst_special_story_id != 0 else False
             ))
         session.commit()
 
