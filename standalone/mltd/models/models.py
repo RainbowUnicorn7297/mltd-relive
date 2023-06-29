@@ -97,6 +97,7 @@ class User(Base):
     campaigns: Mapped[List['Campaign']] = relationship(back_populates='user')
     record_times: Mapped[List['RecordTime']] = relationship(
         back_populates='user')
+    missions: Mapped[List['Mission']] = relationship(back_populates='user')
 
 
 class MstIdol(Base):
@@ -1873,16 +1874,9 @@ class MstPanelMissionSheet(Base):
         default=datetime(
             2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
         ).astimezone(timezone.utc))
-    reward_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
-                                       nullable=False)
-    reward_item_type_id: Mapped[int]
-    reward_amount: Mapped[int]
-    reward_mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'),
-                                       default=0, insert_default=None)
-    reward_mst_achievement_id: Mapped[int]
-    reward_mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
-                                       default=0, insert_default=None)
-    reward_resource_id: Mapped[str]
+
+    mst_mission_reward: Mapped['MstMissionReward'] = relationship(
+        lazy='joined', innerjoin=True)
 
 
 class PanelMissionSheet(Base):
@@ -1901,15 +1895,7 @@ class PanelMissionSheet(Base):
 class MstMission(Base):
     """Master table for missions.
 
-    premise_mst_mission_id_list: comma-separated mst_mission_ids
-    reward_mst_item_id_list: comma-separated mst_item_ids
-    reward_item_type_id_list: comma-separated values
-    reward_amount_list: comma-separated values
-    reward_mst_card_id_list: comma-separated mst_card_ids
-    reward_mst_achievement_id_list: comma-separated mst_achievement_ids
-    reward_mst_song_id_list: comma-separated mst_song_ids
-    reward_resource_id_list: comma-separated values
-    TODO: normalize lists if required
+    premise_mst_mission_id_list: zero or one mst_mission_id
     """
     __tablename__ = 'mst_mission'
 
@@ -1923,14 +1909,7 @@ class MstMission(Base):
     goal: Mapped[int]
     option: Mapped[str]
     option2: Mapped[str]
-    premise_mst_mission_id_list: Mapped[Optional[str]]
-    reward_mst_item_id_list: Mapped[str] = mapped_column(default='0')
-    reward_item_type_id_list: Mapped[str] = mapped_column(default='0')
-    reward_amount_list: Mapped[str] = mapped_column(default='1')
-    reward_mst_card_id_list: Mapped[str] = mapped_column(default='0')
-    reward_mst_achievement_id_list: Mapped[str] = mapped_column(default='0')
-    reward_mst_song_id_list: Mapped[str] = mapped_column(default='0')
-    reward_resource_id_list: Mapped[str] = mapped_column(default='')
+    premise_mst_mission_id_list: Mapped[Optional[int]]
     sort_id: Mapped[int]
     jump_type: Mapped[str]
     mission_operation_label: Mapped[str]
@@ -1940,6 +1919,47 @@ class MstMission(Base):
     mst_panel_mission_sheet_id = mapped_column(
         ForeignKey('mst_panel_mission_sheet.mst_panel_mission_sheet_id'),
         default=0, insert_default=None)
+
+    mst_mission_rewards: Mapped[List['MstMissionReward']] = relationship(
+        lazy='selectin')
+
+
+class MstMissionReward(Base):
+    """Master table for mission rewards."""
+    __tablename__ = 'mst_mission_reward'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                'mst_mission_id',
+                'mst_panel_mission_id',
+                'mst_idol_mission_id'
+            ],
+            [
+                'mst_mission.mst_mission_id',
+                'mst_mission.mst_panel_mission_id',
+                'mst_mission.mst_idol_mission_id'
+            ]
+        ),
+    )
+
+    mst_mission_id: Mapped[int] = mapped_column(primary_key=True,
+                                                nullable=True)
+    mst_panel_mission_id: Mapped[int] = mapped_column(primary_key=True,
+                                                      nullable=True)
+    mst_idol_mission_id: Mapped[int] = mapped_column(primary_key=True,
+                                                     nullable=True)
+    mst_panel_mission_sheet_id = mapped_column(
+        ForeignKey('mst_panel_mission_sheet.mst_panel_mission_sheet_id'),
+        primary_key=True, nullable=True)
+    mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
+                                primary_key=True)
+    item_type_id: Mapped[int]
+    amount: Mapped[int]
+    mst_card_id = mapped_column(ForeignKey('mst_card.mst_card_id'))
+    mst_achievement_id: Mapped[int] = mapped_column(primary_key=True)
+    mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'),
+                                primary_key=True, nullable=True)
+    resource_id: Mapped[str]
 
 
 class Mission(Base):
@@ -1972,6 +1992,10 @@ class Mission(Base):
     progress: Mapped[int] = mapped_column(default=0)
     mission_state: Mapped[int] = mapped_column(default=1)
     song_idol_type: Mapped[int] = mapped_column(default=0)
+
+    user: Mapped['User'] = relationship(back_populates='missions')
+    mst_mission: Mapped['MstMission'] = relationship(lazy='joined',
+                                                     innerjoin=True)
 
 
 class MstSpecialStory(Base):

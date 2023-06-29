@@ -465,5 +465,21 @@ if __name__ == '__main__':
                 is_released=True,
                 is_read=True
             ))
+
+        result = session.execute(
+            select(MstMission.mst_mission_id, MstMission.mst_panel_mission_id,
+                   MstMission.mst_idol_mission_id, MstMission.goal)
+        )
+        for (mst_mission_id, mst_panel_mission_id, mst_idol_mission_id,
+             goal) in result:
+            session.add(Mission(
+                user_id=user.user_id,
+                mst_mission_id=mst_mission_id,
+                mst_panel_mission_id=mst_panel_mission_id,
+                mst_idol_mission_id=mst_idol_mission_id,
+                finish_date=datetime.now(timezone.utc),
+                progress=goal,
+                mission_state=3
+            ))
         session.commit()
 

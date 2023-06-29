@@ -5,14 +5,104 @@ from marshmallow_sqlalchemy.fields import Nested
 from mltd.models.models import *
 from mltd.servers.utilities import str_to_datetime
 
+_empty_card = {
+    'card_id': '',
+    'mst_card_id': 0,
+    'mst_idol_id': 0,
+    'mst_costume_id': 0,
+    'bonus_costume_id': 0,
+    'rank5_costume_id': 0,
+    'resource_id': '',
+    'rarity': 0,
+    'idol_type': 0,
+    'exp': 0,
+    'level': 0,
+    'level_max': 0,
+    'life': 0,
+    'vocal': 0,
+    'vocal_base': 0,
+    'vocal_diff': 0,
+    'vocal_max': 0,
+    'vocal_master_bonus': 0,
+    'dance': 0,
+    'dance_base': 0,
+    'dance_diff': 0,
+    'dance_max': 0,
+    'dance_master_bonus': 0,
+    'visual': 0,
+    'visual_base': 0,
+    'visual_diff': 0,
+    'visual_max': 0,
+    'visual_master_bonus': 0,
+    'before_awakened_params': {
+        'life': 0,
+        'vocal': 0,
+        'dance': 0,
+        'visual': 0
+    },
+    'after_awakened_params': {
+        'life': 0,
+        'vocal': 0,
+        'dance': 0,
+        'visual': 0
+    },
+    'skill_level': 0,
+    'skill_level_max': 0,
+    'is_awakened': False,
+    'awakening_gauge': 0,
+    'awakening_gauge_max': 0,
+    'master_rank': 0,
+    'master_rank_max': 0,
+    'cheer_point': 0,
+    'center_effect': {
+        'mst_center_effect_id': 0,
+        'effect_id': 0,
+        'idol_type': 0,
+        'specific_idol_type': 0,
+        'attribute': 0,
+        'value': 0,
+        'song_idol_type': 0,
+        'attribute2': 0,
+        'value2': 0
+    },
+    'card_skill_list': None,
+    'ex_type': 0,
+    'create_date': None,
+    'variation': 0,
+    'master_lesson_begin_date': None,
+    'training_item_list': None,
+    'begin_date': None,
+    'sort_id': 0,
+    'is_new': False,
+    'costume_list': None,
+    'card_category': 0,
+    'extend_card_params': {
+        'level_max': 0,
+        'life': 0,
+        'vocal_max': 0,
+        'vocal_master_bonus': 0,
+        'dance_max': 0,
+        'dance_master_bonus': 0,
+        'visual_max': 0,
+        'visual_master_bonus': 0
+    },
+    'is_master_lesson_five_available': False,
+    'barrier_mission_list': None,
+    'training_point': 0,
+    'sign_type': 0,
+    'sign_type2': 0
+}
+
 
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'songs', 'courses', 'cards',
-                   'items', 'idols', 'costumes', 'memorials', 'episodes',
-                   'costume_advs', 'gashas')
+        exclude = ('pending_song', 'pending_job', 'gasha_medal', 'jewel',
+                   'songs', 'courses', 'cards', 'items', 'idols', 'costumes',
+                   'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
+                   'song_units', 'main_story_chapters', 'campaigns',
+                   'record_times', 'missions')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -341,93 +431,7 @@ class MstRewardItemSchema(SQLAlchemyAutoSchema):
                 'mst_card_id not expected to be non-zero')
 
         # Populate empty card_status.
-        data['card_status'] = {
-            'card_id': '',
-            'mst_card_id': 0,
-            'mst_idol_id': 0,
-            'mst_costume_id': 0,
-            'bonus_costume_id': 0,
-            'rank5_costume_id': 0,
-            'resource_id': '',
-            'rarity': 0,
-            'idol_type': 0,
-            'exp': 0,
-            'level': 0,
-            'level_max': 0,
-            'life': 0,
-            'vocal': 0,
-            'vocal_base': 0,
-            'vocal_diff': 0,
-            'vocal_max': 0,
-            'vocal_master_bonus': 0,
-            'dance': 0,
-            'dance_base': 0,
-            'dance_diff': 0,
-            'dance_max': 0,
-            'dance_master_bonus': 0,
-            'visual': 0,
-            'visual_base': 0,
-            'visual_diff': 0,
-            'visual_max': 0,
-            'visual_master_bonus': 0,
-            'before_awakened_params': {
-                'life': 0,
-                'vocal': 0,
-                'dance': 0,
-                'visual': 0
-            },
-            'after_awakened_params': {
-                'life': 0,
-                'vocal': 0,
-                'dance': 0,
-                'visual': 0
-            },
-            'skill_level': 0,
-            'skill_level_max': 0,
-            'is_awakened': False,
-            'awakening_gauge': 0,
-            'awakening_gauge_max': 0,
-            'master_rank': 0,
-            'master_rank_max': 0,
-            'cheer_point': 0,
-            'center_effect': {
-                'mst_center_effect_id': 0,
-                'effect_id': 0,
-                'idol_type': 0,
-                'specific_idol_type': 0,
-                'attribute': 0,
-                'value': 0,
-                'song_idol_type': 0,
-                'attribute2': 0,
-                'value2': 0
-            },
-            'card_skill_list': None,
-            'ex_type': 0,
-            'create_date': None,
-            'variation': 0,
-            'master_lesson_begin_date': None,
-            'training_item_list': None,
-            'begin_date': None,
-            'sort_id': 0,
-            'is_new': False,
-            'costume_list': None,
-            'card_category': 0,
-            'extend_card_params': {
-                'level_max': 0,
-                'life': 0,
-                'vocal_max': 0,
-                'vocal_master_bonus': 0,
-                'dance_max': 0,
-                'dance_master_bonus': 0,
-                'visual_max': 0,
-                'visual_master_bonus': 0
-            },
-            'is_master_lesson_five_available': False,
-            'barrier_mission_list': None,
-            'training_point': 0,
-            'sign_type': 0,
-            'sign_type2': 0
-        }
+        data['card_status'] = _empty_card
 
         # Populate costume_status.
         data['costume_status'] = data['mst_costume']
@@ -1460,11 +1464,182 @@ class MstEventTalkControlSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstMissionScheduleSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMissionSchedule
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class MstPanelMissionSheetSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstPanelMissionSheet
+        include_relationships = True
+        ordered = True
+
+    mst_mission_reward = Nested('MstMissionRewardSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+
+        # Populate sheet_reward_list.
+        data['sheet_reward_list'] = [data['mst_mission_reward']]
+        del data['mst_mission_reward']
+        return data
+
+
 class PanelMissionSheetSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = PanelMissionSheet
         include_fk = True
         exclude = ('user_id',)
+
+
+class MstMissionSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMission
+        include_relationships = True
+
+    mst_mission_rewards = Nested('MstMissionRewardSchema', many=True)
+
+
+class MstMissionRewardSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstMissionReward
+        include_fk = True
+        exclude = ('mst_mission_id', 'mst_panel_mission_id',
+                   'mst_idol_mission_id', 'mst_panel_mission_sheet_id')
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['mst_card_id'] = 0
+
+        # Populate empty card.
+        data['card'] = _empty_card
+
+        if not data['mst_song_id']:
+            data['mst_song_id'] = 0
+
+        # Populate empty song (defer populating non-empty song to
+        # service implementation because user_id is required).
+        if not data['mst_song_id']:
+            data['song'] = {
+                'song_id': '',
+                'mst_song_id': 0,
+                'mst_song': {
+                    'mst_song_id': 0,
+                    'sort_id': 0,
+                    'resource_id': '',
+                    'idol_type': 0,
+                    'song_type': 0,
+                    'kind': 0,
+                    'stage_id': 0,
+                    'stage_ts_id': 0,
+                    'bpm': 0
+                },
+                'song_type': 0,
+                'sort_id': 0,
+                'released_course_list': None,
+                'course_list': None,
+                'is_released_mv': False,
+                'is_released_horizontal_mv': False,
+                'is_released_vertical_mv': False,
+                'resource_id': '',
+                'idol_type': 0,
+                'kind': 0,
+                'stage_id': 0,
+                'stage_ts_id': 0,
+                'bpm': 0,
+                'is_cleared': False,
+                'first_cleared_date': None,
+                'is_played': False,
+                'lp': 0,
+                'is_visible': False,
+                'apple_song_url': '',
+                'google_song_url': '',
+                'is_disable': False,
+                'song_open_type': 0,
+                'song_open_type_value': 0,
+                'song_open_level': 0,
+                'song_unit_idol_id_list': None,
+                'mst_song_unit_id': 0,
+                'idol_count': 0,
+                'icon_type': 0,
+                'extend_song_status': None,
+                'unit_selection_type': 0,
+                'only_default_unit': False,
+                'only_extend': False,
+                'is_off_vocal_available': False,
+                'off_vocal_status': {
+                    'is_released': False,
+                    'cue_sheet': '',
+                    'cue_name': ''
+                },
+                'song_permit_control': False,
+                'permitted_mst_idol_id_list': None,
+                'permitted_mst_agency_id_list': None,
+                'extend_song_playable_status': 0,
+                'is_new': False,
+                'live_start_voice_mst_idol_id_list': None,
+                'is_enable_random': False,
+                'part_permitted_mst_idol_id_list': None,
+                'is_recommend': False,
+                'song_parts_type': 0
+            }
+        return data
+
+
+class MissionSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Mission
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_mission = Nested('MstMissionSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_mission = data['mst_mission']
+        if mst_mission['mission_type'] <= 3:
+            data['mission_type'] = 0
+        else:
+            data['mission_type'] = mst_mission['mission_type']
+        data['mst_mission_class_id'] = mst_mission['mst_mission_class_id']
+        data['goal'] = mst_mission['goal']
+        data['option'] = mst_mission['option']
+        data['option2'] = mst_mission['option2']
+
+        # Populate premise_mst_mission_id_list.
+        data['premise_mst_mission_id_list'] = (
+            [] if mst_mission['premise_mst_mission_id_list'] is None
+            else [mst_mission['premise_mst_mission_id_list']])
+
+        # Populate mission_reward_list.
+        data['mission_reward_list'] = mst_mission['mst_mission_rewards']
+
+        data['create_date'] = str_to_datetime(data['create_date'])
+        data['update_date'] = str_to_datetime(data['update_date'])
+        data['finish_date'] = str_to_datetime(data['finish_date'])
+        data['sort_id'] = mst_mission['sort_id']
+        data['jump_type'] = mst_mission['jump_type']
+        data['mission_operation_label'] = mst_mission[
+            'mission_operation_label']
+        del data['mst_mission']
+        return data
 
 
 class LPSchema(SQLAlchemyAutoSchema):

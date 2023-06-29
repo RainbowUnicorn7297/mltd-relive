@@ -3,11 +3,11 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Song, User
+from mltd.models.models import Mission, MstMission, MstSong, Song, User
 from mltd.models.schemas import UserSchema
 from mltd.servers.config import server_timezone
 
@@ -160,7 +160,7 @@ def login(params):
                                                     user is on (1 to 3).
                 current_panel_mission_sheet_state: Current state of the
                                                    panel mission sheet.
-                                                   1 = Not started.
+                                                   1 = In progress.
                                                    3 = Completed.
             is_connected_bnid: Whether the user account is bound with a
                                BANDAI NAMCO ID.
@@ -244,6 +244,48 @@ def login(params):
                 user.challenge_song.daily_challenge_mst_song_id = (
                     random.choice(song_ids))
             user.challenge_song.update_date = now
+
+            # Reset daily missions.
+            session.execute(
+                update(Mission)
+                .where(Mission.user == user)
+                .where(Mission.mst_mission.has(MstMission.mission_type == 1))
+                .values(
+                    create_date=now,
+                    update_date=now,
+                    finish_date=datetime(1, 1, 1),
+                    progress=0,
+                    mission_state=1
+                )
+            )
+            song_idol_type_subq = (
+                select(MstSong.idol_type)
+                .where(MstSong.mst_song_id
+                       == user.challenge_song.daily_challenge_mst_song_id)
+                .scalar_subquery()
+            )
+            session.execute(
+                update(Mission)
+                .where(Mission.user == user)
+                .where(Mission.mst_mission_id == 72)
+                .values(song_idol_type=song_idol_type_subq)
+            )
+
+            # Reset weekly missions.
+            if now.astimezone(server_timezone).weekday() == 0:
+                session.execute(
+                    update(Mission)
+                    .where(Mission.user == user)
+                    .where(Mission.mst_mission.has(
+                        MstMission.mission_type == 2))
+                    .values(
+                        create_date=now,
+                        update_date=now,
+                        finish_date=datetime(1, 1, 1),
+                        progress=0,
+                        mission_state=1
+                    )
+                )
 
             # Reset daily free draws.
             for gasha in user.gashas:
