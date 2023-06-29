@@ -248,3 +248,17 @@ def get_special_story_list(params, context):
 
     return {'special_story_status_list': special_story_status_list}
 
+
+@dispatcher.add_method(name='StoryService.GetOfferStoryList')
+def get_offer_story_list(params):
+    """Service for getting a list of offer stories.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing a single key 'offer_story_list' with null
+        value.
+    """
+    return {'offer_story_list': None}
+
