@@ -100,6 +100,10 @@ class User(Base):
     missions: Mapped[List['Mission']] = relationship(back_populates='user')
     special_stories: Mapped[List['SpecialStory']] = relationship(
         back_populates='user')
+    event_stories: Mapped[List['EventStory']] = relationship(
+        back_populates='user')
+    event_memories: Mapped[List['EventMemory']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -1390,7 +1394,8 @@ class MstEventContactStatus(Base):
                                                              primary_key=True)
     mst_theater_event_story_id: Mapped[int] = mapped_column(default=0,
                                                             primary_key=True)
-    mst_event_id: Mapped[int]
+    mst_event_id = mapped_column(ForeignKey('mst_event.mst_event_id'),
+                                 nullable=False)
     duration: Mapped[int]
 
     mst_theater_room_status: Mapped['MstTheaterRoomStatus'] = relationship(
@@ -2075,27 +2080,13 @@ class MstEventStory(Base):
     """Master table for event stories.
 
     mst_idol_id_list: comma-separated mst_idol_ids
-    reward_type_list: comma-separated values
-    reward_mst_item_id_list: comma-separated mst_item_ids
-    reward_item_type_list: comma-separated values
-    reward_amount_list: comma-separated values
-    For mst_event_story_id=168-175:
-        reward_type_list=4,4
-        reward_mst_item_id_list=3,0
-        reward_item_type_list=1,0
-        reward_amount_list=50,1-8
-    For other event stories:
-        reward_type_list=4
-        reward_mst_item_id_list=3
-        reward_item_type_list=1
-        reward_amount_list=50
-    TODO: normalize lists if required
     """
     __tablename__ = 'mst_event_story'
 
     mst_event_story_id: Mapped[int] = mapped_column(primary_key=True)
     mst_idol_id_list: Mapped[str]
-    mst_event_id: Mapped[int]
+    mst_event_id = mapped_column(ForeignKey('mst_event.mst_event_id'),
+                                 nullable=False)
     event_type: Mapped[int]
     number: Mapped[int]
     has_mv: Mapped[bool]
@@ -2107,15 +2098,18 @@ class MstEventStory(Base):
     end_date: Mapped[datetime]
     page_begin_date: Mapped[datetime]
     page_end_date: Mapped[datetime]
-    reward_type_list: Mapped[str]
-    reward_mst_item_id_list: Mapped[str]
-    reward_item_type_list: Mapped[str]
-    reward_amount_list: Mapped[str]
     release_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                         nullable=False)
     release_item_amount: Mapped[int]
     release_item_begin_date: Mapped[datetime]
     before_scenario_id: Mapped[str]
+
+    mst_event_story_mv_unit_idols: Mapped[List[
+        'MstEventStoryMVUnitIdol']] = relationship(
+            lazy='selectin', order_by='[MstEventStoryMVUnitIdol.position]')
+    mst_reward_items: Mapped[List['MstRewardItem']] = relationship(
+        secondary='mst_event_story_reward',
+        viewonly=True, lazy='selectin')
 
 
 class MstEventStoryMVUnitIdol(Base):
@@ -2124,10 +2118,36 @@ class MstEventStoryMVUnitIdol(Base):
 
     mst_event_story_id = mapped_column(
         ForeignKey('mst_event_story.mst_event_story_id'), primary_key=True)
+    position: Mapped[int] = mapped_column(primary_key=True)
     mst_idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'),
-                                primary_key=True)
+                                nullable=False)
     mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
                                    nullable=False)
+
+    mst_costume: Mapped['MstCostume'] = relationship(lazy='joined',
+                                                     innerjoin=True)
+
+
+class MstEventStoryReward(Base):
+    """Master table for event story reward items.
+
+    For mst_event_story_id=168-175:
+        reward_type_list=4,4
+        reward_mst_item_id_list=3,0
+        reward_item_type_list=1,0
+        reward_amount_list=50,1-8
+    For other event stories:
+        reward_type_list=4
+        reward_mst_item_id_list=3
+        reward_item_type_list=1
+        reward_amount_list=50
+    """
+    __tablename__ = 'mst_event_story_reward'
+
+    mst_event_story_id = mapped_column(
+        ForeignKey('mst_event_story.mst_event_story_id'), primary_key=True)
+    mst_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), primary_key=True)
 
 
 class EventStory(Base):
@@ -2141,13 +2161,26 @@ class EventStory(Base):
     is_released: Mapped[bool] = mapped_column(default=False)
     is_read: Mapped[bool] = mapped_column(default=False)
 
+    user: Mapped['User'] = relationship(back_populates='event_stories')
+    mst_event_story: Mapped['MstEventStory'] = relationship(lazy='joined',
+                                                            innerjoin=True)
+    song: Mapped['Song'] = relationship(
+        secondary='mst_event_story',
+        primaryjoin='and_(EventStory.user_id == Song.user_id, '
+            + 'EventStory.mst_event_story_id '
+            + '== MstEventStory.mst_event_story_id)',
+        secondaryjoin='MstEventStory.event_story_mv_mst_song_id '
+            + '== Song.mst_song_id',
+        viewonly=True, lazy='selectin')
+
 
 class MstEventMemory(Base):
     """Master table for event memories."""
     __tablename__ = 'mst_event_memory'
 
     mst_event_memory_id: Mapped[int] = mapped_column(primary_key=True)
-    mst_event_id: Mapped[int]
+    mst_event_id = mapped_column(ForeignKey('mst_event.mst_event_id'),
+                                 nullable=False)
     release_mst_item_id = mapped_column(ForeignKey('mst_item.mst_item_id'),
                                         default=3001, nullable=False)
     release_item_amount: Mapped[int] = mapped_column(default=1)
@@ -2160,6 +2193,10 @@ class MstEventMemory(Base):
         default=None)
     past_mst_event_id: Mapped[int] = mapped_column(default=0)
 
+    mst_event_contact_status: Mapped['MstEventContactStatus'] = relationship(
+        secondary='mst_event',
+        viewonly=True, lazy='joined', innerjoin=True)
+
 
 class EventMemory(Base):
     """Event memory states for each user."""
@@ -2169,6 +2206,10 @@ class EventMemory(Base):
     mst_event_memory_id = mapped_column(
         ForeignKey('mst_event_memory.mst_event_memory_id'), primary_key=True)
     is_released: Mapped[bool] = mapped_column(default=False)
+
+    user: Mapped['User'] = relationship(back_populates='event_memories')
+    mst_event_memory: Mapped['MstEventMemory'] = relationship(lazy='joined',
+                                                              innerjoin=True)
 
 
 class LP(Base):

@@ -92,6 +92,69 @@ _empty_card = {
     'sign_type': 0,
     'sign_type2': 0
 }
+_empty_song = {
+    'song_id': '',
+    'mst_song_id': 0,
+    'mst_song': {
+        'mst_song_id': 0,
+        'sort_id': 0,
+        'resource_id': '',
+        'idol_type': 0,
+        'song_type': 0,
+        'kind': 0,
+        'stage_id': 0,
+        'stage_ts_id': 0,
+        'bpm': 0
+    },
+    'song_type': 0,
+    'sort_id': 0,
+    'released_course_list': None,
+    'course_list': None,
+    'is_released_mv': False,
+    'is_released_horizontal_mv': False,
+    'is_released_vertical_mv': False,
+    'resource_id': '',
+    'idol_type': 0,
+    'kind': 0,
+    'stage_id': 0,
+    'stage_ts_id': 0,
+    'bpm': 0,
+    'is_cleared': False,
+    'first_cleared_date': None,
+    'is_played': False,
+    'lp': 0,
+    'is_visible': False,
+    'apple_song_url': '',
+    'google_song_url': '',
+    'is_disable': False,
+    'song_open_type': 0,
+    'song_open_type_value': 0,
+    'song_open_level': 0,
+    'song_unit_idol_id_list': None,
+    'mst_song_unit_id': 0,
+    'idol_count': 0,
+    'icon_type': 0,
+    'extend_song_status': None,
+    'unit_selection_type': 0,
+    'only_default_unit': False,
+    'only_extend': False,
+    'is_off_vocal_available': False,
+    'off_vocal_status': {
+        'is_released': False,
+        'cue_sheet': '',
+        'cue_name': ''
+    },
+    'song_permit_control': False,
+    'permitted_mst_idol_id_list': None,
+    'permitted_mst_agency_id_list': None,
+    'extend_song_playable_status': 0,
+    'is_new': False,
+    'live_start_voice_mst_idol_id_list': None,
+    'is_enable_random': False,
+    'part_permitted_mst_idol_id_list': None,
+    'is_recommend': False,
+    'song_parts_type': 0
+}
 
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -102,7 +165,8 @@ class UserSchema(SQLAlchemyAutoSchema):
                    'songs', 'courses', 'cards', 'items', 'idols', 'costumes',
                    'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
                    'song_units', 'main_story_chapters', 'campaigns',
-                   'record_times', 'missions', 'special_stories')
+                   'record_times', 'missions', 'special_stories',
+                   'event_stories', 'event_memories')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -1036,6 +1100,23 @@ class MstMainStoryContactStatusSchema(SQLAlchemyAutoSchema):
         }
 
 
+class MstEventContactStatusSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventContactStatus
+        include_fk = True
+        include_relationships = True
+
+    mst_theater_room_status = Nested('MstTheaterRoomStatusSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        return {
+            'mst_event_id': data['mst_event_id'],
+            'theater_room_status': data['mst_theater_room_status'],
+            'duration': data['duration']
+        }
+
+
 class MstAwakeningConfigSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstAwakeningConfig
@@ -1536,69 +1617,7 @@ class MstMissionRewardSchema(SQLAlchemyAutoSchema):
         # Populate empty song (defer populating non-empty song to
         # service implementation because user_id is required).
         if not data['mst_song_id']:
-            data['song'] = {
-                'song_id': '',
-                'mst_song_id': 0,
-                'mst_song': {
-                    'mst_song_id': 0,
-                    'sort_id': 0,
-                    'resource_id': '',
-                    'idol_type': 0,
-                    'song_type': 0,
-                    'kind': 0,
-                    'stage_id': 0,
-                    'stage_ts_id': 0,
-                    'bpm': 0
-                },
-                'song_type': 0,
-                'sort_id': 0,
-                'released_course_list': None,
-                'course_list': None,
-                'is_released_mv': False,
-                'is_released_horizontal_mv': False,
-                'is_released_vertical_mv': False,
-                'resource_id': '',
-                'idol_type': 0,
-                'kind': 0,
-                'stage_id': 0,
-                'stage_ts_id': 0,
-                'bpm': 0,
-                'is_cleared': False,
-                'first_cleared_date': None,
-                'is_played': False,
-                'lp': 0,
-                'is_visible': False,
-                'apple_song_url': '',
-                'google_song_url': '',
-                'is_disable': False,
-                'song_open_type': 0,
-                'song_open_type_value': 0,
-                'song_open_level': 0,
-                'song_unit_idol_id_list': None,
-                'mst_song_unit_id': 0,
-                'idol_count': 0,
-                'icon_type': 0,
-                'extend_song_status': None,
-                'unit_selection_type': 0,
-                'only_default_unit': False,
-                'only_extend': False,
-                'is_off_vocal_available': False,
-                'off_vocal_status': {
-                    'is_released': False,
-                    'cue_sheet': '',
-                    'cue_name': ''
-                },
-                'song_permit_control': False,
-                'permitted_mst_idol_id_list': None,
-                'permitted_mst_agency_id_list': None,
-                'extend_song_playable_status': 0,
-                'is_new': False,
-                'live_start_voice_mst_idol_id_list': None,
-                'is_enable_random': False,
-                'part_permitted_mst_idol_id_list': None,
-                'is_recommend': False,
-                'song_parts_type': 0
-            }
+            data['song'] = _empty_song
 
         return data
 
@@ -1675,6 +1694,11 @@ class MstSpecialMVUnitIdolSchema(SQLAlchemyAutoSchema):
     def _convert(self, data, **kwargs):
         # Populate costume_status.
         data['costume_status'] = data['mst_costume']
+        if data['costume_status']['mst_costume_id'] == 0:
+            data['costume_status']['resource_id'] = ''
+            data['costume_status']['costume_name'] = ''
+            data['costume_status']['exclude_random'] = False
+            data['costume_status']['release_date'] = None
         del data['mst_costume']
 
         return data
@@ -1739,6 +1763,202 @@ class SpecialStorySchema(SQLAlchemyAutoSchema):
         data['begin_date'] = mst_special_story['begin_date']
         data['end_date'] = mst_special_story['end_date']
         del data['mst_special_story']
+        return data
+
+
+class MstEventStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventStory
+        include_fk = True
+        include_relationships = True
+
+    mst_event_story_mv_unit_idols = Nested('MstEventStoryMVUnitIdolSchema',
+                                           many=True)
+    mst_reward_items = Nested('MstRewardItemSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        data['page_begin_date'] = str_to_datetime(
+            data['page_begin_date']).astimezone(server_timezone)
+        data['page_end_date'] = str_to_datetime(
+            data['page_end_date']).astimezone(server_timezone)
+        data['release_item_begin_date'] = str_to_datetime(
+            data['release_item_begin_date']).astimezone(
+            server_timezone if data['release_mst_item_id'] else timezone.utc)
+        return data
+
+
+class MstEventStoryMVUnitIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventStoryMVUnitIdol
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_event_story_id', 'position', 'mst_costume_id')
+
+    mst_costume = Nested('MstCostumeSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate costume_status.
+        data['costume_status'] = data['mst_costume']
+        if data['costume_status']['mst_costume_id'] == 0:
+            data['costume_status']['resource_id'] = ''
+            data['costume_status']['costume_name'] = ''
+            data['costume_status']['exclude_random'] = False
+            data['costume_status']['release_date'] = None
+        del data['mst_costume']
+
+        return data
+
+
+class EventStorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = EventStory
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_event_story = Nested('MstEventStorySchema')
+    song = Nested('SongSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_event_story = data['mst_event_story']
+
+        # Populate mst_idol_id_list.
+        data['mst_idol_id_list'] = [
+            int(x) for x in mst_event_story['mst_idol_id_list'].split(',')]
+
+        data['mst_event_id'] = mst_event_story['mst_event_id']
+        data['event_type'] = mst_event_story['event_type']
+        data['number'] = mst_event_story['number']
+        data['has_mv'] = mst_event_story['has_mv']
+        data['has_mv_twin'] = mst_event_story['has_mv_twin']
+
+        # Populate event_story_mv_status.
+        if not mst_event_story['event_story_mv_mst_song_id']:
+            data['event_story_mv_status'] = {
+                'mst_song_id': 0,
+                'mv_song_status': _empty_song,
+                'mv_unit_idol_list': None
+            }
+        else:
+            data['event_story_mv_status'] = {
+                'mst_song_id': mst_event_story['event_story_mv_mst_song_id'],
+                'mv_song_status': data['song'],
+                'mv_unit_idol_list': mst_event_story[
+                    'mst_event_story_mv_unit_idols']
+            }
+            data['event_story_mv_status']['mv_song_status']['song_type'] = 99
+        del data['song']
+
+        # Populate event_story_mv_twin_status.
+        data['event_story_mv_twin_status'] = {
+            'mst_song_id': 0,
+            'mv_song_status': _empty_song,
+            'mv_unit_idol_list': None
+        }
+
+        data['release_event_point'] = mst_event_story['release_event_point']
+        data['released_date'] = str_to_datetime(data['released_date'])
+        data['begin_date'] = mst_event_story['begin_date']
+        data['end_date'] = mst_event_story['end_date']
+        data['page_begin_date'] = mst_event_story['page_begin_date']
+        data['page_end_date'] = mst_event_story['page_end_date']
+
+        # Populate reward_item_list.
+        data['reward_item_list'] = mst_event_story['mst_reward_items']
+
+        data['release_mst_item_id'] = mst_event_story['release_mst_item_id']
+        data['release_item_amount'] = mst_event_story['release_item_amount']
+        data['release_item_begin_date'] = mst_event_story[
+            'release_item_begin_date']
+        data['before_scenario_id'] = mst_event_story['before_scenario_id']
+        del data['mst_event_story']
+        return data
+
+
+class MstEventMemorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstEventMemory
+        include_fk = True
+        include_relationships = True
+
+    mst_event_contact_status = Nested('MstEventContactStatusSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['release_item_begin_date'] = str_to_datetime(
+            data['release_item_begin_date']).astimezone(server_timezone)
+        return data
+
+
+class EventMemorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = EventMemory
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+        ordered = True
+
+    mst_event_memory = Nested('MstEventMemorySchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_event_memory = data['mst_event_memory']
+        data['mst_event_id'] = mst_event_memory['mst_event_id']
+        data['release_mst_item_id'] = mst_event_memory['release_mst_item_id']
+        data['release_item_amount'] = mst_event_memory['release_item_amount']
+        data['release_item_begin_date'] = mst_event_memory[
+            'release_item_begin_date']
+        data['event_memory_type'] = mst_event_memory['event_memory_type']
+
+        # Populate event_contact_status.
+        data['event_contact_status'] = (
+            mst_event_memory['mst_event_contact_status']
+            if mst_event_memory['event_memory_type'] == 1
+            else {
+                'mst_event_id': 0,
+                'theater_room_status': {
+                    'mst_room_id': 0,
+                    'balloon': {
+                        'theater_contact_category_type': 0,
+                        'room_idol_list': None,
+                        'resource_id': '',
+                        'mst_theater_contact_schedule_id': 0,
+                        'mst_theater_contact_id': 0,
+                        'mst_theater_main_story_id': 0,
+                        'mst_theater_guest_main_story_id': 0,
+                        'guest_main_story_has_intro': False,
+                        'mst_guest_main_story_id': 0,
+                        'mst_theater_blog_id': 0,
+                        'mst_theater_costume_blog_id': 0,
+                        'mst_costume_id': 0,
+                        'mst_theater_event_story_id': 0,
+                        'mst_event_story_id': 0,
+                        'mst_event_id': 0
+                    }
+                },
+                "duration": 0
+            }
+        )
+
+        data['mst_song_id'] = mst_event_memory['mst_song_id']
+
+        # Populate event_encounter_message_status.
+        data['event_encounter_message_status'] = {
+            'mst_song_unit_id': mst_event_memory['mst_song_unit_id'],
+            'event_encounter_status_list': mst_event_memory[
+                'event_encounter_status_list'],
+            'past_mst_event_id': mst_event_memory['past_mst_event_id']
+        }
+        del data['mst_event_memory']
+
         return data
 
 

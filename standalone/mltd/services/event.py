@@ -5,8 +5,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import EventTalkStory, MstEventTalkCallText
-from mltd.models.schemas import (EventTalkStorySchema, MstEventSchema,
+from mltd.models.models import (EventMemory, EventStory, EventTalkStory,
+                                MstEventTalkCallText)
+from mltd.models.schemas import (EventMemorySchema, EventStorySchema,
+                                 EventTalkStorySchema, MstEventSchema,
                                  MstEventTalkCallTextSchema,
                                  MstEventTalkControlSchema)
 
@@ -228,5 +230,130 @@ def get_event_macaroon(params):
             'vitality_scale_list': None,
             'event_item_scale_list': None
         }
+    }
+
+
+@dispatcher.add_method(name='EventService.GetEventStoryList',
+                       context_arg='context')
+def get_event_story_list(params, context):
+    """Service for getting a list of event stories.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing the following keys.
+        special_story_status_list: A list of dicts representing event
+                                   story info. Each dict contains the
+                                   following keys.
+            mst_event_story_id: Master event story ID.
+            mst_idol_id_list: A list of at least 5 master idol IDs
+                              representing the idols in this event
+                              story. If there are less than 5 idols in
+                              this story, zeros are appended to the
+                              list.
+            mst_event_id: Master event ID.
+            event_type: Event type (3-5).
+            number: A sequential number representing the event story
+                    episode number, starting from number 0.
+            has_mv: Whether there is MV in this event story.
+            has_mv_twin: false.
+            event_story_mv_status: A dict representing the event story
+                                   MV info. Contains the following keys.
+                mst_song_id: Master song ID (0 if none).
+                mv_song_status: A dict containing the MV song info. See
+                                the return value 'song_list' of the
+                                method 'SongService.GetSongList' for the
+                                dict definition.
+                mv_unit_idol_list: A list of dicts representing the
+                                   idols performing in the MV (null if
+                                   none). See the return value
+                                   'mv_unit_idol_list' of the method
+                                   'StoryService.GetSpecialStoryList'
+                                   for the dict definition.
+            event_story_mv_twin_status: Same as event_story_mv_status,
+                                        but contains no meaningful info.
+            release_event_point: Event points required to unlock this
+                                 event story episode during the event.
+            released_date: Date when the user unlocked this event story.
+            begin_date: Date when this event begins.
+            end_date: Date when this event ends.
+            page_begin_date: Date when this event page becomes
+                             available.
+            page_end_date: Date when this event page becomes
+                           unavailable.
+            is_released: Whether the user has unlocked this event story.
+            is_read: Whether the user has read this event story.
+            reward_item_list: A list of dicts representing the rewards
+                              for reading this event story. See the
+                              return value 'reward_item_list' of the
+                              method 'IdolService.GetIdolList' for the
+                              dict definition.
+            release_mst_item_id: Master item ID of the required item to
+                                 unlock this event story after the event
+                                 period (0 for episodes that are
+                                 unlocked by default, 3001 for episodes
+                                 that require unlocking).
+            release_item_amount: Number of items required to unlock this
+                                 event story after the event period (0
+                                 or 2).
+            release_item_begin_date: Date when this event story becomes
+                                     unlockable using items after the
+                                     event period.
+            before_scenario_id: '-'.
+        event_memory_status_list: A list of dicts representing event
+                                  memory info. Each dict contains the
+                                  following keys.
+            mst_event_memory_id: Master event memory ID.
+            mst_event_id: Master event ID.
+            release_mst_item_id: Master item ID of the required item to
+                                 unlock this event memory after the
+                                 event period (3001).
+            release_item_amount: Number of items required to unlock this
+                                 event memory after the event period
+                                 (1).
+            release_item_begin_date: Date when this event memory becomes
+                                     unlockable using items after the
+                                     event period.
+            is_released: Whether the user has unlocked this event story.
+            event_memory_type: Event memory type (1-3).
+            event_contact_status: A dict representing the theater
+                                  contact info for this event memory
+                                  (event_memory_type=1 only). Each dict
+                                  contains the following keys.
+                mst_event_id: Master event ID.
+                theater_room_status: See the return value
+                                     'theater_room_status' of the method
+                                     'StoryService.GetStoryList' for the
+                                     dict definition.
+                duration: Duration of this theater contact.
+            mst_song_id: Master song ID for this event memory
+                         (event_memory_type=3 only).
+            event_encounter_message_status: A dict containing the
+                                            following keys.
+                mst_song_unit_id: 0.
+                event_encounter_status_list: null.
+                past_mst_event_id: 0.
+    """
+    with Session(engine) as session:
+        event_stories = session.scalars(
+            select(EventStory)
+            .where(EventStory.user_id == UUID(context['user_id']))
+        ).all()
+        event_memories = session.scalars(
+            select(EventMemory)
+            .where(EventMemory.user_id == UUID(context['user_id']))
+        ).all()
+
+        event_story_schema = EventStorySchema()
+        event_story_status_list = event_story_schema.dump(event_stories,
+                                                          many=True)
+        event_memory_schema = EventMemorySchema()
+        event_memory_status_list = event_memory_schema.dump(event_memories,
+                                                            many=True)
+
+    return {
+        'event_story_status_list': event_story_status_list,
+        'event_memory_status_list': event_memory_status_list
     }
 

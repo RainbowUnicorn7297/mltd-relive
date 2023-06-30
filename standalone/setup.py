@@ -499,5 +499,27 @@ if __name__ == '__main__':
                 is_released=True if mst_special_story_id != 0 else False,
                 is_read=True if mst_special_story_id != 0 else False
             ))
+
+        result = session.execute(
+            select(MstEventStory.mst_event_story_id, MstEventStory.begin_date)
+        )
+        for mst_event_story_id, begin_date in result:
+            session.add(EventStory(
+                user_id=user.user_id,
+                mst_event_story_id=mst_event_story_id,
+                released_date=begin_date,
+                is_released=True,
+                is_read=True
+            ))
+
+        mst_event_memory_ids = session.scalars(
+            select(MstEventMemory.mst_event_memory_id)
+        ).all()
+        for mst_event_memory_id in mst_event_memory_ids:
+            session.add(EventMemory(
+                user_id=user.user_id,
+                mst_event_memory_id=mst_event_memory_id,
+                is_released=True
+            ))
         session.commit()
 
