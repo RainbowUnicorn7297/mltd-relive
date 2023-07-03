@@ -254,6 +254,7 @@ if __name__ == '__main__':
         # TODO: Filter and set amount properly
         mst_item_ids = session.scalars(
             select(MstItem.mst_item_id)
+            .where(MstItem.is_visible == True)
         ).all()
         for mst_item_id in mst_item_ids:
             session.add(Item(
@@ -521,5 +522,25 @@ if __name__ == '__main__':
                 mst_event_memory_id=mst_event_memory_id,
                 is_released=True
             ))
+
+        mst_login_bonus_schedule_ids = session.scalars(
+            select(MstLoginBonusSchedule.mst_login_bonus_schedule_id)
+        ).all()
+        for mst_login_bonus_schedule_id in mst_login_bonus_schedule_ids:
+            login_bonus_schedule = LoginBonusSchedule(
+                user_id=user.user_id,
+                mst_login_bonus_schedule_id=mst_login_bonus_schedule_id,
+                next_login_date=datetime(2022, 1, 28, 16, 0, 0)
+            )
+            days = session.scalars(
+                select(MstLoginBonusItem.day)
+                .where(MstLoginBonusItem.mst_login_bonus_schedule_id
+                       == mst_login_bonus_schedule_id)
+            ).all()
+            for day in days:
+                login_bonus_schedule.login_bonus_items.append(LoginBonusItem(
+                    day=day
+                ))
+            session.add(login_bonus_schedule)
         session.commit()
 

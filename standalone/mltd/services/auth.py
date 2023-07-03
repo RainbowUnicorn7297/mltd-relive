@@ -272,7 +272,11 @@ def login(params):
             )
 
             # Reset weekly missions.
-            if now.astimezone(server_timezone).weekday() == 0:
+            if (last_login_date.astimezone(server_timezone).year
+                    != now.astimezone(server_timezone).year
+                    or last_login_date.astimezone(
+                        server_timezone).isocalendar()[1]
+                    != now.astimezone(server_timezone).isocalendar()[1]):
                 session.execute(
                     update(Mission)
                     .where(Mission.user == user)

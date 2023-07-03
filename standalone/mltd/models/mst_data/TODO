@@ -1,7 +1,6 @@
 mst_item
-include jewel? (mst_item_id=3, item_type=1)
+is_visible=0 are manually reconstructed
 what is mst_item_id=502, item_type=4? (dropped from theater contact)
-is mst_item_id=405, item_type=2 money? (dropped from memorial, amount=3000)
 
 mst_theater_room_status & mst_theater_room_idol
 currently contain main story & event story only

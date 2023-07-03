@@ -166,7 +166,7 @@ class UserSchema(SQLAlchemyAutoSchema):
                    'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
                    'song_units', 'main_story_chapters', 'campaigns',
                    'record_times', 'missions', 'special_stories',
-                   'event_stories', 'event_memories')
+                   'event_stories', 'event_memories', 'login_bonus_schedules')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -2004,4 +2004,61 @@ class MapLevelSchema(SQLAlchemyAutoSchema):
 class UnLockSongStatusSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = UnLockSongStatus
+
+
+class MstLoginBonusScheduleSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLoginBonusSchedule
+
+
+class LoginBonusScheduleSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = LoginBonusSchedule
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'user')
+
+    mst_login_bonus_schedule = Nested('MstLoginBonusScheduleSchema')
+    login_bonus_items = Nested('LoginBonusItemSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate login_bonus_item_list.
+        data['login_bonus_item_list'] = data['login_bonus_items']
+        del data['login_bonus_items']
+
+        mst_login_bonus_schedule = data['mst_login_bonus_schedule']
+        data['is_last_day'] = mst_login_bonus_schedule['is_last_day']
+        data['resource_id'] = mst_login_bonus_schedule['resource_id']
+        data['cue_name1'] = mst_login_bonus_schedule['cue_name1']
+        data['cue_name2'] = mst_login_bonus_schedule['cue_name2']
+        data['script_name'] = mst_login_bonus_schedule['script_name']
+        del data['mst_login_bonus_schedule']
+        del data['next_login_date']
+        return data
+
+
+class MstLoginBonusItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstLoginBonusItem
+        include_fk = True
+
+
+class LoginBonusItemSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = LoginBonusItem
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'mst_login_bonus_schedule_id')
+        ordered = True
+
+    mst_login_bonus_item = Nested('MstLoginBonusItemSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['mst_item_id'] = data['mst_login_bonus_item']['mst_item_id']
+        data['item_type'] = data['mst_login_bonus_item']['item_type']
+        data['amount'] = data['mst_login_bonus_item']['amount']
+        del data['mst_login_bonus_item']
+        return data
 

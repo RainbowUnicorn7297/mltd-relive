@@ -1,15 +1,48 @@
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, or_, select, update
 from sqlalchemy.orm import Session, contains_eager
 
 from mltd.models.engine import engine
-from mltd.models.models import (Mission, MstMission, MstMissionSchedule,
-                                MstPanelMissionSheet, PanelMissionSheet, Song)
+from mltd.models.models import (Mission, MstMission, MstMissionReward,
+                                MstMissionSchedule, MstPanelMissionSheet,
+                                PanelMissionSheet, Song)
 from mltd.models.schemas import (MissionSchema, MstMissionScheduleSchema,
                                  MstPanelMissionSheetSchema,
                                  PanelMissionSheetSchema, SongSchema)
+from mltd.services.item import add_item
+
+
+def receive_mission_reward(session: Session, user_id,
+                           mission_reward: MstMissionReward):
+    """User receives the specified reward after completing a mission.
+
+    Args:
+        session: Existing SQLAlchemy session.
+        user_id: User ID.
+        mission_reward: A MstMissionReward object with reward info.
+    Returns:
+        None.
+    """
+    if mission_reward.mst_item_id:
+        add_item(
+            session=session,
+            user_id=user_id,
+            mst_item_id=mission_reward.mst_item_id,
+            item_type=mission_reward.item_type_id,
+            amount=mission_reward.amount
+        )
+    elif mission_reward.mst_song_id:
+        session.execute(
+            update(Song)
+            .where(Song.user_id == user_id)
+            .where(Song.mst_song_id == mission_reward.mst_song_id)
+            .values(is_disable=False)
+        )
+    elif mission_reward.mst_achievement_id:
+        # TODO: Handle achievement
+        raise NotImplementedError('achievement not yet implemented')
 
 
 @dispatcher.add_method(name='MissionService.GetMissionList',
@@ -159,6 +192,7 @@ def get_mission_list(params, context):
         mission_stmt = (
             select(Mission)
             .where(Mission.user_id == UUID(context['user_id']))
+            .where(Mission.mission_state.in_([1, 3]))
         )
         if mission_type_list:
             mission_stmt = (

@@ -104,6 +104,8 @@ class User(Base):
         back_populates='user')
     event_memories: Mapped[List['EventMemory']] = relationship(
         back_populates='user')
+    login_bonus_schedules: Mapped[List['LoginBonusSchedule']] = relationship(
+        back_populates='user')
 
 
 class MstIdol(Base):
@@ -635,6 +637,8 @@ class MstItem(Base):
     is_extend:
         is_extend=true for some Platinum/Selection/SSR tickets
         is_extend=false for everything else
+    is_visible: Whether this item is shown when ItemService.GetItemList
+                is invoked
     """
     __tablename__ = 'mst_item'
 
@@ -647,6 +651,7 @@ class MstItem(Base):
     value1: Mapped[int]
     value2: Mapped[int]
     is_extend: Mapped[bool]
+    is_visible: Mapped[bool]
 
 
 class Item(Base):
@@ -2346,6 +2351,26 @@ class MstLoginBonusSchedule(Base):
     script_name: Mapped[str]
 
 
+class LoginBonusSchedule(Base):
+    """Login bonus schedule states for each user."""
+    __tablename__ = 'login_bonus_schedule'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_login_bonus_schedule_id = mapped_column(
+        ForeignKey('mst_login_bonus_schedule.mst_login_bonus_schedule_id'),
+        primary_key=True)
+    next_login_date: Mapped[datetime] = mapped_column(
+        default=(datetime.now(server_timezone) + timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ).astimezone(timezone.utc))
+
+    user: Mapped['User'] = relationship(back_populates='login_bonus_schedules')
+    mst_login_bonus_schedule: Mapped['MstLoginBonusSchedule'] = relationship(
+        lazy='joined', innerjoin=True)
+    login_bonus_items: Mapped[List['LoginBonusItem']] = relationship(
+        order_by='[LoginBonusItem.day]')
+
+
 class MstLoginBonusItem(Base):
     """Master table for login bonus items."""
     __tablename__ = 'mst_login_bonus_item'
@@ -2374,16 +2399,25 @@ class LoginBonusItem(Base):
                 'mst_login_bonus_item.day'
             ]
         ),
+        ForeignKeyConstraint(
+            [
+                'user_id',
+                'mst_login_bonus_schedule_id'
+            ],
+            [
+                'login_bonus_schedule.user_id',
+                'login_bonus_schedule.mst_login_bonus_schedule_id'
+            ]
+        )
     )
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     mst_login_bonus_schedule_id: Mapped[int] = mapped_column(primary_key=True)
     day: Mapped[int] = mapped_column(primary_key=True)
     reward_item_state: Mapped[int] = mapped_column(default=1)
-    next_login_date: Mapped[datetime] = mapped_column(
-        default=(datetime.now(server_timezone) + timedelta(days=1)).replace(
-            hour=0, minute=0, second=0, microsecond=0
-        ).astimezone(timezone.utc))
+
+    mst_login_bonus_item: Mapped['MstLoginBonusItem'] = relationship(
+        viewonly=True, lazy='joined', innerjoin=True)
 
 
 class MstOffer(Base):

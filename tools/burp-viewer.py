@@ -1,16 +1,16 @@
-import glfw
-import OpenGL.GL as gl
-
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
-
-from tkinter.filedialog import askopenfilename
-
+import gzip
+import json
+import os
+from base64 import b64decode
+from tkinter.filedialog import askdirectory, askopenfilename
 from xml.etree import ElementTree as ET
+
+import glfw
+import imgui
+import OpenGL.GL as gl
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-from base64 import b64encode, b64decode
-import gzip, json
+from Crypto.Util.Padding import unpad
+from imgui.integrations.glfw import GlfwRenderer
 
 key = b'do8PxbqYKV7cexTrt4J3fmgBtXXzu+dP'
 iv = b'\x00' * 16
@@ -43,10 +43,35 @@ def decrypt_response(data):
     data = gzip.decompress(bytearray(data)[16:])
     return json.loads(data)
 
-def load_file():
+def load_file(filename, reset=True):
     global ids, methods, requests, responses, selected_id
-    filename = askopenfilename()
     if not filename:
+        return
+    if reset:
+        ids = []
+        methods = []
+        requests = []
+        responses = []
+        selected_id = -1
+        update_data()
+    try:
+        tree = ET.parse(filename)
+        root = tree.getroot()
+        for item in root:
+            host = item.find('host').text
+            if 'appspot.com' in host and 'webview' not in host:
+                request = b64decode(item.find('request').text).decode('utf-8')
+                response = b64decode(item.find('response').text).decode('utf-8')
+                methods.append(item.find('path').text)
+                requests.append(request)
+                responses.append(response)
+        ids = [n for n in range(len(methods))]
+    except:
+        pass
+
+def load_folder(directory):
+    global ids, methods, requests, responses, selected_id
+    if not directory:
         return
     ids = []
     methods = []
@@ -54,20 +79,9 @@ def load_file():
     responses = []
     selected_id = -1
     update_data()
-    try:
-        tree = ET.parse(filename)
-        root = tree.getroot()
-        for item in root:
-            host = item.find('host').text
-            if 'appspot.com' in host and 'webview' not in host:
-                methods.append(item.find('path').text)
-                request = b64decode(item.find('request').text).decode('utf-8')
-                requests.append(request)
-                response = b64decode(item.find('response').text).decode('utf-8')
-                responses.append(response)
-        ids = [n for n in range(len(methods))]
-    except:
-        pass
+    for root, dirs, files in os.walk(directory):
+        for name in files:
+            load_file(os.path.join(root, name), reset=False)
 
 def update_data():
     global ids, requests, responses, selected_id
@@ -138,9 +152,12 @@ def main():
 
         if imgui.begin_menu_bar():
             if imgui.begin_menu("File", True):
-                clicked_open, _ = imgui.menu_item('Open')
-                if clicked_open:
-                    load_file()
+                clicked_open_file, _ = imgui.menu_item('Open File')
+                if clicked_open_file:
+                    load_file(askopenfilename())
+                clicked_open_folder, _ = imgui.menu_item('Open Folder')
+                if clicked_open_folder:
+                    load_folder(askdirectory())
                 clicked_quit, _ = imgui.menu_item('Quit')
                 if clicked_quit:
                     exit(1)
