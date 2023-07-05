@@ -192,6 +192,7 @@ def execute_login_bonus(params, context):
                         item.reward_item_state = 1
                     items[0].reward_item_state = 2
                     today_item = items[0]
+                # TODO: item is added to user's present box instead
                 add_item(
                     session=session,
                     user_id=user.user_id,

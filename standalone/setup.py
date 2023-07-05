@@ -558,5 +558,47 @@ if __name__ == '__main__':
             concurrency_max_count=3,
             offers_completed=len(result)
         ))
+
+        card_ids = session.scalars(
+            select(Card.card_id)
+        ).all()
+        # TODO: Default favorite card & idol_type=4 helper card for a
+        #   new user depends on the idol type they picked during
+        #   tutorial.
+        profile = Profile(
+            id_=user.user_id,
+            name=user.name,
+            birthday='0830',
+            is_birthday_public=True,
+            favorite_card_id=f'{user.user_id}_59',
+            album_count=len(card_ids) * 2,
+            story_count=len(card_ids) * 2
+        )
+        profile.helper_cards.append(HelperCard(
+            idol_type=1,
+            card_id=f'{user.user_id}_59',
+        ))
+        profile.helper_cards.append(HelperCard(
+            idol_type=2,
+            card_id=f'{user.user_id}_60',
+        ))
+        profile.helper_cards.append(HelperCard(
+            idol_type=3,
+            card_id=f'{user.user_id}_61',
+        ))
+        profile.helper_cards.append(HelperCard(
+            idol_type=4,
+            card_id=f'{user.user_id}_59',
+        ))
+        for i in range(1, 7):
+            profile.clear_song_counts.append(ClearSongCount(
+                live_course=i,
+                count=0
+            ))
+            profile.full_combo_song_counts.append(FullComboSongCount(
+                live_course=i,
+                count=0
+            ))
+        session.add(profile)
         session.commit()
 

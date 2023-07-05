@@ -7,7 +7,7 @@ from sqlalchemy import ForeignKey, ForeignKeyConstraint, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from mltd.models.engine import engine
-from mltd.servers.config import server_timezone
+from mltd.servers.config import server_language, server_timezone
 
 
 class Base(DeclarativeBase):
@@ -2542,7 +2542,6 @@ class Profile(Base):
     """Profile for each user
 
     mst_achievement_id_list: comma-separated mst_achievement_ids
-    TODO: normalize lists if required
     """
     __tablename__ = 'profile'
 
@@ -2550,9 +2549,11 @@ class Profile(Base):
     name: Mapped[str]
     birthday: Mapped[str] = mapped_column(default='')
     is_birthday_public: Mapped[bool] = mapped_column(default=False)
-    comment: Mapped[str]
+    comment: Mapped[str] = mapped_column(
+        default='請多多指教！' if server_language == 'zh'
+        else '잘 부탁드립니다!')
     favorite_card_id = mapped_column(ForeignKey('card.card_id'))
-    favorite_card_befor_awake: Mapped[bool] = mapped_column(default=False)
+    favorite_card_before_awake: Mapped[bool] = mapped_column(default=False)
     mst_achievement_id: Mapped[int] = mapped_column(default=1)
     mst_achievement_id_list: Mapped[Optional[str]] = mapped_column(
         default=None)
@@ -2560,21 +2561,30 @@ class Profile(Base):
     album_count: Mapped[int] = mapped_column(default=55)
     story_count: Mapped[int] = mapped_column(default=0)
 
+    helper_cards: Mapped[List['HelperCard']] = relationship(lazy='selectin')
+    favorite_card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
+    clear_song_counts: Mapped[List['ClearSongCount']] = relationship(
+        lazy='selectin')
+    full_combo_song_counts: Mapped[List['FullComboSongCount']] = relationship(
+        lazy='selectin')
+
 
 class HelperCard(Base):
     """Helper cards for each user."""
     __tablename__ = 'helper_card'
 
-    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    id_ = mapped_column(ForeignKey('profile.id_'), primary_key=True)
     idol_type: Mapped[int] = mapped_column(primary_key=True)
     card_id = mapped_column(ForeignKey('card.card_id'), nullable=False)
+
+    card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
 
 
 class ClearSongCount(Base):
     """Cleared song counts for each user."""
     __tablename__ = 'clear_song_count'
 
-    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    id_ = mapped_column(ForeignKey('profile.id_'), primary_key=True)
     live_course: Mapped[int] = mapped_column(primary_key=True)
     count: Mapped[int] = mapped_column(default=0)
 
@@ -2583,7 +2593,7 @@ class FullComboSongCount(Base):
     """Full combo song counts for each user."""
     __tablename__ = 'full_combo_song_count'
 
-    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    id_ = mapped_column(ForeignKey('profile.id_'), primary_key=True)
     live_course: Mapped[int] = mapped_column(primary_key=True)
     count: Mapped[int] = mapped_column(default=0)
 

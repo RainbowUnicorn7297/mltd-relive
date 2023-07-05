@@ -25,6 +25,7 @@ def receive_mission_reward(session: Session, user_id,
     Returns:
         None.
     """
+    # TODO: reward is added to user's present box instead
     if mission_reward.mst_item_id:
         add_item(
             session=session,

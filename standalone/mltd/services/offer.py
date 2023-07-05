@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 import random
 from uuid import UUID
 
@@ -189,10 +190,18 @@ def get_offer_list(params, context):
                 .where(Offer.slot == 0)
             ).all()
 
+        for offer in ongoing_offers:
+            if (offer.start_date.replace(tzinfo=timezone.utc)
+                    + timedelta(minutes=offer.mst_offer.require_time)
+                    <= datetime.now(timezone.utc)):
+                offer.status = 2
+
         offer_list = []
         offer_schema = OfferSchema()
         offer_list.extend(offer_schema.dump(new_offers, many=True))
         offer_list.extend(offer_schema.dump(ongoing_offers, many=True))
+
+        session.commit()
 
     return {
         'concurrency_max_count': concurrency_max_count,

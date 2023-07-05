@@ -2147,3 +2147,77 @@ class OfferTextSchema(SQLAlchemyAutoSchema):
         del data['mst_offer_text']
         return data
 
+
+class MstBannerSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstBanner
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['open_date'] = str_to_datetime(data['open_date'])
+        data['close_date'] = str_to_datetime(data['close_date'])
+        return data
+
+
+class ProfileSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Profile
+        include_fk = True
+        include_relationships = True
+        ordered = True
+
+    helper_cards = Nested('HelperCardSchema', many=True)
+    favorite_card = Nested('CardSchema')
+    clear_song_counts = Nested('ClearSongCountSchema', many=True)
+    full_combo_song_counts = Nested('FullComboSongCountSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate helper_card_id_list.
+        data['helper_card_id_list'] = []
+        for helper_card in data['helper_cards']:
+            data['helper_card_id_list'].append({
+                'idol_type': helper_card['idol_type'],
+                'card_id': helper_card['card']['card_id']
+            })
+
+        # Populate mst_achievement_id_list.
+        if data['mst_achievement_id_list']:
+            data['mst_achievement_id_list'] = [
+                int(x) for x in data['mst_achievement_id_list'].split(',')]
+
+        # Populate helper_card_list.
+        data['helper_card_list'] = data['helper_cards']
+        del data['helper_cards']
+
+        # Populate clear_song_count_list.
+        data['clear_song_count_list'] = data['clear_song_counts']
+        del data['clear_song_counts']
+
+        # Populate full_combo_count_list.
+        data['full_combo_song_count_list'] = data['full_combo_song_counts']
+        del data['full_combo_song_counts']
+
+        return data
+
+
+class HelperCardSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = HelperCard
+        include_relationships = True
+
+    card = Nested('CardSchema')
+
+
+class ClearSongCountSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = ClearSongCount
+        ordered = True
+
+
+class FullComboSongCountSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = FullComboSongCount
+        ordered = True
+
