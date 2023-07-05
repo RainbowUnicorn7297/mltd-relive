@@ -2062,3 +2062,88 @@ class LoginBonusItemSchema(SQLAlchemyAutoSchema):
         del data['mst_login_bonus_item']
         return data
 
+
+class MstOfferSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstOffer
+        include_fk = True
+
+
+class OfferSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Offer
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id',)
+        ordered = True
+
+    mst_offer = Nested('MstOfferSchema')
+    offer_cards = Nested('OfferCardSchema', many=True)
+    offer_text = Nested('OfferTextSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_offer = data['mst_offer']
+        data['mst_event_id'] = mst_offer['mst_event_id']
+        data['resource_id'] = mst_offer['resource_id']
+        data['resource_logo_id'] = mst_offer['resource_logo_id']
+        data['require_time'] = mst_offer['require_time']
+        data['main_idol_id'] = mst_offer['main_idol_id']
+
+        # Populate recommended_idol_id_list.
+        data['recommended_idol_id_list'] = [
+            mst_offer['recommended_idol_id_list']]
+
+        data['parameter_type'] = mst_offer['parameter_type']
+        data['border_value'] = mst_offer['border_value']
+        del data['mst_offer']
+        data['start_date'] = str_to_datetime(data['start_date'])
+
+        # Populate card_list.
+        data['card_list'] = (
+            None if not data['offer_cards'] else data['offer_cards'])
+        del data['offer_cards']
+
+        data['is_text_completed'] = data['offer_text']['acquired']
+        del data['offer_text']
+        return data
+
+
+class OfferCardSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = OfferCard
+        include_relationships = True
+
+    card = Nested('CardSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        return data['card']
+
+
+class MstOfferTextSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstOfferText
+        include_fk = True
+
+
+class OfferTextSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = OfferText
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id',)
+        ordered = True
+
+    mst_offer_text = Nested('MstOfferTextSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_offer_text = data['mst_offer_text']
+        data['evaluation'] = mst_offer_text['evaluation']
+        data['text_no'] = mst_offer_text['text_no']
+        data['idol_id'] = mst_offer_text['idol_id']
+        data['to_idol_id'] = mst_offer_text['to_idol_id']
+        del data['mst_offer_text']
+        return data
+

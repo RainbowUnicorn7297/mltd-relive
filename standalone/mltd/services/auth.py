@@ -3,11 +3,12 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Mission, MstMission, MstSong, Song, User
+from mltd.models.models import (Item, Mission, MstMission, MstSong, Offer,
+                                Song, User)
 from mltd.models.schemas import UserSchema
 from mltd.servers.config import server_timezone
 
@@ -245,6 +246,17 @@ def login(params):
                     random.choice(song_ids))
             user.challenge_song.update_date = now
 
+            # Remove expired items.
+            session.execute(
+                update(Item)
+                .where(Item.user == user)
+                .where(Item.mst_item_id.in_([
+                    32,     # One-day spark drink 30
+                    33      # One-day spark drink MAX
+                ]))
+                .values(amount=0)
+            )
+
             # Reset daily missions.
             session.execute(
                 update(Mission)
@@ -290,6 +302,13 @@ def login(params):
                         mission_state=1
                     )
                 )
+
+            # Clear offer list.
+            session.execute(
+                delete(Offer)
+                .where(Offer.user_id == user.user_id)
+                .where(Offer.slot == 0)
+            )
 
             # Reset daily free draws.
             for gasha in user.gashas:

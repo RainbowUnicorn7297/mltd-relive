@@ -542,5 +542,21 @@ if __name__ == '__main__':
                     day=day
                 ))
             session.add(login_bonus_schedule)
+
+        result = session.execute(
+            select(MstOfferText.mst_offer_text_id, MstOfferText.evaluation)
+        ).all()
+        for mst_offer_text_id, evaluation in result:
+            session.add(OfferText(
+                user_id=user.user_id,
+                mst_offer_text_id=mst_offer_text_id,
+                evaluation=evaluation,
+                acquired=True
+            ))
+        session.add(OfferSummary(
+            user_id=user.user_id,
+            concurrency_max_count=3,
+            offers_completed=len(result)
+        ))
         session.commit()
 

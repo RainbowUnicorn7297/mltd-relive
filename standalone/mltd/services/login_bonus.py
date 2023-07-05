@@ -9,7 +9,6 @@ from mltd.models.engine import engine
 from mltd.models.models import Mission, MstMission, User
 from mltd.models.schemas import LoginBonusScheduleSchema, MissionSchema
 from mltd.servers.config import server_timezone
-from mltd.servers.utilities import format_datetime
 from mltd.services.item import add_item
 from mltd.services.mission import receive_mission_reward
 
@@ -89,9 +88,9 @@ def execute_login_bonus(params, context):
             open_mission_list: An empty list.
             update_mission_list: An empty list.
             training_point_diff: Unknown. Contains the following keys.
-                'before': 0.
-                'after': 0.
-                'total': 0.
+                before: 0.
+                after: 0.
+                total: 0.
         mission_list: A list of dicts representing missions with changed
                       states. This list is the same as
                       'complete_mission_list' above.
@@ -265,8 +264,7 @@ def execute_login_bonus(params, context):
                     'entrance_direction_resource_id': 'null'
                 }
 
-        result['next_login_date'] = format_datetime(
-            next_login_date.astimezone(server_timezone))
+        result['next_login_date'] = next_login_date.astimezone(server_timezone)
 
         if server_month == 1 and server_day in [1, 2, 3]:
             result['theater_poster'] = {

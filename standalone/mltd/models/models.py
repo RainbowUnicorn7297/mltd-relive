@@ -2442,10 +2442,7 @@ class MstOffer(Base):
 
 
 class Offer(Base):
-    """Offer states for each user.
-    
-    TODO: normalize lists if required
-    """
+    """Offer states for each user."""
     __tablename__ = 'offer'
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
@@ -2454,9 +2451,75 @@ class Offer(Base):
     slot: Mapped[int] = mapped_column(default=0)
     status: Mapped[int] = mapped_column(default=0)
     start_date: Mapped[datetime] = mapped_column(default=datetime(1, 1, 1))
-    card_list: Mapped[Optional[str]] = mapped_column(default=None)
     is_recommended: Mapped[bool] = mapped_column(default=False)
-    is_text_completed: Mapped[bool] = mapped_column(default=False)
+
+    mst_offer: Mapped['MstOffer'] = relationship(lazy='joined', innerjoin=True)
+    offer_cards: Mapped[List['OfferCard']] = relationship(
+        lazy='selectin', cascade='all, delete-orphan')
+    offer_text: Mapped['OfferText'] = relationship(
+        secondary='mst_offer_text',
+        primaryjoin='and_(Offer.user_id == OfferText.user_id, '
+            + 'Offer.mst_offer_id == MstOfferText.mst_offer_id)',
+        lazy='selectin')
+
+
+class OfferCard(Base):
+    """Selected cards for each offer for each user."""
+    __tablename__ = 'offer_card'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['user_id', 'mst_offer_id'],
+            ['offer.user_id', 'offer.mst_offer_id']
+        ),
+    )
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_offer_id = mapped_column(ForeignKey('mst_offer.mst_offer_id'),
+                                 primary_key=True)
+    card_id = mapped_column(ForeignKey('card.card_id'), primary_key=True)
+
+    card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
+
+
+class OfferSummary(Base):
+    """Offer summary for each user."""
+    __tablename__ = 'offer_summary'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    concurrency_max_count: Mapped[int] = mapped_column(default=1)
+    offers_completed: Mapped[int] = mapped_column(default=0)
+
+
+class MstOfferText(Base):
+    """Master table for offer text."""
+    __tablename__ = 'mst_offer_text'
+
+    mst_offer_text_id: Mapped[int] = mapped_column(primary_key=True)
+    evaluation: Mapped[int] = mapped_column(primary_key=True)
+    text_no: Mapped[int]
+    idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'), nullable=False)
+    to_idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'), default=0,
+                               insert_default=None)
+    mst_offer_id = mapped_column(ForeignKey('mst_offer.mst_offer_id'))
+
+
+class OfferText(Base):
+    """Offer text states for each user."""
+    __tablename__ = 'offer_text'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['mst_offer_text_id', 'evaluation'],
+            ['mst_offer_text.mst_offer_text_id', 'mst_offer_text.evaluation']
+        ),
+    )
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_offer_text_id: Mapped[int] = mapped_column(primary_key=True)
+    evaluation: Mapped[int] = mapped_column(primary_key=True)
+    acquired: Mapped[bool] = mapped_column(default=False)
+
+    mst_offer_text: Mapped['MstOfferText'] = relationship(
+        viewonly=True, lazy='joined', innerjoin=True)
 
 
 class MstBanner(Base):

@@ -45,7 +45,11 @@ def application(environ, start_response):
             'user_id': environ.get('HTTP_X_APPLICATION_USER_ID'),
         }
         response = JSONRPCResponseManager.handle(request, dispatcher, context)
-        print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
+        if environ['PATH_INFO'] not in [
+            '/rpc/BatchReqest_MakeCache_Login1',
+            '/rpc/BatchReqest_MakeCache_Login2',
+        ]:
+            print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))
         response = encrypt_response(response)
