@@ -479,7 +479,9 @@ class MstDirectionCategory(Base):
         2=seasonal greeting
         4-6=default greeting???
     3rd idol birthday greeting (mst_direction_category_id=2010) is only
-    available for idols with birthdays between June 29 and September 30.
+    available for idols with birthdays between July 1 and September 30
+    (asset server contains resources between October 1 and October 31,
+    but no dialogue text is displayed).
     1st new year greeting (mst_direction_category_id=2002) is only
     available for Mirai, Shizuka and Tsubasa.
     """

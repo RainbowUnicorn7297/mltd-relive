@@ -26,7 +26,7 @@ def get_banner_list(params, context):
             banner_type: 0.
             open_date: Banner open date.
             close_date: Banner close date.
-            banner_image_link: An URL to the banner image.
+            banner_image_link: A URL to the banner image.
             announce_web_view_link: ''.
             is_gasha_view: True only for Welcome!! guaranteed SSR gacha
                            banner.

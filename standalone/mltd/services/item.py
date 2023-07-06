@@ -19,8 +19,7 @@ def add_item(
         amount=1,
         expire_date=datetime(
             2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
-        ).astimezone(timezone.utc)
-    ):
+        ).astimezone(timezone.utc)):
     """Give specified amount of an item to a user.
 
     Args:

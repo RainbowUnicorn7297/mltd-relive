@@ -2221,3 +2221,31 @@ class FullComboSongCountSchema(SQLAlchemyAutoSchema):
         model = FullComboSongCount
         ordered = True
 
+
+class LastUpdateDateSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = LastUpdateDate
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['last_update_date'] = str_to_datetime(data['last_update_date'])
+        if data['last_update_date_type'] in [9, 10, 11, 12, 13, 14, 15, 17]:
+            data['last_update_date'] = data['last_update_date'].astimezone(
+                server_timezone)
+        return data
+
+
+class MstBirthdayCalendarSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstBirthdayCalendar
+        ordered = True
+
+
+class BirthdaySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Birthday
+        include_fk = True
+        exclude = ('user_id',)
+        ordered = True
+

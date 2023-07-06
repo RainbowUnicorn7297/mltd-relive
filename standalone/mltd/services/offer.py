@@ -182,8 +182,6 @@ def get_offer_list(params, context):
                     is_recommended=False
                 ))
 
-            session.commit()
-
             new_offers = session.scalars(
                 select(Offer)
                 .where(Offer.user_id == user_id)

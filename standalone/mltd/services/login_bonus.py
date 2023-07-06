@@ -2,13 +2,15 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Mission, MstMission, User
-from mltd.models.schemas import LoginBonusScheduleSchema, MissionSchema
+from mltd.models.models import LastUpdateDate, Mission, MstMission, User
+from mltd.models.schemas import (LoginBonusScheduleSchema, MissionSchema,
+                                 MstBirthdayCalendar)
 from mltd.servers.config import server_timezone
+from mltd.services.birthday import get_birthday_entrance_direction_resource
 from mltd.services.item import add_item
 from mltd.services.mission import receive_mission_reward
 
@@ -33,6 +35,8 @@ def execute_login_bonus(params, context):
            - Valentine's Day: Feb 14
            - White Day: Mar 14
            - Christmas: Dec 25
+           - Idol/Secretary birthdays
+           (Side note: Producer birthday is handled on client-side)
     In all cases, do the following.
         1. If server's date is within these periods, return the
            corresponding theater poster info:
@@ -120,8 +124,15 @@ def execute_login_bonus(params, context):
                                     default greeting will be used).
             communication_resource_id: A string for getting
                                        communication resources related
-                                       to this login direction.
-            entrance_direction_resource_id: 'null'.
+                                       to this seasonal greeting ('null'
+                                       for birthday greetings, '' for
+                                       default greetings).
+            entrance_direction_resource_id: A string for getting
+                                            entrance direction resources
+                                            related to this birthday
+                                            greeting ('null' for
+                                            seasonal greetings, '' for
+                                            default greetings).
         login_opening_direction: Unknown. Contains the following keys.
             mst_login_opening_direction_id: 0.
             resource_id: ''.
@@ -240,30 +251,44 @@ def execute_login_bonus(params, context):
             for schedule in user.login_bonus_schedules:
                 schedule.next_login_date = next_login_date
 
+            login_direction = result['login_direction']
             if server_month == 1 and server_day == 1:
-                result['login_direction'] = {
-                    'mst_login_direction_id': 0,    # TODO: Does this matter?
-                    'communication_resource_id': 'season_a_2019_{0}_100',
-                    'entrance_direction_resource_id': 'null'
-                }
+                login_direction['communication_resource_id'] = (
+                    'season_a_2019_{0}_100')
             elif server_month == 2 and server_day == 14:
-                result['login_direction'] = {
-                    'mst_login_direction_id': 0,
-                    'communication_resource_id': 'season_a_2019_{0}_200',
-                    'entrance_direction_resource_id': 'null'
-                }
+                login_direction['communication_resource_id'] = (
+                    'season_a_2019_{0}_200')
             elif server_month == 3 and server_day == 14:
-                result['login_direction'] = {
-                    'mst_login_direction_id': 0,
-                    'communication_resource_id': 'season_a_2019_{0}_300',
-                    'entrance_direction_resource_id': 'null'
-                }
+                login_direction['communication_resource_id'] = (
+                    'season_a_2019_{0}_300')
             elif server_month == 12 and server_day == 25:
-                result['login_direction'] = {
-                    'mst_login_direction_id': 0,
-                    'communication_resource_id': 'season_a_2018_{0}_300',
-                    'entrance_direction_resource_id': 'null'
-                }
+                login_direction['communication_resource_id'] = (
+                    'season_a_2018_{0}_300')
+            else:
+                birthday_calendars = session.scalars(
+                    select(MstBirthdayCalendar)
+                    .where(MstBirthdayCalendar.birthday_month == server_month)
+                    .where(MstBirthdayCalendar.birthday_day == server_day)
+                ).all()
+                if birthday_calendars:
+                    for birthday in birthday_calendars:
+                        if birthday.mst_character_id == 12:
+                            # Mami uses the same resources as Ami
+                            continue
+                        if login_direction['entrance_direction_resource_id']:
+                            raise RuntimeError(
+                                'Not expected to have more than one entrance '
+                                + 'direction')
+                        login_direction['entrance_direction_resource_id'] = (
+                            get_birthday_entrance_direction_resource(
+                                session=session,
+                                mst_character_id=birthday.mst_character_id,
+                                birthday_month=server_month
+                            ))
+            if login_direction['communication_resource_id']:
+                login_direction['entrance_direction_resource_id'] = 'null'
+            elif login_direction['entrance_direction_resource_id']:
+                login_direction['communication_resource_id'] = 'null'
 
         result['next_login_date'] = next_login_date.astimezone(server_timezone)
 
@@ -325,6 +350,13 @@ def execute_login_bonus(params, context):
             }
         if result['theater_poster']['place']:
             result['theater_poster_list'] = [result['theater_poster']]
+
+        session.execute(
+            update(LastUpdateDate)
+            .where(LastUpdateDate.user_id == user.user_id)
+            .where(LastUpdateDate.last_update_date_type == 1)
+            .values(last_update_date=now)
+        )
 
         session.commit()
 

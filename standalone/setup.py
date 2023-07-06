@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
+from mltd.servers.config import server_language, server_timezone
 
 
 def _insert_cards(session: Session, user: User):
@@ -341,7 +342,8 @@ if __name__ == '__main__':
             unit = Unit(
                 user_id=user.user_id,
                 unit_num=unit_num,
-                name=f'團體{unit_num}'
+                name=f'{"團體" if server_language == "zh" else "유닛"}'
+                    + f'{unit_num}'
             )
             # TODO: Default center for a new user depends on the idol
             #   type they picked during tutorial.
@@ -600,5 +602,70 @@ if __name__ == '__main__':
                 count=0
             ))
         session.add(profile)
+
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=1,
+            last_update_date=user.last_login_date
+        ))
+        for i in range(2, 8):
+            session.add(LastUpdateDate(
+                user_id=user.user_id,
+                last_update_date_type=i
+            ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=8,
+            last_update_date=datetime(2022, 1, 27, 4)
+        ))
+        for i in range(9, 11):
+            session.add(LastUpdateDate(
+                user_id=user.user_id,
+                last_update_date_type=i,
+                last_update_date=(
+                    datetime(2021, 9, 27, 15, tzinfo=server_timezone)
+                    .astimezone(timezone.utc))
+            ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=11,
+            last_update_date=(
+                datetime(2018, 1, 1, 0, 0, 18, tzinfo=server_timezone)
+                .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=12,
+            last_update_date=(datetime(2021, 8, 31, 15, tzinfo=server_timezone)
+                              .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=13,
+            last_update_date=(datetime(2021, 9, 27, 12, tzinfo=server_timezone)
+                              .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=17,
+            last_update_date=(datetime(2021, 6, 29, tzinfo=server_timezone)
+                              .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=14,
+            last_update_date=(datetime(2021, 9, 26, tzinfo=server_timezone)
+                              .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=15,
+            last_update_date=(datetime(2020, 11, 5, 15, tzinfo=server_timezone)
+                              .astimezone(timezone.utc))
+        ))
+        session.add(LastUpdateDate(
+            user_id=user.user_id,
+            last_update_date_type=16
+        ))
         session.commit()
 
