@@ -106,6 +106,8 @@ class User(Base):
         back_populates='user')
     login_bonus_schedules: Mapped[List['LoginBonusSchedule']] = relationship(
         back_populates='user')
+    presents: Mapped[List['Present']] = relationship(
+        back_populates='user', order_by='[Present.create_date.desc()]')
 
 
 class MstIdol(Base):
@@ -2665,6 +2667,66 @@ class Birthday(Base):
     is_executed: Mapped[bool] = mapped_column(default=False)
     is_birthday_live_played: Mapped[bool] = mapped_column(default=False)
     mst_idol_id_list: Mapped[Optional[str]] = mapped_column(default=None)
+
+
+class Present(Base):
+    """Presents for each user.
+
+    create_date: required to be unique for cursor pagination
+    exchange_item_list: null
+    """
+    __tablename__ = 'present'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['user_id', 'mst_achievement_id'],
+            ['achievement.user_id', 'achievement.mst_achievement_id']
+        ),
+    )
+
+    present_id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True)
+    user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)
+    comment: Mapped[str]
+    end_date: Mapped[datetime] = mapped_column(
+        default=datetime(2099, 12, 31, 15, 59, 59))
+    create_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc), unique=True)
+    amount: Mapped[int] = mapped_column(default=1)
+    present_type: Mapped[int] = mapped_column(default=1)
+    item_id = mapped_column(ForeignKey('item.item_id'), default=None)
+    card_id = mapped_column(ForeignKey('card.card_id'), default=None)
+    mst_achievement_id = mapped_column(
+        ForeignKey('mst_achievement.mst_achievement_id'), default=None)
+    present_state: Mapped[int] = mapped_column(default=1)
+    exchange_item_list: Mapped[Optional[str]] = mapped_column(default=None)
+
+    user: Mapped['User'] = relationship(back_populates='presents')
+    item: Mapped['Item'] = relationship(lazy='joined')
+    achievement: Mapped['Achievement'] = relationship(viewonly=True,
+                                                      lazy='joined')
+
+
+class MstAchievement(Base):
+    """Master table for achievements."""
+    __tablename__ = 'mst_achievement'
+
+    mst_achievement_id: Mapped[int] = mapped_column(primary_key=True)
+    resource_id: Mapped[str]
+    achievement_type: Mapped[int]
+    begin_date: Mapped[datetime]
+    sort_id: Mapped[int]
+
+
+class Achievement(Base):
+    """Achievements for each user."""
+    __tablename__ = 'achievement'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    mst_achievement_id = mapped_column(
+        ForeignKey('mst_achievement.mst_achievement_id'), primary_key=True)
+    is_released: Mapped[bool] = mapped_column(default=False)
+
+    mst_achievement: Mapped['MstAchievement'] = relationship(lazy='joined',
+                                                             innerjoin=True)
 
 
 if __name__ == '__main__':

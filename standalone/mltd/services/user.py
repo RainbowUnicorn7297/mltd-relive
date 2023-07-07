@@ -134,3 +134,17 @@ def get_record_time_list(params, context):
 
     return {'record_time_list': record_time_list}
 
+
+@dispatcher.add_method(name='UserService.GetDirectMessage')
+def get_direct_messages(params):
+    """Service for getting a list of direct messages sent to the user.
+
+    Invoked as part of the initial batch requests after logging in.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing a single key named 'message_list' with null
+        value.
+    """
+    return {'message_list': None}
+

@@ -166,7 +166,8 @@ class UserSchema(SQLAlchemyAutoSchema):
                    'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
                    'song_units', 'main_story_chapters', 'campaigns',
                    'record_times', 'missions', 'special_stories',
-                   'event_stories', 'event_memories', 'login_bonus_schedules')
+                   'event_stories', 'event_memories', 'login_bonus_schedules',
+                   'presents')
         ordered = True
 
     challenge_song = Nested('ChallengeSongSchema')
@@ -1944,7 +1945,7 @@ class EventMemorySchema(SQLAlchemyAutoSchema):
                         'mst_event_id': 0
                     }
                 },
-                "duration": 0
+                'duration': 0
             }
         )
 
@@ -2248,4 +2249,90 @@ class BirthdaySchema(SQLAlchemyAutoSchema):
         include_fk = True
         exclude = ('user_id',)
         ordered = True
+
+
+class PresentSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Present
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'item_id', 'mst_achievement_id', 'user')
+        ordered = True
+
+    item = Nested('ItemSchema')
+    achievement = Nested('AchievementSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['end_date'] = str_to_datetime(data['end_date'])
+        data['create_date'] = str_to_datetime(data['create_date'])
+
+        # Populate empty item.
+        if not data['item']:
+            data['item'] = {
+                'item_id': '',
+                'mst_item_id': 0,
+                'name': '',
+                'item_navi_type': 0,
+                'amount': 0,
+                'max_amount': 0,
+                'item_type': 0,
+                'sort_id': 0,
+                'value1': 0,
+                'value2': 0,
+                'expire_date': None,
+                'expire_date_list': None,
+                'is_extend': False
+            }
+
+        # Populate empty card.
+        if data['card_id']:
+            raise NotImplementedError('card_id not expected to be non-empty')
+        del data['card_id']
+        data['card'] = _empty_card
+
+        # Populate empty achievement.
+        if not data['achievement']:
+            data['achievement'] = {
+                'mst_achievement_id': 0,
+                'resource_id': '',
+                'is_released': False,
+                'achievement_type': 0,
+                'begin_date': None,
+                'sort_id': 0
+            }
+
+        return data
+
+
+class MstAchievementSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstAchievement
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        return data
+
+
+class AchievementSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Achievement
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id',)
+        ordered = True
+
+    mst_achievement = Nested('MstAchievementSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_achievement = data['mst_achievement']
+        data['resource_id'] = mst_achievement['resource_id']
+        data['achievement_type'] = mst_achievement['achievement_type']
+        data['begin_date'] = mst_achievement['begin_date']
+        data['sort_id'] = mst_achievement['sort_id']
+        del data['mst_achievement']
+        return data
 
