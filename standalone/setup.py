@@ -178,8 +178,8 @@ if __name__ == '__main__':
         session.execute(text('PRAGMA foreign_key_check'))
         session.commit()
 
-    # Insert "admin" data (user with everything fully unlocked).
     with Session(engine) as session:
+        # Insert "admin" data (user with everything fully unlocked).
         user = User(
             user_id=UUID('ffffffff-ffff-ffff-ffff-ffffffffffff'),
             search_id='00000000',
@@ -188,8 +188,8 @@ if __name__ == '__main__':
             vitality=240,
             max_vitality=240,
             live_ticket=500,
-            exp=40_410_050,
-            next_exp=40_500_000,
+            exp=0,
+            next_exp=89_950,
             level=900,
             theater_fan=3_978_000_000,
             last_login_date=datetime(2022, 1, 28, 4, 0, 0),
@@ -592,13 +592,13 @@ if __name__ == '__main__':
             idol_type=4,
             card_id=f'{user.user_id}_59',
         ))
-        for i in range(1, 7):
+        for course in range(1, 7):
             profile.clear_song_counts.append(ClearSongCount(
-                live_course=i,
+                live_course=course,
                 count=0
             ))
             profile.full_combo_song_counts.append(FullComboSongCount(
-                live_course=i,
+                live_course=course,
                 count=0
             ))
         session.add(profile)
@@ -667,5 +667,73 @@ if __name__ == '__main__':
             user_id=user.user_id,
             last_update_date_type=16
         ))
+
+        session.commit()
+
+        # Insert friend and guest data.
+        idol_type_card_ids = {}
+        for idol_type in range(1, 5):
+            idol_type_card_ids[idol_type] = session.scalars(
+                select(MstCard.mst_card_id)
+                .where(MstCard.idol_type.in_([1, 2, 3] if idol_type == 4
+                                             else [idol_type]))
+                .order_by(MstCard.vocal_max + MstCard.dance_max
+                          + MstCard.visual_max)
+            ).all()
+        for i in range(1, 21):
+            another_user = User(
+                user_id=uuid4(),
+                search_id=f'{i:08d}',
+                name=f'Producer{i}'
+            )
+            another_user.user_id_hash = b64encode(
+                bytes(str(another_user.user_id), encoding='ascii')
+                + bytes.fromhex('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b9'
+                                + '34ca495991b7852b855')
+            )
+            another_user.challenge_song = ChallengeSong(
+                daily_challenge_mst_song_id=2
+            )
+            another_user.mission_summary = PanelMissionSheet()
+            another_user.map_level = MapLevel()
+            another_user.un_lock_song_status = UnLockSongStatus()
+            session.add(another_user)
+            session.commit()
+
+            _insert_cards(session, another_user)
+
+            profile = Profile(
+                id_=another_user.user_id,
+                name=another_user.name,
+                favorite_card_id=(f'{another_user.user_id}_'
+                                  + f'{idol_type_card_ids[4][-1]}')
+            )
+            for idol_type in range(1, 5):
+                card_id = idol_type_card_ids[idol_type].pop()
+                profile.helper_cards.append(HelperCard(
+                    idol_type=idol_type,
+                    card_id=(f'{another_user.user_id}_{card_id}')
+                ))
+            for course in range(1, 7):
+                profile.clear_song_counts.append(ClearSongCount(
+                    live_course=course,
+                    count=0
+                ))
+                profile.full_combo_song_counts.append(FullComboSongCount(
+                    live_course=course,
+                    count=0
+                ))
+            session.add(profile)
+
+            if i <= 5:
+                session.add(Friend(
+                    user_id=user.user_id,
+                    friend_id=another_user.user_id
+                ))
+                session.add(Friend(
+                    user_id=another_user.user_id,
+                    friend_id=user.user_id
+                ))
+
         session.commit()
 

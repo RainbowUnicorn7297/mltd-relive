@@ -76,8 +76,10 @@ class User(Base):
     pending_job: Mapped['PendingJob'] = relationship(back_populates='user')
     gasha_medal: Mapped['GashaMedal'] = relationship(back_populates='user')
     jewel: Mapped['Jewel'] = relationship(back_populates='user')
+    profile: Mapped['Profile'] = relationship(back_populates='user')
     lps: Mapped[List['LP']] = relationship(
-        back_populates='user', order_by='[LP.lp.desc(), LP.update_date]')
+        back_populates='user', order_by='[LP.lp.desc(), LP.update_date]',
+        lazy='selectin')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
     courses: Mapped[List['Course']] = relationship(back_populates='user')
     cards: Mapped[List['Card']] = relationship(back_populates='user')
@@ -2565,6 +2567,8 @@ class Profile(Base):
     album_count: Mapped[int] = mapped_column(default=55)
     story_count: Mapped[int] = mapped_column(default=0)
 
+    user: Mapped['User'] = relationship(back_populates='profile',
+                                        lazy='selectin')
     helper_cards: Mapped[List['HelperCard']] = relationship(lazy='selectin')
     favorite_card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
     clear_song_counts: Mapped[List['ClearSongCount']] = relationship(
@@ -2727,6 +2731,57 @@ class Achievement(Base):
 
     mst_achievement: Mapped['MstAchievement'] = relationship(lazy='joined',
                                                              innerjoin=True)
+
+
+class RandomLive(Base):
+    """Random live info for each user."""
+    __tablename__ = 'random_live'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    random_live_type: Mapped[int] = mapped_column(primary_key=True)
+    mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'))
+    mode: Mapped[int]
+    course: Mapped[int]
+    live_ticket_count: Mapped[int]
+    unit_song_type: Mapped[int] = mapped_column(default=0)
+
+    random_live_idols: Mapped[List['RandomLiveIdol']] = relationship(
+        lazy='selectin', order_by='[RandomLiveIdol.position]')
+
+
+class RandomLiveIdol(Base):
+    """Selected idols for random live for each user."""
+    __tablename__ = 'random_live_idol'
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['user_id', 'random_live_type'],
+            ['random_live.user_id', 'random_live.random_live_type']
+        ),
+    )
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    random_live_type: Mapped[int] = mapped_column(primary_key=True)
+    position: Mapped[int] = mapped_column(primary_key=True)
+    card_id = mapped_column(ForeignKey('card.card_id'), nullable=False)
+    mst_costume_id = mapped_column(ForeignKey('mst_costume.mst_costume_id'),
+                                   nullable=False)
+    mst_lesson_wear_id = mapped_column(
+        ForeignKey('mst_lesson_wear.mst_lesson_wear_id'), default=0,
+        insert_default=None)
+    costume_is_random: Mapped[bool] = mapped_column(default=False)
+    costume_random_type: Mapped[int] = mapped_column(default=0)
+
+
+class Friend(Base):
+    """Friend list for each user.
+
+    Each relationship is bidirectional (if user A is a friend of user B,
+    there will be two records in this table, one for each direction).
+    """
+    __tablename__ = 'friend'
+
+    user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+    friend_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
 
 
 if __name__ == '__main__':

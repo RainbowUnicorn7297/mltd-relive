@@ -28,7 +28,7 @@ def get_last_update_date_list(params, context):
                                date info. Each dict contains the
                                following keys.
             last_update_date_type: Last update date type (1-17).
-                                   1=Last execute login bonus date?
+                                   1=Present?
                                    2=?
                                    3=?
                                    4=?

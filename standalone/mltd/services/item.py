@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import func, insert, select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
@@ -52,16 +52,13 @@ def add_item(
             .where(Item.mst_item_id == mst_item_id)
         )
         if not item:
-            session.execute(
-                insert(Item)
-                .values(
-                    item_id=f'{user_id}_{mst_item_id}',
-                    user_id=user_id,
-                    mst_item_id=mst_item_id,
-                    amount=amount,
-                    expire_date=expire_date
-                )
-            )
+            session.add(Item(
+                item_id=f'{user_id}_{mst_item_id}',
+                user_id=user_id,
+                mst_item_id=mst_item_id,
+                amount=amount,
+                expire_date=expire_date
+            ))
         else:
             item.amount += amount
             item.expire_date = expire_date

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
@@ -133,6 +134,38 @@ def get_record_time_list(params, context):
             record_time_list = None
 
     return {'record_time_list': record_time_list}
+
+
+@dispatcher.add_method(name='UserService.RecordTime',
+                       context_arg='context')
+def record_time(params, context):
+    """Service for recording current time after performing an action.
+
+    Invoked when the user has just performed an action that needs
+    keeping track of (such as finished reading a tutorial).
+    Args:
+        params: A dict containing a single key 'kind', whose value is a
+                string representing the kind of action performed.
+    Returns:
+        A dict containing a single key 'record_time', whose value is a
+        dict representing the recorded time (same as current time) for
+        the action. See the return value 'record_time_list' of the
+        method 'UserService.GetRecordTimeList' for the dict definition.
+    """
+    with Session(engine) as session:
+        record_time = RecordTime(
+            user_id=UUID(context['user_id']),
+            kind=params['kind'],
+            time=datetime.now(timezone.utc)
+        )
+        session.add(record_time)
+
+        record_time_schema = RecordTimeSchema()
+        record_time_dict = record_time_schema.dump(record_time)
+
+        session.commit()
+
+    return {'record_time': record_time_dict}
 
 
 @dispatcher.add_method(name='UserService.GetDirectMessage')

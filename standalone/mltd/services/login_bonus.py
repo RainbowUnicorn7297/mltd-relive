@@ -292,65 +292,49 @@ def execute_login_bonus(params, context):
 
         result['next_login_date'] = next_login_date.astimezone(server_timezone)
 
+        # TODO: Theater poster only works for the first login of each
+        # day. Default posters are always shown if the user restarts the
+        # game on the same day.
+        poster = result['theater_poster']
         if server_month == 1 and server_day in [1, 2, 3]:
-            result['theater_poster'] = {
-                'theater_poster_id': '',    # TODO: Does this matter?
-                'place': 1,
-                'resource_id': 'theater_poster_201901ny',
-                'begin_date': datetime(
-                                server_year, 1, 1, tzinfo=server_timezone
-                              ).astimezone(timezone.utc),
-                'end_date': datetime(
-                                server_year, 1, 3, 23, 59, 59,
-                                tzinfo=server_timezone
-                            ).astimezone(timezone.utc),
-                'poster_image_url': ''      # TODO: Does this matter?
-            }
+            poster['resource_id'] = 'theater_poster_201901ny'
+            poster['begin_date'] = datetime(
+                server_year, 1, 1, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
+            poster['end_date'] = datetime(
+                server_year, 1, 3, 23, 59, 59, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
         elif server_month == 2 and server_day in [12, 13, 14]:
-            result['theater_poster'] = {
-                'theater_poster_id': '',
-                'place': 1,
-                'resource_id': 'theater_poster_valentine2019',
-                'begin_date': datetime(
-                                server_year, 2, 12, tzinfo=server_timezone
-                              ).astimezone(timezone.utc),
-                'end_date': datetime(
-                                server_year, 2, 14, 23, 59, 59,
-                                tzinfo=server_timezone
-                            ).astimezone(timezone.utc),
-                'poster_image_url': ''
-            }
+            poster['resource_id'] = 'theater_poster_valentine2019'
+            poster['begin_date'] = datetime(
+                server_year, 2, 12, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
+            poster['end_date'] = datetime(
+                server_year, 2, 14, 23, 59, 59, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
         elif server_month == 3 and server_day in [12, 13, 14]:
-            result['theater_poster'] = {
-                'theater_poster_id': '',
-                'place': 1,
-                'resource_id': 'theater_poster_whiteday2019',
-                'begin_date': datetime(
-                                server_year, 3, 12, tzinfo=server_timezone
-                              ).astimezone(timezone.utc),
-                'end_date': datetime(
-                                server_year, 3, 14, 23, 59, 59,
-                                tzinfo=server_timezone
-                            ).astimezone(timezone.utc),
-                'poster_image_url': ''
-            }
+            poster['resource_id'] = 'theater_poster_whiteday2019'
+            poster['begin_date'] = datetime(
+                server_year, 3, 12, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
+            poster['end_date'] = datetime(
+                server_year, 3, 14, 23, 59, 59, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
         elif server_month == 12 and server_day in [23, 24, 25]:
-            result['theater_poster'] = {
-                'theater_poster_id': '',
-                'place': 1,
-                'resource_id': 'theater_poster_201812xm',
-                'begin_date': datetime(
-                                server_year, 12, 23, tzinfo=server_timezone
-                              ).astimezone(timezone.utc),
-                'end_date': datetime(
-                                server_year, 12, 25, 23, 59, 59,
-                                tzinfo=server_timezone
-                            ).astimezone(timezone.utc),
-                'poster_image_url': ''
-            }
-        if result['theater_poster']['place']:
-            result['theater_poster_list'] = [result['theater_poster']]
+            poster['resource_id'] = 'theater_poster_201812xm'
+            poster['begin_date'] = datetime(
+                server_year, 12, 23, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
+            poster['end_date'] = datetime(
+                server_year, 12, 25, 23, 59, 59, tzinfo=server_timezone
+            ).astimezone(timezone.utc)
+        if poster['resource_id']:
+            poster['place'] = 1
+            poster['poster_image_url'] = ('https://assets.rainbowunicorn7297'
+                + f'.com/images/{poster["resource_id"]}.png')
+            result['theater_poster_list'] = [poster]
 
+        # TODO: Move this to add_present
         session.execute(
             update(LastUpdateDate)
             .where(LastUpdateDate.user_id == user.user_id)

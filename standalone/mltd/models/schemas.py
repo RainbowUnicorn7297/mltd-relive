@@ -162,10 +162,10 @@ class UserSchema(SQLAlchemyAutoSchema):
         model = User
         include_relationships = True
         exclude = ('pending_song', 'pending_job', 'gasha_medal', 'jewel',
-                   'songs', 'courses', 'cards', 'items', 'idols', 'costumes',
-                   'memorials', 'episodes', 'costume_advs', 'gashas', 'units',
-                   'song_units', 'main_story_chapters', 'campaigns',
-                   'record_times', 'missions', 'special_stories',
+                   'profile', 'songs', 'courses', 'cards', 'items', 'idols',
+                   'costumes', 'memorials', 'episodes', 'costume_advs',
+                   'gashas', 'units', 'song_units', 'main_story_chapters',
+                   'campaigns', 'record_times', 'missions', 'special_stories',
                    'event_stories', 'event_memories', 'login_bonus_schedules',
                    'presents')
         ordered = True
@@ -2166,6 +2166,7 @@ class ProfileSchema(SQLAlchemyAutoSchema):
         model = Profile
         include_fk = True
         include_relationships = True
+        exclude = ('user',)
         ordered = True
 
     helper_cards = Nested('HelperCardSchema', many=True)
@@ -2175,6 +2176,9 @@ class ProfileSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def _convert(self, data, **kwargs):
+        data['id'] = data['id_']
+        del data['id_']
+
         # Populate helper_card_id_list.
         data['helper_card_id_list'] = []
         for helper_card in data['helper_cards']:
@@ -2200,6 +2204,41 @@ class ProfileSchema(SQLAlchemyAutoSchema):
         data['full_combo_song_count_list'] = data['full_combo_song_counts']
         del data['full_combo_song_counts']
 
+        return data
+
+
+class GuestSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Profile
+        include_fk = True
+        include_relationships = True
+        exclude = ('birthday', 'is_birthday_public', 'favorite_card_id',
+                   'album_count', 'story_count', 'clear_song_counts',
+                   'full_combo_song_counts')
+        ordered = True
+
+    user = Nested('UserSchema')
+    helper_cards = Nested('HelperCardSchema', many=True)
+    favorite_card = Nested('CardSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['user_id'] = data['id_']
+        del data['id_']
+        user = data['user']
+        data['level'] = user['level']
+
+        # Populate helper_card_list.
+        data['helper_card_list'] = data['helper_cards']
+        del data['helper_cards']
+
+        data['producer_rank'] = user['producer_rank']
+        data['lounge_id'] = user['lounge_id']
+        data['lounge_user_state'] = user['lounge_user_state']
+        data['lounge_name'] = user['lounge_name']
+        data['create_date'] = user['first_time_date']
+        data['last_login_date'] = user['last_login_date']
+        del data['user']
         return data
 
 
@@ -2334,5 +2373,39 @@ class AchievementSchema(SQLAlchemyAutoSchema):
         data['begin_date'] = mst_achievement['begin_date']
         data['sort_id'] = mst_achievement['sort_id']
         del data['mst_achievement']
+        return data
+
+
+class RandomLiveSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = RandomLive
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id',)
+        ordered = True
+
+    random_live_idols = Nested('RandomLiveIdolSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate idol_list.
+        data['idol_list'] = (None if not data['random_live_idols']
+                             else data['random_live_idols'])
+        del data['random_live_idols']
+
+        return data
+
+
+class RandomLiveIdolSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = RandomLiveIdol
+        include_fk = True
+        exclude = ('user_id', 'random_live_type', 'position')
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        if not data['mst_lesson_wear_id']:
+            data['mst_lesson_wear_id'] = 0
         return data
 

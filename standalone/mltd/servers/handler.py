@@ -48,6 +48,7 @@ def application(environ, start_response):
         if environ['PATH_INFO'] not in [
             '/rpc/BatchReqest_MakeCache_Login1',
             '/rpc/BatchReqest_MakeCache_Login2',
+            '/rpc/LiveService.GetRandomGuestList',
         ]:
             print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
         response = json.dumps(response.data, cls=CustomJSONEncoder,

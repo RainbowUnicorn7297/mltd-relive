@@ -169,7 +169,7 @@ def main():
         imgui.begin_child('methods')
         _, filter_text = imgui.input_text('##filter', filter_text, 256)
         imgui.columns(2, border=False)
-        imgui.set_column_offset(1, 40)
+        imgui.set_column_offset(1, 50)
         for i in ids:
             if filter_text not in methods[i]:
                 continue
