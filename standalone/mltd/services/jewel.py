@@ -10,17 +10,20 @@ from mltd.models.schemas import JewelSchema
 
 
 @dispatcher.add_method(name='JewelService.GetJewel', context_arg='context')
-def get_card_list(params, context):
+def get_jewel(params, context):
     """Service for getting jewel info for the user.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. After the user spent jewels to contiune a song.
     Args:
         params: An empty dict.
     Returns:
         A dict containing a single key named 'jewel', whose value is
         a single dict containing the following keys.
             free_jewel_amount: Amount of free jewels the user has.
-            paid_jewel_amount: Amount of paid jewels the user has.
+            paid_jewel_amount: 0 (All purchased jewels are counted as
+                               free jewels on overseas servers).
     """
     with Session(engine) as session:
         jewel = session.scalars(

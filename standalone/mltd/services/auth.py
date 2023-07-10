@@ -11,6 +11,7 @@ from mltd.models.models import (Item, Mission, MstMission, MstSong, Offer,
                                 Song, User)
 from mltd.models.schemas import UserSchema
 from mltd.servers.config import server_timezone
+from mltd.services.user import update_vitality
 
 
 @dispatcher.add_method(name='AuthService.TransferPassword')
@@ -218,6 +219,7 @@ def login(params):
         now = datetime.now(timezone.utc)
         last_login_date = user.last_login_date.replace(tzinfo=timezone.utc)
         user.last_login_date = now
+        update_vitality(user)
         # Perform daily reset.
         if (last_login_date.astimezone(server_timezone).date()
                 < now.astimezone(server_timezone).date()):

@@ -72,8 +72,10 @@ class User(Base):
     un_lock_song_status: Mapped['UnLockSongStatus'] = relationship(
         back_populates='user', lazy='joined', innerjoin=True)
     pending_song: Mapped['PendingSong'] = relationship(
-        back_populates='user', foreign_keys='PendingSong.user_id')
-    pending_job: Mapped['PendingJob'] = relationship(back_populates='user')
+        back_populates='user', cascade='all, delete-orphan',
+        foreign_keys='PendingSong.user_id')
+    pending_job: Mapped['PendingJob'] = relationship(
+        back_populates='user', cascade='all, delete-orphan')
     gasha_medal: Mapped['GashaMedal'] = relationship(back_populates='user')
     jewel: Mapped['Jewel'] = relationship(back_populates='user')
     profile: Mapped['Profile'] = relationship(back_populates='user')
@@ -1053,6 +1055,17 @@ class MstCourse(Base):
     level: Mapped[int]
     appeal: Mapped[int]
     notes: Mapped[int]
+
+
+class MstScoreThreshold(Base):
+    """Master table for score rank thresholds.
+
+    score_threshold_list: comma-separated score thresholds
+    """
+    __tablename__ = 'mst_score_threshold'
+
+    level: Mapped[int] = mapped_column(primary_key=True)
+    score_threshold_list: Mapped[str]
 
 
 class Course(Base):
@@ -2291,7 +2304,7 @@ class PendingSong(Base):
     __tablename__ = 'pending_song'
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
-    live_token: Mapped[str]
+    live_token: Mapped[str] = mapped_column(unique=True)
     unit_num: Mapped[int] = mapped_column(default=0)
     mst_song_id = mapped_column(ForeignKey('mst_song.mst_song_id'), default=0,
                                 insert_default=None)
@@ -2461,7 +2474,7 @@ class Offer(Base):
 
     mst_offer: Mapped['MstOffer'] = relationship(lazy='joined', innerjoin=True)
     offer_cards: Mapped[List['OfferCard']] = relationship(
-        lazy='selectin', cascade='all, delete-orphan')
+        cascade='all, delete-orphan', lazy='selectin')
     offer_text: Mapped['OfferText'] = relationship(
         secondary='mst_offer_text',
         primaryjoin='and_(Offer.user_id == OfferText.user_id, '
@@ -2746,7 +2759,8 @@ class RandomLive(Base):
     unit_song_type: Mapped[int] = mapped_column(default=0)
 
     random_live_idols: Mapped[List['RandomLiveIdol']] = relationship(
-        lazy='selectin', order_by='[RandomLiveIdol.position]')
+        cascade='all, delete-orphan', lazy='selectin',
+        order_by='[RandomLiveIdol.position]')
 
 
 class RandomLiveIdol(Base):

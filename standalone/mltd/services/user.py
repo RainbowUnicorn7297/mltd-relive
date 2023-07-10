@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timezone
 from uuid import UUID
 
@@ -8,6 +9,24 @@ from sqlalchemy.orm import Session
 from mltd.models.engine import engine
 from mltd.models.models import Profile, RecordTime, User
 from mltd.models.schemas import ProfileSchema, RecordTimeSchema, UserSchema
+
+
+def update_vitality(user: User):
+    """Update user vitality.
+
+    Args:
+        user: User object to be updated.
+    Returns:
+        None. The passed-in user object is updated directly.
+    """
+    now = datetime.now(timezone.utc)
+    full_recover_date = user.full_recover_date.replace(tzinfo=timezone.utc)
+    if full_recover_date <= now:
+        user.vitality = user.max_vitality
+    else:
+        user.vitality = user.max_vitality - math.ceil(
+            (full_recover_date-now).seconds
+            / user.auto_recover_interval)
 
 
 @dispatcher.add_method(name='UserService.GetSelf', context_arg='context')
