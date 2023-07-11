@@ -2310,7 +2310,7 @@ class PendingSong(Base):
                                 insert_default=None)
     mode: Mapped[int] = mapped_column(default=0)
     course: Mapped[int] = mapped_column(default=0)
-    guest_user_id = mapped_column(ForeignKey('user.user_id'), default='',
+    guest_user_id = mapped_column(ForeignKey('profile.id_'), default='',
                                   insert_default=None)
     start_date: Mapped[datetime] = mapped_column(
         default=datetime.now(timezone.utc))
@@ -2328,9 +2328,13 @@ class PendingSong(Base):
     seed: Mapped[int] = mapped_column(default=0)
     is_valid: Mapped[bool] = mapped_column(default=False)
     retry_count: Mapped[int] = mapped_column(default=0)
+    threshold_list: Mapped[str]
+    song_id = mapped_column(ForeignKey('song.song_id'), nullable=False)
+    is_friend: Mapped[bool]
 
-    user: Mapped['User'] = relationship(back_populates='pending_song',
-                                        foreign_keys=user_id)
+    user: Mapped['User'] = relationship(back_populates='pending_song')
+    guest_profile: Mapped['Profile'] = relationship(lazy='joined')
+    song: Mapped['Song'] = relationship(lazy='joined', innerjoin=True)
 
 
 class PendingJob(Base):
@@ -2356,6 +2360,19 @@ class PendingJob(Base):
     is_valid: Mapped[bool] = mapped_column(default=False)
 
     user: Mapped['User'] = relationship(back_populates='pending_job')
+    pending_job_answers: Mapped[List['PendingJobAnswer']] = relationship(
+        cascade='all, delete-orphan')
+
+
+class PendingJobAnswer(Base):
+    """Answer list for pending job for each user."""
+    __tablename__ = 'pending_job_answer'
+
+    user_id = mapped_column(ForeignKey('pending_job.user_id'),
+                            primary_key=True)
+    scenario_id: Mapped[str]
+    answer_key: Mapped[str] = mapped_column(default='')
+    count: Mapped[int]
 
 
 class MstLoginBonusSchedule(Base):

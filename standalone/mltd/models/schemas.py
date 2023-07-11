@@ -2007,6 +2007,166 @@ class UnLockSongStatusSchema(SQLAlchemyAutoSchema):
         model = UnLockSongStatus
 
 
+class PendingSongSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PendingSong
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'live_token', 'song_id', 'user')
+        ordered = True
+
+    guest_profile = Nested('GuestSchema')
+    song = Nested('SongSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate user_summary.
+        if not data['guest_profile']:
+            data['user_summary'] = {
+                'user_id': '',
+                'name': '',
+                'mst_achievement_id': 0,
+                'mst_achievement_id_list': None,
+                'comment': '',
+                'level': 0,
+                'lp': 0,
+                'helper_card_list': None,
+                'favorite_card': {
+                    'card_id': '',
+                    'mst_card_id': 0,
+                    'mst_idol_id': 0,
+                    'mst_costume_id': 0,
+                    'bonus_costume_id': 0,
+                    'rank5_costume_id': 0,
+                    'resource_id': '',
+                    'rarity': 0,
+                    'idol_type': 0,
+                    'exp': 0,
+                    'level': 0,
+                    'level_max': 0,
+                    'life': 0,
+                    'vocal': 0,
+                    'vocal_base': 0,
+                    'vocal_diff': 0,
+                    'vocal_max': 0,
+                    'vocal_master_bonus': 0,
+                    'dance': 0,
+                    'dance_base': 0,
+                    'dance_diff': 0,
+                    'dance_max': 0,
+                    'dance_master_bonus': 0,
+                    'visual': 0,
+                    'visual_base': 0,
+                    'visual_diff': 0,
+                    'visual_max': 0,
+                    'visual_master_bonus': 0,
+                    'before_awakened_params': {
+                        'life': 0,
+                        'vocal': 0,
+                        'dance': 0,
+                        'visual': 0
+                    },
+                    'after_awakened_params': {
+                        'life': 0,
+                        'vocal': 0,
+                        'dance': 0,
+                        'visual': 0
+                    },
+                    'skill_level': 0,
+                    'skill_level_max': 0,
+                    'is_awakened': False,
+                    'awakening_gauge': 0,
+                    'awakening_gauge_max': 0,
+                    'master_rank': 0,
+                    'master_rank_max': 0,
+                    'cheer_point': 0,
+                    'center_effect': {
+                        'mst_center_effect_id': 0,
+                        'effect_id': 0,
+                        'idol_type': 0,
+                        'specific_idol_type': 0,
+                        'attribute': 0,
+                        'value': 0,
+                        'song_idol_type': 0,
+                        'attribute2': 0,
+                        'value2': 0
+                    },
+                    'card_skill_list': None,
+                    'ex_type': 0,
+                    'create_date': None,
+                    'variation': 0,
+                    'master_lesson_begin_date': None,
+                    'training_item_list': None,
+                    'begin_date': None,
+                    'sort_id': 0,
+                    'is_new': False,
+                    'costume_list': None,
+                    'card_category': 0,
+                    'extend_card_params': {
+                        'level_max': 0,
+                        'life': 0,
+                        'vocal_max': 0,
+                        'vocal_master_bonus': 0,
+                        'dance_max': 0,
+                        'dance_master_bonus': 0,
+                        'visual_max': 0,
+                        'visual_master_bonus': 0
+                    },
+                    'is_master_lesson_five_available': False,
+                    'barrier_mission_list': None,
+                    'training_point': 0,
+                    'sign_type': 0,
+                    'sign_type2': 0
+                },
+                'favorite_card_before_awake': False,
+                'producer_rank': 0,
+                'is_friend': False,
+                'lounge_id': '',
+                'lounge_user_state': 0,
+                'lounge_name': '',
+                'create_date': None,
+                'last_login_date': None
+            }
+        else:
+            data['user_summary'] = data['guest_profile']
+        del data['guest_profile']
+        data['user_summary']['is_friend'] = data['is_friend']
+        del data['is_friend']
+
+        data['start_date'] = str_to_datetime(data['start_date'])
+
+        # Populate threshold_list.
+        data['threshold_list'] = [
+            int(x) for x in data['threshold_list'].split(',')]
+
+        return data
+
+
+class PendingJobSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PendingJob
+        include_fk = True
+        include_relationships = True
+        exclude = ('user_id', 'job_token', 'user')
+        ordered = True
+
+    pending_job_answers = Nested('PendingJobAnswerSchema', many=True)
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate answer_list.
+        data['answer_list'] = data['pending_job_answers']
+        del data['pending_job_answers']
+
+        return data
+
+
+class PendingJobAnswerSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PendingJobAnswer
+        ordered = True
+
+
 class MstLoginBonusScheduleSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstLoginBonusSchedule
