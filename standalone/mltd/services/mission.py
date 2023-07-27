@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from uuid import UUID
 
 from jsonrpc import dispatcher
@@ -14,36 +15,96 @@ from mltd.models.schemas import (MissionSchema, MstMissionScheduleSchema,
 from mltd.services.item import add_item
 
 
-def receive_mission_reward(session: Session, user_id,
-                           mission_reward: MstMissionReward):
-    """User receives the specified reward after completing a mission.
+def update_mission_progress(session: Session, user_id, mission: Mission,
+                            progress):
+    """Update mission progress for a user.
+
+    The mission to be updated can have a state of 0 (prerequisite not
+    met), 1 (in progress) or even 3 (completed). It is up to the caller
+    to decide whether a mission that has not been started or has already
+    been completed should update its progress in the first place.
+    Args:
+        session: Existing SQLAlchemy session.
+        user_id: User ID.
+        mission: A Mission object representing the mission to be
+                 updated.
+        progress: An int representing the new progress.
+    Returns:
+        A bool indicating whether the updated mission has just changed
+        state from in progress to completed.
+    """
+    now = datetime.now(timezone.utc)
+    if progress > mission.progress:
+        mission.update_date = now
+        mission.progress = progress
+        if (mission.mission_state == 1
+                and mission.progress >= mission.mst_mission.goal):
+            mission.finish_date = now
+            mission.mission_state = 3
+            receive_mission_rewards(
+                session=session,
+                user_id=user_id,
+                mst_mission=mission.mst_mission
+            )
+            next_missions = session.scalars(
+                select(Mission)
+                .join(MstMission)
+                .where(Mission.user_id == user_id)
+                .where(MstMission.premise_mst_mission_id_list
+                       == mission.mst_mission_id)
+                .where(Mission.mission_state == 0)
+            ).all()
+            for mission in next_missions:
+                mission.mission_state = 1
+            if mission.mst_mission.mst_mission_class_id == 36:
+                next_idol_mission = session.scalar(
+                    select(Mission)
+                    .join(MstMission)
+                    .where(Mission.user_id == user_id)
+                    .where(MstMission.mst_mission_class_id == 36)
+                    .where(MstMission.option == mission.mst_mission.option)
+                    .where(Mission.mission_state == 0)
+                    .order_by(MstMission.sort_id)
+                    .limit(1)
+                )
+                if next_idol_mission:
+                    next_idol_mission.mission_state = 1
+            return True
+    return False
+
+
+def receive_mission_rewards(session: Session, user_id,
+                            mst_mission: MstMission):
+    """User receives the rewards after completing a mission.
 
     Args:
         session: Existing SQLAlchemy session.
         user_id: User ID.
-        mission_reward: A MstMissionReward object with reward info.
+        mst_mission: A MstMission object representing the completed
+                     mission.
     Returns:
         None.
     """
-    # TODO: reward is added to user's present box instead
-    if mission_reward.mst_item_id:
-        add_item(
-            session=session,
-            user_id=user_id,
-            mst_item_id=mission_reward.mst_item_id,
-            item_type=mission_reward.item_type_id,
-            amount=mission_reward.amount
-        )
-    elif mission_reward.mst_song_id:
-        session.execute(
-            update(Song)
-            .where(Song.user_id == user_id)
-            .where(Song.mst_song_id == mission_reward.mst_song_id)
-            .values(is_disable=False)
-        )
-    elif mission_reward.mst_achievement_id:
-        # TODO: Handle achievement
-        raise NotImplementedError('achievement not yet implemented')
+    # FIXME: reward is added to user's present box instead
+    for mission_reward in mst_mission.mst_mission_rewards:
+        if mission_reward.mst_item_id:
+            add_item(
+                session=session,
+                user_id=user_id,
+                mst_item_id=mission_reward.mst_item_id,
+                item_type=mission_reward.item_type_id,
+                amount=mission_reward.amount
+            )
+        elif mission_reward.mst_song_id:
+            session.execute(
+                update(Song)
+                .where(Song.user_id == user_id)
+                .where(Song.mst_song_id == mission_reward.mst_song_id)
+                .values(is_disable=False)
+            )
+        elif mission_reward.mst_achievement_id:
+            # TODO: Handle achievement
+            raise NotImplementedError('achievement not yet implemented')
 
 
 @dispatcher.add_method(name='MissionService.GetMissionList',

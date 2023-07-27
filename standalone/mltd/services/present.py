@@ -27,5 +27,5 @@ def get_present_count(params, context):
             .where(Present.user_id == UUID(context['user_id']))
         )
 
-    return min(value, 100)
+    return {'value': min(value, 100)}
 

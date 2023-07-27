@@ -1,14 +1,17 @@
 import csv
 from base64 import b64encode
 from os import listdir
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
-from mltd.servers.config import server_language, server_timezone
+from mltd.servers.config import server_timezone
+from mltd.servers.i18n import translation
+
+_ = translation.gettext
 
 
 def _insert_cards(session: Session, user: User):
@@ -117,7 +120,9 @@ def _insert_cards(session: Session, user: User):
             is_awakened=True,
             awakening_gauge=mst_card.awakening_gauge_max,
             master_rank=mst_card.master_rank_max,
-            create_date=max(mst_card.begin_date, user.first_time_date)
+            create_date=max(mst_card.begin_date.replace(tzinfo=timezone.utc),
+                            user.first_time_date.replace(tzinfo=timezone.utc)),
+            is_new=False
         )
         card.vocal = card.after_awakened_vocal
         card.dance = card.after_awakened_dance
@@ -185,17 +190,17 @@ if __name__ == '__main__':
             search_id='00000000',
             name='MLTDrelive',
             money=9_999_999,
-            vitality=240,
+            _vitality=240,
             max_vitality=240,
             live_ticket=500,
             exp=0,
             next_exp=89_950,
             level=900,
             theater_fan=3_978_000_000,
-            last_login_date=datetime(2022, 1, 28, 4, 0, 0),
+            last_login_date=datetime(2022, 1, 28, 4, tzinfo=timezone.utc),
             is_tutorial_finished=True,
             producer_rank=8,
-            first_time_date=datetime(2019, 8, 30, 3, 0, 0),
+            first_time_date=datetime(2019, 8, 30, 3, tzinfo=timezone.utc),
             max_friend=100
         )
         user.user_id_hash = b64encode(
@@ -342,8 +347,7 @@ if __name__ == '__main__':
             unit = Unit(
                 user_id=user.user_id,
                 unit_num=unit_num,
-                name=f'{"團體" if server_language == "zh" else "유닛"}'
-                    + f'{unit_num}'
+                name=_('Unit{unit_num}').format(unit_num=unit_num)
             )
             # TODO: Default center for a new user depends on the idol
             #   type they picked during tutorial.
@@ -698,7 +702,6 @@ if __name__ == '__main__':
             another_user.map_level = MapLevel()
             another_user.un_lock_song_status = UnLockSongStatus()
             session.add(another_user)
-            session.commit()
 
             _insert_cards(session, another_user)
 

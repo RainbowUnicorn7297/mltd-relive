@@ -6,7 +6,8 @@ from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Item, Jewel, User
+from mltd.models.models import (GashaMedal, GashaMedalExpireDate, Item, Jewel,
+                                MstItem, User)
 from mltd.models.schemas import ItemSchema
 from mltd.servers.config import server_timezone
 
@@ -45,6 +46,23 @@ def add_item(
             .where(User.user_id == user_id)
             .values(money=func.min(User.money + amount, User.max_money))
         )
+    elif item_type == 4:    # Gasha medal pt
+        point_amonut = session.scalar(
+            select(MstItem.value1)
+            .where(MstItem.mst_item_id == mst_item_id)
+        )
+        gasha_medal = session.scalars(
+            select(GashaMedal)
+            .where(GashaMedal.user_id == user_id)
+        ).one()
+        if len(gasha_medal.gasha_medal_expire_dates) >= 10:
+            return
+        gasha_medal.point_amount += point_amonut
+        if gasha_medal.point_amount >= 100:
+            gasha_medal.gasha_medal_expire_dates.append(GashaMedalExpireDate())
+            gasha_medal.point_amount -= 100
+        if len(gasha_medal.gasha_medal_expire_dates) >= 10:
+            gasha_medal.point_amount = 0
     else:
         item = session.scalar(
             select(Item)

@@ -5,8 +5,53 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Card
+from mltd.models.models import Card, MstCard, User
 from mltd.models.schemas import CardSchema
+
+
+def add_card(session: Session, user: User, mst_card_id):
+    """Give a new card to a user.
+
+    Args:
+        session: Existing SQLAlchemy session.
+        user: A User object.
+        mst_card_id: Master card ID.
+    Returns:
+        None.
+    """
+    mst_card = session.scalar(
+        select(MstCard)
+        .where(MstCard.mst_card_id == mst_card_id)
+    )
+    level_max = mst_card.level_max
+    vocal_base = mst_card.vocal_base
+    dance_base = mst_card.dance_base
+    visual_base = mst_card.visual_base
+    vocal_max = mst_card.vocal_max
+    dance_max = mst_card.dance_max
+    visual_max = mst_card.visual_max
+    card = Card(
+        card_id=f'{user.user_id}_{mst_card_id}',
+        mst_card_id=mst_card_id,
+        vocal_diff=vocal_max / (2*level_max),
+        dance_diff=dance_max / (2*level_max),
+        visual_diff=visual_max / (2*level_max),
+        skill_probability=(None if not mst_card.mst_card_skill_id
+                           else mst_card.mst_card_skill.probability_base + 1),
+    )
+    card.before_awakened_vocal = vocal_base + round(card.vocal_diff)
+    card.before_awakened_dance = dance_base + round(card.dance_diff)
+    card.before_awakened_visual = visual_base + round(card.visual_diff)
+    card.after_awakened_vocal = vocal_base + round(
+        card.vocal_diff + vocal_max*10/(2*level_max*level_max))
+    card.after_awakened_dance = dance_base + round(
+        card.dance_diff + dance_max*10/(2*level_max*level_max))
+    card.after_awakened_visual = visual_base + round(
+        card.visual_diff + visual_max*10/(2*level_max*level_max))
+    card.vocal = card.before_awakened_vocal
+    card.dance = card.before_awakened_dance
+    card.visual = card.before_awakened_visual
+    user.cards.append(card)
 
 
 @dispatcher.add_method(name='CardService.GetCardList', context_arg='context')

@@ -206,3 +206,12 @@ def get_offer_list(params, context):
         'offer_list': offer_list
     }
 
+
+@dispatcher.add_method(name='OfferService.ExecuteOffer', context_arg='context')
+def execute_offer(params, context):
+    # TODO: Unlike FinishSong and FinishJob, this doesn't return a
+    # release_mst_main_story_id. Does the main story still get unlocked
+    # together with the intro contact if the unlock requirements are met
+    # after finishing an offer?
+    ...
+

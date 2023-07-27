@@ -1,13 +1,45 @@
+import math
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import List, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import ForeignKey, ForeignKeyConstraint, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy_utils import force_instant_defaults
 
 from mltd.models.engine import engine
-from mltd.servers.config import server_language, server_timezone
+from mltd.servers.config import server_timezone
+from mltd.servers.i18n import translation
+
+_ = translation.gettext
+
+"""Applies instant defaults to all models.
+
+By default, creating a new SQLAlchemy object only sets the attributes on
+the constructed instance using the names and values in 'kwargs' of the
+__init__() method. Other attributes that are not present in 'kwargs'
+have a default value of None, regardless of whether there is a default
+for the mapped columns.
+
+Calling force_instant_defaults() overrides the default behavior so that
+mapped columns with a default that are not set by 'kwargs' are
+initialized to their corresponding default values.
+
+One alternative approach is to insert the object and commit first before
+accessing its attributes. There are two issues with this approach:
+1. This breaks the atomicity property of a database transaction. By
+   committing in the middle of an atomic operation, any failures
+   arising from the latter part of the operation cannot roll back any
+   changes that have already been committed.
+2. Sometimes it is more convenient to create a transient SQLAlchemy
+   object and dump it into a JSON-compatible dict using a marshmallow
+   schema or simply just pass it around without persisting it. An
+   example is the transient MstRewardItem objects representing drop
+   reward items in the method 'LiveService.FinishSong'.
+"""
+force_instant_defaults()
 
 
 class Base(DeclarativeBase):
@@ -23,7 +55,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(10), default='')
     money: Mapped[int] = mapped_column(default=0)
     max_money: Mapped[int] = mapped_column(default=9_999_999)
-    vitality: Mapped[int] = mapped_column(default=60)
+    _vitality: Mapped[int] = mapped_column(default=60)
     max_vitality: Mapped[int] = mapped_column(default=60)
     live_ticket: Mapped[int] = mapped_column(default=0)
     max_live_ticket: Mapped[int] = mapped_column(default=500)
@@ -80,8 +112,8 @@ class User(Base):
     jewel: Mapped['Jewel'] = relationship(back_populates='user')
     profile: Mapped['Profile'] = relationship(back_populates='user')
     lps: Mapped[List['LP']] = relationship(
-        back_populates='user', order_by='[LP.lp.desc(), LP.update_date]',
-        lazy='selectin')
+        back_populates='user', lazy='selectin',
+        order_by='[LP.lp.desc(), LP.update_date]')
     songs: Mapped[List['Song']] = relationship(back_populates='user')
     courses: Mapped[List['Course']] = relationship(back_populates='user')
     cards: Mapped[List['Card']] = relationship(back_populates='user')
@@ -112,6 +144,22 @@ class User(Base):
         back_populates='user')
     presents: Mapped[List['Present']] = relationship(
         back_populates='user', order_by='[Present.create_date.desc()]')
+
+    @hybrid_property
+    def vitality(self):
+        now = datetime.now(timezone.utc)
+        full_recover_date = self.full_recover_date.replace(tzinfo=timezone.utc)
+        if full_recover_date <= now:
+            return max(self._vitality, self.max_vitality)
+        else:
+            # FIXME: precision problem when it can be evenly divided
+            return self.max_vitality - math.ceil(
+                (full_recover_date-now).seconds
+                / self.auto_recover_interval)
+
+    @vitality.setter
+    def vitality(self, vitality):
+        self._vitality = vitality
 
 
 class MstIdol(Base):
@@ -469,10 +517,17 @@ class Card(Base):
     master_rank: Mapped[int] = mapped_column(default=0)
     create_date: Mapped[datetime] = mapped_column(
         default=datetime.now(timezone.utc))
-    is_new: Mapped[bool] = mapped_column(default=False)
+    is_new: Mapped[bool] = mapped_column(default=True)
 
-    mst_card: Mapped['MstCard'] = relationship(lazy='joined', innerjoin=True)
     user: Mapped['User'] = relationship(back_populates='cards')
+    mst_card: Mapped['MstCard'] = relationship(
+        viewonly=True, lazy='joined', innerjoin=True)
+    idol: Mapped['Idol'] = relationship(
+        secondary='mst_card',
+        primaryjoin='and_(Card.user_id == Idol.user_id, '
+            + 'Card.mst_card_id == MstCard.mst_card_id)',
+        secondaryjoin='MstCard.mst_idol_id == Idol.mst_idol_id',
+        lazy='selectin')
 
 
 class MstDirectionCategory(Base):
@@ -1031,15 +1086,16 @@ class Song(Base):
         primaryjoin='and_(Song.user_id == Course.user_id, '
             + 'Song.mst_song_id == Course.mst_song_id)',
         foreign_keys=[user_id, mst_song_id],
-        viewonly=True, lazy='selectin')
+        viewonly=True, lazy='selectin',
+        order_by='[Course.course_id]')
 
 
 class MstCourse(Base):
     """Master table for course info for each song.
 
     course_id: 
-        1=Solo 2M?
-        2=2M?
+        1=Solo 2M
+        2=2M
         3=Solo 2M+
         4=4M
         5=6M
@@ -1068,6 +1124,20 @@ class MstScoreThreshold(Base):
     score_threshold_list: Mapped[str]
 
 
+class MstCourseReward(Base):
+    """Master table for score/combo/clear rank rewards."""
+    __tablename__ = 'mst_course_reward'
+
+    course: Mapped[int] = mapped_column(primary_key=True)
+    rank: Mapped[int] = mapped_column(primary_key=True)
+    score_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+    combo_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+    clear_reward_item_id = mapped_column(
+        ForeignKey('mst_reward_item.mst_reward_item_id'), nullable=False)
+
+
 class Course(Base):
     """Course info specific to each user."""
     __tablename__ = 'course'
@@ -1088,6 +1158,9 @@ class Course(Base):
     combo_rank: Mapped[int] = mapped_column(default=0)
     clear_rank: Mapped[int] = mapped_column(default=0)
     is_released: Mapped[bool]
+    perfect_rate: Mapped[float] = mapped_column(default=0)
+    score_update_date: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='courses')
     mst_course: Mapped['MstCourse'] = relationship(lazy='joined',
@@ -1128,6 +1201,8 @@ class UnitIdol(Base):
     costume_is_random: Mapped[bool] = mapped_column(default=False)
     costume_random_type: Mapped[int] = mapped_column(default=0)
 
+    card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
+
 
 class SongUnit(Base):
     """Unit info specific to each song for each user."""
@@ -1164,6 +1239,8 @@ class SongUnitIdol(Base):
         ForeignKey('mst_lesson_wear.mst_lesson_wear_id'), nullable=False)
     costume_is_random: Mapped[bool] = mapped_column(default=False)
     costume_random_type: Mapped[int] = mapped_column(default=0)
+
+    card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
 
 
 class MstMainStory(Base):
@@ -1727,6 +1804,7 @@ class GashaMedal(Base):
     point_amount: Mapped[int] = mapped_column(default=0)
 
     user: Mapped['User'] = relationship(back_populates='gasha_medal')
+    # TODO: use hybrid property to removed expired gasha medals?
     gasha_medal_expire_dates: Mapped[
         List['GashaMedalExpireDate']] = relationship(
             order_by='[GashaMedalExpireDate.expire_date]')
@@ -1739,7 +1817,8 @@ class GashaMedalExpireDate(Base):
     user_id = mapped_column(ForeignKey('gasha_medal.user_id'),
                             primary_key=True)
     expire_date: Mapped[datetime] = mapped_column(
-        primary_key=True, default=datetime.now(timezone.utc))
+        primary_key=True,
+        default=datetime.now(timezone.utc) + timedelta(days=7))
 
 
 class Jewel(Base):
@@ -2281,9 +2360,10 @@ class MapLevel(Base):
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     user_map_level: Mapped[int] = mapped_column(default=1)
-    user_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
+    user_recognition: Mapped[Decimal] = mapped_column(default=Decimal('.005'))
     actual_map_level: Mapped[int] = mapped_column(default=1)
-    actual_recognition: Mapped[Decimal] = mapped_column(default=Decimal(0.005))
+    actual_recognition: Mapped[Decimal] = mapped_column(
+        default=Decimal('.005'))
 
     user: Mapped['User'] = relationship(back_populates='map_level')
 
@@ -2331,6 +2411,7 @@ class PendingSong(Base):
     threshold_list: Mapped[str]
     song_id = mapped_column(ForeignKey('song.song_id'), nullable=False)
     is_friend: Mapped[bool]
+    live_ticket: Mapped[int]
 
     user: Mapped['User'] = relationship(back_populates='pending_song')
     guest_profile: Mapped['Profile'] = relationship(lazy='joined')
@@ -2585,9 +2666,7 @@ class Profile(Base):
     name: Mapped[str]
     birthday: Mapped[str] = mapped_column(default='')
     is_birthday_public: Mapped[bool] = mapped_column(default=False)
-    comment: Mapped[str] = mapped_column(
-        default='請多多指教！' if server_language == 'zh'
-        else '잘 부탁드립니다!')
+    comment: Mapped[str] = mapped_column(default=_('default profile comment'))
     favorite_card_id = mapped_column(ForeignKey('card.card_id'))
     favorite_card_before_awake: Mapped[bool] = mapped_column(default=False)
     mst_achievement_id: Mapped[int] = mapped_column(default=1)
@@ -2801,6 +2880,8 @@ class RandomLiveIdol(Base):
         insert_default=None)
     costume_is_random: Mapped[bool] = mapped_column(default=False)
     costume_random_type: Mapped[int] = mapped_column(default=0)
+
+    card: Mapped['Card'] = relationship(lazy='joined', innerjoin=True)
 
 
 class Friend(Base):

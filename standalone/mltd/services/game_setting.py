@@ -27,6 +27,31 @@ from mltd.servers.config import server_timezone
 from mltd.servers.utilities import format_datetime
 
 
+def get_item_day_idol_type(
+        day=datetime.now(timezone.utc).astimezone(server_timezone)):
+    """Get the daily idol type.
+
+    Args:
+        day: Requested date (default is server's date).
+    Returns:
+        An int representing the daily idol type for the requested date.
+        The rules to determine the daily idol type are as follows.
+            Monday/Thursday=Princess (idol_type=1)
+            Tuesday/Friday=Fairy (idol_type=2)
+            Wednesday/Saturday=Angel (idol_type=3)
+            Sunday=All (idol_type=4)
+    """
+    weekday = day.weekday()
+    if weekday in [0, 3]:
+        return 1
+    elif weekday in [1, 4]:
+        return 2
+    elif weekday in [2, 5]:
+        return 3
+    else:
+        return 4
+
+
 @dispatcher.add_method(name='GameSettingService.GetSetting')
 def get_setting(params):
     """Service for getting game settings.
@@ -357,17 +382,8 @@ def get_item_days(params):
     begin_date = datetime.now(timezone.utc).astimezone(server_timezone)
     begin_date = begin_date.replace(hour=0, minute=0, second=0, microsecond=0)
     for i in range(7):
-        weekday = begin_date.weekday()
-        if weekday in [0, 3]:
-            idol_type = 1
-        elif weekday in [1, 4]:
-            idol_type = 2
-        elif weekday in [2, 5]:
-            idol_type = 3
-        else:
-            idol_type = 4
         item_day_list.append({
-            'idol_type': idol_type,
+            'idol_type': get_item_day_idol_type(begin_date),
             'begin_date': format_datetime(begin_date),
             'end_date': format_datetime(begin_date.replace(
                 hour=23, minute=59, second=59))

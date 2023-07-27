@@ -1,4 +1,4 @@
-from marshmallow import post_dump
+from marshmallow import fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
 
@@ -161,15 +161,16 @@ class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_relationships = True
-        exclude = ('pending_song', 'pending_job', 'gasha_medal', 'jewel',
-                   'profile', 'songs', 'courses', 'cards', 'items', 'idols',
-                   'costumes', 'memorials', 'episodes', 'costume_advs',
-                   'gashas', 'units', 'song_units', 'main_story_chapters',
-                   'campaigns', 'record_times', 'missions', 'special_stories',
-                   'event_stories', 'event_memories', 'login_bonus_schedules',
-                   'presents')
+        exclude = ('_vitality', 'pending_song', 'pending_job', 'gasha_medal',
+                   'jewel', 'profile', 'songs', 'courses', 'cards', 'items',
+                   'idols', 'costumes', 'memorials', 'episodes',
+                   'costume_advs', 'gashas', 'units', 'song_units',
+                   'main_story_chapters', 'campaigns', 'record_times',
+                   'missions', 'special_stories', 'event_stories',
+                   'event_memories', 'login_bonus_schedules', 'presents')
         ordered = True
 
+    vitality = fields.Int()
     challenge_song = Nested('ChallengeSongSchema')
     mission_summary = Nested('PanelMissionSheetSchema')
     map_level = Nested('MapLevelSchema')
@@ -326,7 +327,7 @@ class CardSchema(SQLAlchemyAutoSchema):
         model = Card
         include_fk = True
         include_relationships = True
-        exclude = ('user_id', 'user')
+        exclude = ('user_id', 'user', 'idol')
         ordered = True
 
     mst_card = Nested('MstCardSchema')
@@ -491,20 +492,28 @@ class MstRewardItemSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def _convert(self, data, **kwargs):
-        if data['mst_card_id'] != 0:
-            raise NotImplementedError(
-                'mst_card_id not expected to be non-zero')
-
-        # Populate empty card_status.
+        # Populate empty card_status (card_status is always empty even
+        # if mst_card_id is non-zero).
         data['card_status'] = _empty_card
 
         # Populate costume_status.
         data['costume_status'] = data['mst_costume']
         if data['mst_costume_id'] == 0:
-            data['costume_status']['resource_id'] = ''
-            data['costume_status']['costume_name'] = ''
-            data['costume_status']['exclude_random'] = False
-            data['costume_status']['release_date'] = None
+            data['costume_status'] = {
+                'mst_costume_id': 0,
+                'mst_idol_id': 0,
+                'resource_id': '',
+                'mst_costume_group_id': 0,
+                'costume_name': '',
+                'costume_number': 0,
+                'exclude_album': False,
+                'exclude_random': False,
+                'collabo_number': 0,
+                'replace_group_id': 0,
+                'sort_id': 0,
+                'release_date': None,
+                'gorgeous_appeal_type': 0
+            }
         del data['mst_costume']
 
         return data
@@ -863,7 +872,8 @@ class CourseSchema(SQLAlchemyAutoSchema):
         model = Course
         include_fk = True
         include_relationships = True
-        exclude = ('user_id', 'mst_song_id', 'user')
+        exclude = ('user_id', 'mst_song_id', 'perfect_rate',
+                   'score_update_date', 'user')
         ordered = True
 
     mst_course = Nested('MstCourseSchema')
@@ -1656,6 +1666,8 @@ class MissionSchema(SQLAlchemyAutoSchema):
         data['create_date'] = str_to_datetime(data['create_date'])
         data['update_date'] = str_to_datetime(data['update_date'])
         data['finish_date'] = str_to_datetime(data['finish_date'])
+        if data['mission_state'] == 3:
+            data['progress'] = data['goal']
         data['sort_id'] = mst_mission['sort_id']
         data['jump_type'] = mst_mission['jump_type']
         data['mission_operation_label'] = mst_mission[
@@ -2012,7 +2024,7 @@ class PendingSongSchema(SQLAlchemyAutoSchema):
         model = PendingSong
         include_fk = True
         include_relationships = True
-        exclude = ('user_id', 'live_token', 'song_id', 'user')
+        exclude = ('user_id', 'live_token', 'song_id', 'live_ticket', 'user')
         ordered = True
 
     guest_profile = Nested('GuestSchema')

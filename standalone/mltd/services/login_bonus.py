@@ -12,7 +12,7 @@ from mltd.models.schemas import (LoginBonusScheduleSchema, MissionSchema,
 from mltd.servers.config import server_timezone
 from mltd.services.birthday import get_birthday_entrance_direction_resource
 from mltd.services.item import add_item
-from mltd.services.mission import receive_mission_reward
+from mltd.services.mission import update_mission_progress
 
 
 @dispatcher.add_method(name='LoginBonusService.ExecuteLoginBonus',
@@ -227,18 +227,13 @@ def execute_login_bonus(params, context):
             ).all()
             mission_schema = MissionSchema()
             for mission in missions:
-                mission.progress += 1
-                mission.update_date = now
-                if (mission.progress >= mission.mst_mission.goal
-                        and mission.mission_state == 1):
-                    mission.mission_state = 3
-                    mission.finish_date = now
-                    for reward in mission.mst_mission.mst_mission_rewards:
-                        receive_mission_reward(
-                            session=session,
-                            user_id=user.user_id,
-                            mission_reward=reward
-                        )
+                is_complete = update_mission_progress(
+                    session=session,
+                    user_id=user.user_id,
+                    mission=mission,
+                    progress=mission.progress + 1
+                )
+                if is_complete:
                     mission_dict = mission_schema.dump(mission)
                     result['mission_process']['complete_mission_list'].append(
                         mission_dict)

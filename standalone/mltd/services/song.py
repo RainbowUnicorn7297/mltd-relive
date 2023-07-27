@@ -5,8 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Song
-from mltd.models.schemas import SongSchema
+from mltd.models.models import (Course, MstCourseReward, MstRewardItem,
+                                MstScoreThreshold, Song)
+from mltd.models.schemas import CourseSchema, MstRewardItemSchema, SongSchema
 
 
 @dispatcher.add_method(name='SongService.GetSongList', context_arg='context')
@@ -181,4 +182,116 @@ def get_song_list(params, context):
         song_list = song_schema.dump(songs, many=True)
 
     return {'song_list': song_list}
+
+
+@dispatcher.add_method(name='SongService.GetCourse', context_arg='context')
+def get_course(params, context):
+    """Service for getting course info for a user.
+
+    Invoked in the following situations.
+    1. When the user has finished a song and one or more
+       score/combo/clear rank rewards were obtained.
+    2. When the user presses Rewards button on song selection screen.
+    Args:
+        params: A dict containing the following keys.
+            mst_song_id: Master song ID.
+            course: Course.
+    Returns:
+        A dict containing the following keys.
+            course: A dict representing the course info. See the return
+                    value 'course_list' of the method
+                    'SongService.GetSongList' for the dict definition.
+            course_reward: A dict representing course reward info. See
+                           the return value 'course_reward' of the
+                           method 'LiveService.FinishSong' for the dict
+                           definition. All mission statuses are either
+                           0 or 1.
+    """
+    with Session(engine) as session:
+        course_id = params['course']
+        course = session.scalars(
+            select(Course)
+            .where(Course.user_id == UUID(context['user_id']))
+            .where(Course.mst_song_id == params['mst_song_id'])
+            .where(Course.course_id == course_id)
+        ).one()
+        course_schema = CourseSchema()
+        course_dict = course_schema.dump(course)
+
+        level = course.mst_course.level
+        notes = course.mst_course.notes
+        score_threshold_list = session.scalar(
+            select(MstScoreThreshold.score_threshold_list)
+            .where(MstScoreThreshold.level == level)
+        )
+        score_thresholds = [int(x) for x in score_threshold_list.split(',')][
+            2:]
+        combo_thresholds = [notes//4, notes*2//4, notes*3//4, notes]
+        clear_thresholds = {
+            1: [1, 3, 7, 10],
+            2: [1, 3, 7, 10],
+            3: [1, 15, 30, 50],
+            4: [1, 5, 15, 20],
+            5: [1, 15, 30, 50],
+            6: [1, 30, 70, 100]
+        }[course_id]
+        score_reward_items = session.scalars(
+            select(MstRewardItem)
+            .join(MstCourseReward,
+                  MstRewardItem.mst_reward_item_id
+                  == MstCourseReward.score_reward_item_id)
+            .where(MstCourseReward.course == course_id)
+            .order_by(MstCourseReward.rank)
+        ).all()
+        combo_reward_items = session.scalars(
+            select(MstRewardItem)
+            .join(MstCourseReward,
+                  MstRewardItem.mst_reward_item_id
+                  == MstCourseReward.combo_reward_item_id)
+            .where(MstCourseReward.course == course_id)
+            .order_by(MstCourseReward.rank)
+        ).all()
+        clear_reward_items = session.scalars(
+            select(MstRewardItem)
+            .join(MstCourseReward,
+                  MstRewardItem.mst_reward_item_id
+                  == MstCourseReward.clear_reward_item_id)
+            .where(MstCourseReward.course == course_id)
+            .order_by(MstCourseReward.rank)
+        ).all()
+        reward_item_schema = MstRewardItemSchema()
+        course_reward = {
+            'score_reward_item_list': [
+                {
+                    'rank': i+1,
+                    'reward': reward_item_schema.dump(
+                        score_reward_items[i]),
+                    'threshold': score_thresholds[i],
+                    'status': (1 if course.score_rank >= i+1 else 0)
+                } for i in range(4)
+            ],
+            'combo_reward_item_list': [
+                {
+                    'rank': i+1,
+                    'reward': reward_item_schema.dump(
+                        combo_reward_items[i]),
+                    'threshold': combo_thresholds[i],
+                    'status': (1 if course.combo_rank >= i+1 else 0)
+                } for i in range(4)
+            ],
+            'clear_reward_item_list': [
+                {
+                    'rank': i+1,
+                    'reward': reward_item_schema.dump(
+                        clear_reward_items[i]),
+                    'threshold': clear_thresholds[i],
+                    'status': (1 if course.clear_rank >= i+1 else 0)
+                } for i in range(4)
+            ]
+        }
+
+    return {
+        'course': course_dict,
+        'course_reward': course_reward
+    }
 

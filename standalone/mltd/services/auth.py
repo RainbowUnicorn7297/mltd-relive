@@ -11,7 +11,6 @@ from mltd.models.models import (Item, Mission, MstMission, MstSong, Offer,
                                 Song, User)
 from mltd.models.schemas import UserSchema
 from mltd.servers.config import server_timezone
-from mltd.services.user import update_vitality
 
 
 @dispatcher.add_method(name='AuthService.TransferPassword')
@@ -178,10 +177,15 @@ def login(params):
             map_level: A dict representing current map level of the
                        user. Related to producer rank. Contains the
                        following keys.
-                user_map_level: Current map level (1 to 20).
+                user_map_level: User map level (1 to 20).
                 user_recognition: Current user recognition (0.005 to
                                   100).
-                actual_map_level: Same as user_level.
+                actual_map_level: Current actual map level (1 to 20).
+                                  This value is greater than
+                                  'user_map_level' if the user has
+                                  completed an action that resulted in
+                                  an increase of map level but the user
+                                  has not been notified yet.
                 actual_recognition: Same as user_recognition.
             user_id_hash: A base64 string encoding the user_id
                           concatenated with 32 bytes of unknown data.
@@ -219,7 +223,6 @@ def login(params):
         now = datetime.now(timezone.utc)
         last_login_date = user.last_login_date.replace(tzinfo=timezone.utc)
         user.last_login_date = now
-        update_vitality(user)
         # Perform daily reset.
         if (last_login_date.astimezone(server_timezone).date()
                 < now.astimezone(server_timezone).date()):

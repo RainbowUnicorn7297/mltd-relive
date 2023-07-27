@@ -1,6 +1,5 @@
 mst_item
 is_visible=0 are manually reconstructed
-what is mst_item_id=502, item_type=4? (dropped from theater contact)
 
 mst_theater_room_status & mst_theater_room_idol
 currently contain main story & event story only

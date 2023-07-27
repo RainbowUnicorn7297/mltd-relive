@@ -49,11 +49,14 @@ def application(environ, start_response):
             '/rpc/BatchReqest_MakeCache_Login1',
             '/rpc/BatchReqest_MakeCache_Login2',
             '/rpc/LiveService.GetRandomGuestList',
+            '/rpc/LiveService.FinishSong',
         ]:
             print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))
         response = encrypt_response(response)
+        if environ['PATH_INFO'] == '/rpc/LiveService.FinishSong':
+            print(response)     # For debugging
 
         start_response(status, headers)
         return [response]
