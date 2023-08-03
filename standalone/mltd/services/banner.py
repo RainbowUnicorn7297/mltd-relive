@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Item, MstBanner
+from mltd.models.models import Item, MstBanner, Present
 from mltd.models.schemas import MstBannerSchema
 
 
@@ -38,15 +38,23 @@ def get_banner_list(params, context):
     with Session(engine) as session:
         # Check whether the user has Welcome!! guaranteed SSR gacha
         # ticket.
-        # TODO: Check mst_item_id=719 in present list
+        user_id = UUID(context['user_id'])
         gacha_ticket_amount = session.scalar(
             select(Item.amount)
-            .where(Item.user_id == UUID(context['user_id']))
+            .where(Item.user_id == user_id)
             .where(Item.mst_item_id == 719)
+        )
+        gacha_ticket_present_id = session.scalar(
+            select(Present.present_id)
+            .where(Present.user_id == user_id)
+            .where(Present.present_type == 1)
+            .where(Present.item_id == f'{user_id}_719')
+            .where(Present.present_state == 1)
+            .limit(1)
         )
 
         banner_stmt = select(MstBanner)
-        if not gacha_ticket_amount:
+        if not gacha_ticket_amount and not gacha_ticket_present_id:
             banner_stmt = banner_stmt.where(MstBanner.is_gasha_view == False)
         banners = session.scalars(banner_stmt).all()
 

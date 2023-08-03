@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-27 18:40+0800\n"
+"POT-Creation-Date: 2023-08-04 00:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,513 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2672
+#: .\mltd\models\models.py:2671
 msgid "default profile comment"
+msgstr ""
+
+#: .\mltd\services\idol.py:27
+msgid "Haruka Amami"
+msgstr ""
+
+#: .\mltd\services\idol.py:28
+msgid "Chihaya Kisaragi"
+msgstr ""
+
+#: .\mltd\services\idol.py:29
+msgid "Miki Hoshii"
+msgstr ""
+
+#: .\mltd\services\idol.py:30
+msgid "Yukiho Hagiwara"
+msgstr ""
+
+#: .\mltd\services\idol.py:31
+msgid "Yayoi Takatsuki"
+msgstr ""
+
+#: .\mltd\services\idol.py:32
+msgid "Makoto Kikuchi"
+msgstr ""
+
+#: .\mltd\services\idol.py:33
+msgid "Iori Minase"
+msgstr ""
+
+#: .\mltd\services\idol.py:34
+msgid "Takane Shijou"
+msgstr ""
+
+#: .\mltd\services\idol.py:35
+msgid "Ritsuko Akizuki"
+msgstr ""
+
+#: .\mltd\services\idol.py:36
+msgid "Azusa Miura"
+msgstr ""
+
+#: .\mltd\services\idol.py:37
+msgid "Ami Futami"
+msgstr ""
+
+#: .\mltd\services\idol.py:38
+msgid "Mami Futami"
+msgstr ""
+
+#: .\mltd\services\idol.py:39
+msgid "Hibiki Ganaha"
+msgstr ""
+
+#: .\mltd\services\idol.py:40
+msgid "Mirai Kasuga"
+msgstr ""
+
+#: .\mltd\services\idol.py:41
+msgid "Shizuka Mogami"
+msgstr ""
+
+#: .\mltd\services\idol.py:42
+msgid "Tsubasa Ibuki"
+msgstr ""
+
+#: .\mltd\services\idol.py:43
+msgid "Kotoha Tanaka"
+msgstr ""
+
+#: .\mltd\services\idol.py:44
+msgid "Elena Shimabara"
+msgstr ""
+
+#: .\mltd\services\idol.py:45
+msgid "Minako Satake"
+msgstr ""
+
+#: .\mltd\services\idol.py:46
+msgid "Megumi Tokoro"
+msgstr ""
+
+#: .\mltd\services\idol.py:47
+msgid "Matsuri Tokugawa"
+msgstr ""
+
+#: .\mltd\services\idol.py:48
+msgid "Serika Hakozaki"
+msgstr ""
+
+#: .\mltd\services\idol.py:49
+msgid "Akane Nonohara"
+msgstr ""
+
+#: .\mltd\services\idol.py:50
+msgid "Anna Mochizuki"
+msgstr ""
+
+#: .\mltd\services\idol.py:51
+msgid "Roco Handa"
+msgstr ""
+
+#: .\mltd\services\idol.py:52
+msgid "Yuriko Nanao"
+msgstr ""
+
+#: .\mltd\services\idol.py:53
+msgid "Sayoko Takayama"
+msgstr ""
+
+#: .\mltd\services\idol.py:54
+msgid "Arisa Matsuda"
+msgstr ""
+
+#: .\mltd\services\idol.py:55
+msgid "Umi Kousaka"
+msgstr ""
+
+#: .\mltd\services\idol.py:56
+msgid "Iku Nakatani"
+msgstr ""
+
+#: .\mltd\services\idol.py:57
+msgid "Tomoka Tenkubashi"
+msgstr ""
+
+#: .\mltd\services\idol.py:58
+msgid "Emily Stewart"
+msgstr ""
+
+#: .\mltd\services\idol.py:59
+msgid "Shiho Kitazawa"
+msgstr ""
+
+#: .\mltd\services\idol.py:60
+msgid "Ayumu Maihama"
+msgstr ""
+
+#: .\mltd\services\idol.py:61
+msgid "Hinata Kinoshita"
+msgstr ""
+
+#: .\mltd\services\idol.py:62
+msgid "Kana Yabuki"
+msgstr ""
+
+#: .\mltd\services\idol.py:63
+msgid "Nao Yokoyama"
+msgstr ""
+
+#: .\mltd\services\idol.py:64
+msgid "Chizuru Nikaido"
+msgstr ""
+
+#: .\mltd\services\idol.py:65
+msgid "Konomi Baba"
+msgstr ""
+
+#: .\mltd\services\idol.py:66
+msgid "Tamaki Ogami"
+msgstr ""
+
+#: .\mltd\services\idol.py:67
+msgid "Fuka Toyokawa"
+msgstr ""
+
+#: .\mltd\services\idol.py:68
+msgid "Miya Miyao"
+msgstr ""
+
+#: .\mltd\services\idol.py:69
+msgid "Noriko Fukuda"
+msgstr ""
+
+#: .\mltd\services\idol.py:70
+msgid "Mizuki Makabe"
+msgstr ""
+
+#: .\mltd\services\idol.py:71
+msgid "Karen Shinomiya"
+msgstr ""
+
+#: .\mltd\services\idol.py:72
+msgid "Rio Momose"
+msgstr ""
+
+#: .\mltd\services\idol.py:73
+msgid "Subaru Nagayoshi"
+msgstr ""
+
+#: .\mltd\services\idol.py:74
+msgid "Reika Kitakami"
+msgstr ""
+
+#: .\mltd\services\idol.py:75
+msgid "Momoko Suou"
+msgstr ""
+
+#: .\mltd\services\idol.py:76
+msgid "Julia"
+msgstr ""
+
+#: .\mltd\services\idol.py:77
+msgid "Tsumugi Shiraishi"
+msgstr ""
+
+#: .\mltd\services\idol.py:78
+msgid "Kaori Sakuramori"
+msgstr ""
+
+#: .\mltd\services\idol.py:81
+msgid "Shika"
 msgstr ""
 
 #: .\mltd\services\live.py:1342 .\setup.py:350
 msgid "Unit{unit_num}"
+msgstr ""
+
+#: .\mltd\services\login_bonus.py:214
+msgid ""
+"Reward received on\n"
+"Day {day} of \"Login Bonus.\""
+msgstr ""
+
+#: .\mltd\services\mission.py:93
+msgid "normal mission"
+msgstr ""
+
+#: .\mltd\services\mission.py:95
+msgid "daily mission"
+msgstr ""
+
+#: .\mltd\services\mission.py:97
+msgid "weekly mission"
+msgstr ""
+
+#: .\mltd\services\mission.py:99
+msgid "time-limited mission"
+msgstr ""
+
+#: .\mltd\services\mission.py:101
+msgid "panel mission"
+msgstr ""
+
+#: .\mltd\services\mission.py:104 .\mltd\services\mission.py:223
+msgid "Successfully complete {goal} live performances"
+msgstr ""
+
+#: .\mltd\services\mission.py:108
+msgid "Successfully complete {goal} full combos"
+msgstr ""
+
+#: .\mltd\services\mission.py:112
+msgid "Live score reaches {goal} points"
+msgstr ""
+
+#: .\mltd\services\mission.py:116
+msgid "Successfully complete Song Lv{goal} or higher"
+msgstr ""
+
+#: .\mltd\services\mission.py:120
+msgid "Register {goal} cards in card overview"
+msgstr ""
+
+#: .\mltd\services\mission.py:124
+msgid "Reach {option} affection with {goal} idols"
+msgstr ""
+
+#: .\mltd\services\mission.py:128
+msgid "Producer Lv reaches {goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:132
+msgid "Successfully complete {goal} types of songs"
+msgstr ""
+
+#: .\mltd\services\mission.py:136
+msgid "Get {goal} costumes"
+msgstr ""
+
+#: .\mltd\services\mission.py:141
+msgid "Log in {goal} times"
+msgstr ""
+
+#: .\mltd\services\mission.py:145
+msgid "Log in on Day {goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:149
+msgid "Gift {goal} flower stands"
+msgstr ""
+
+#: .\mltd\services\mission.py:153
+msgid "Reach {goal}%% recognition"
+msgstr ""
+
+#: .\mltd\services\mission.py:157
+msgid "Producer gauge reaches MAX {goal} times"
+msgstr ""
+
+#: .\mltd\services\mission.py:161
+msgid "Successfully complete the assigned song"
+msgstr ""
+
+#: .\mltd\services\mission.py:164
+msgid "Interact with idols {goal} times in the theater"
+msgstr ""
+
+#: .\mltd\services\mission.py:168
+msgid "Interact"
+msgstr ""
+
+#: .\mltd\services\mission.py:170
+msgid "Complete the above daily missions"
+msgstr ""
+
+#: .\mltd\services\mission.py:172
+msgid "Watch main story episode {goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:177
+msgid "Conduct a lesson"
+msgstr ""
+
+#: .\mltd\services\mission.py:179
+msgid "Conduct {goal} lessons"
+msgstr ""
+
+#: .\mltd\services\mission.py:183
+msgid "Conduct a master lesson"
+msgstr ""
+
+#: .\mltd\services\mission.py:185
+msgid "Form a unit"
+msgstr ""
+
+#: .\mltd\services\mission.py:187
+msgid "Do {goal} jobs"
+msgstr ""
+
+#: .\mltd\services\mission.py:191
+msgid "Send a friend request"
+msgstr ""
+
+#: .\mltd\services\mission.py:193
+msgid "Change self-introduction"
+msgstr ""
+
+#: .\mltd\services\mission.py:195
+msgid "Send a message"
+msgstr ""
+
+#: .\mltd\services\mission.py:197
+msgid "Max out the awakening gauge of a card"
+msgstr ""
+
+#: .\mltd\services\mission.py:199
+msgid "Set a unit name"
+msgstr ""
+
+#: .\mltd\services\mission.py:201
+msgid "Perform awakening"
+msgstr ""
+
+#: .\mltd\services\mission.py:203
+msgid "Set a guest idol"
+msgstr ""
+
+#: .\mltd\services\mission.py:205
+msgid "Max out the Lv of a card"
+msgstr ""
+
+#: .\mltd\services\mission.py:207
+msgid "Complete all daily missions"
+msgstr ""
+
+#: .\mltd\services\mission.py:209
+msgid "Reach {goal} affection with {idol_name}"
+msgstr ""
+
+#: .\mltd\services\mission.py:214
+msgid "Reach a total of LP{goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:218
+msgid "Play medal gacha"
+msgstr ""
+
+#: .\mltd\services\mission.py:221
+msgid "Successfully complete a live performance"
+msgstr ""
+
+#: .\mltd\services\mission.py:228
+msgid "Gift flower stands to {goal} people"
+msgstr ""
+
+#: .\mltd\services\mission.py:232
+msgid "Gift a flower stand"
+msgstr ""
+
+#: .\mltd\services\mission.py:234
+msgid "Fill up producer gauge"
+msgstr ""
+
+#: .\mltd\services\mission.py:236
+msgid "Log in for {goal} consecutive days"
+msgstr ""
+
+#: .\mltd\services\mission.py:240
+msgid "Increase the number of theater fans by {goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:245
+msgid "Collect all 52 sets of Prologue Rouge"
+msgstr ""
+
+#: .\mltd\services\mission.py:247
+msgid "Collect all 52 sets of Grateful Blue"
+msgstr ""
+
+#: .\mltd\services\mission.py:249
+msgid "Collect all 52 sets of Nouvelle Tricolore"
+msgstr ""
+
+#: .\mltd\services\mission.py:252
+msgid "Collect all 52 sets of Nouvelle Tricolore+"
+msgstr ""
+
+#: .\mltd\services\mission.py:255
+msgid "Collect all 52 sets of Parfait Noir"
+msgstr ""
+
+#: .\mltd\services\mission.py:257
+msgid "Collect all 52 sets of Lumière Papillon"
+msgstr ""
+
+#: .\mltd\services\mission.py:259
+msgid "Collect all 52 sets of Lumière Papillon+"
+msgstr ""
+
+#: .\mltd\services\mission.py:261
+msgid "Collect all 52 sets of Royal Starlet"
+msgstr ""
+
+#: .\mltd\services\mission.py:263
+msgid "Successfully complete a live performance with Shika as the Center"
+msgstr ""
+
+#: .\mltd\services\mission.py:267
+msgid "Watch the awakening episode of [Holy Maiden Who Loves the World   Shika]"
+msgstr ""
+
+#: .\mltd\services\mission.py:271
+msgid "Play [Blooming Star] 3 times with Shika in the unit"
+msgstr ""
+
+#: .\mltd\services\mission.py:274
+msgid "Awaken [Holy Maiden Who Loves the World   Shika]"
+msgstr ""
+
+#: .\mltd\services\mission.py:277
+msgid "Obtain [Holy Maiden Who Loves the World   Shika]"
+msgstr ""
+
+#: .\mltd\services\mission.py:280
+msgid "Perform Solo Live of [Blooming Star] with Shika as the Center"
+msgstr ""
+
+#: .\mltd\services\mission.py:283
+msgid "Perform Unit Live of [Blooming Star] with Shika as the Center"
+msgstr ""
+
+#: .\mltd\services\mission.py:286
+msgid "[Holy Maiden Who Loves the World   Shika] reaches Master Rank {goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:291
+msgid "Princess-type songs reach LP{goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:295
+msgid "Fairy-type songs reach LP{goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:299
+msgid "Angel-type songs reach LP{goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:303
+msgid "All-type songs reach LP{goal}"
+msgstr ""
+
+#: .\mltd\services\mission.py:307
+msgid "Complete {goal} job offers"
+msgstr ""
+
+#: .\mltd\services\mission.py:314
+msgid ""
+"Reward received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+
+#: .\mltd\services\mission.py:344
+msgid ""
+"Achievement received from\n"
+"{mission_type} \"{mission_description}.\""
 msgstr ""
 

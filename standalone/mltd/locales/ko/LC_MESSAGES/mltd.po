@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-23 17:42+0800\n"
+"POT-Creation-Date: 2023-08-04 00:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,525 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2672
+#: .\mltd\models\models.py:2671
 msgid "default profile comment"
 msgstr "잘 부탁드립니다!"
+
+#: .\mltd\services\idol.py:27
+msgid "Haruka Amami"
+msgstr "아마미 하루카"
+
+#: .\mltd\services\idol.py:28
+msgid "Chihaya Kisaragi"
+msgstr "키사라기 치하야"
+
+#: .\mltd\services\idol.py:29
+msgid "Miki Hoshii"
+msgstr "호시이 미키"
+
+#: .\mltd\services\idol.py:30
+msgid "Yukiho Hagiwara"
+msgstr "하기와라 유키호"
+
+#: .\mltd\services\idol.py:31
+msgid "Yayoi Takatsuki"
+msgstr "타카츠키 야요이"
+
+#: .\mltd\services\idol.py:32
+msgid "Makoto Kikuchi"
+msgstr "키쿠치 마코토"
+
+#: .\mltd\services\idol.py:33
+msgid "Iori Minase"
+msgstr "미나세 이오리"
+
+#: .\mltd\services\idol.py:34
+msgid "Takane Shijou"
+msgstr "시죠 타카네"
+
+#: .\mltd\services\idol.py:35
+msgid "Ritsuko Akizuki"
+msgstr "아키즈키 리츠코"
+
+#: .\mltd\services\idol.py:36
+msgid "Azusa Miura"
+msgstr "미우라 아즈사"
+
+#: .\mltd\services\idol.py:37
+msgid "Ami Futami"
+msgstr "후타미 아미"
+
+#: .\mltd\services\idol.py:38
+msgid "Mami Futami"
+msgstr "후타미 마미"
+
+#: .\mltd\services\idol.py:39
+msgid "Hibiki Ganaha"
+msgstr "가나하 히비키"
+
+#: .\mltd\services\idol.py:40
+msgid "Mirai Kasuga"
+msgstr "카스가 미라이"
+
+#: .\mltd\services\idol.py:41
+msgid "Shizuka Mogami"
+msgstr "모가미 시즈카"
+
+#: .\mltd\services\idol.py:42
+msgid "Tsubasa Ibuki"
+msgstr "이부키 츠바사"
+
+#: .\mltd\services\idol.py:43
+msgid "Kotoha Tanaka"
+msgstr "타나카 코토하"
+
+#: .\mltd\services\idol.py:44
+msgid "Elena Shimabara"
+msgstr "시마바라 엘레나"
+
+#: .\mltd\services\idol.py:45
+msgid "Minako Satake"
+msgstr "사타케 미나코"
+
+#: .\mltd\services\idol.py:46
+msgid "Megumi Tokoro"
+msgstr "토코로 메구미"
+
+#: .\mltd\services\idol.py:47
+msgid "Matsuri Tokugawa"
+msgstr "토쿠가와 마츠리"
+
+#: .\mltd\services\idol.py:48
+msgid "Serika Hakozaki"
+msgstr "하코자키 세리카"
+
+#: .\mltd\services\idol.py:49
+msgid "Akane Nonohara"
+msgstr "노노하라 아카네"
+
+#: .\mltd\services\idol.py:50
+msgid "Anna Mochizuki"
+msgstr "모치즈키 안나"
+
+#: .\mltd\services\idol.py:51
+msgid "Roco Handa"
+msgstr "로코"
+
+#: .\mltd\services\idol.py:52
+msgid "Yuriko Nanao"
+msgstr "나나오 유리코"
+
+#: .\mltd\services\idol.py:53
+msgid "Sayoko Takayama"
+msgstr "타카야마 사요코"
+
+#: .\mltd\services\idol.py:54
+msgid "Arisa Matsuda"
+msgstr "마츠다 아리사"
+
+#: .\mltd\services\idol.py:55
+msgid "Umi Kousaka"
+msgstr "코사카 우미"
+
+#: .\mltd\services\idol.py:56
+msgid "Iku Nakatani"
+msgstr "나카타니 이쿠"
+
+#: .\mltd\services\idol.py:57
+msgid "Tomoka Tenkubashi"
+msgstr "텐쿠바시 토모카"
+
+#: .\mltd\services\idol.py:58
+msgid "Emily Stewart"
+msgstr "에밀리 스튜어트"
+
+#: .\mltd\services\idol.py:59
+msgid "Shiho Kitazawa"
+msgstr "키타자와 시호"
+
+#: .\mltd\services\idol.py:60
+msgid "Ayumu Maihama"
+msgstr "마이하마 아유무"
+
+#: .\mltd\services\idol.py:61
+msgid "Hinata Kinoshita"
+msgstr "키노시타 히나타"
+
+#: .\mltd\services\idol.py:62
+msgid "Kana Yabuki"
+msgstr "야부키 카나"
+
+#: .\mltd\services\idol.py:63
+msgid "Nao Yokoyama"
+msgstr "요코야마 나오"
+
+#: .\mltd\services\idol.py:64
+msgid "Chizuru Nikaido"
+msgstr "니카이도 치즈루"
+
+#: .\mltd\services\idol.py:65
+msgid "Konomi Baba"
+msgstr "바바 코노미"
+
+#: .\mltd\services\idol.py:66
+msgid "Tamaki Ogami"
+msgstr "오오가미 타마키"
+
+#: .\mltd\services\idol.py:67
+msgid "Fuka Toyokawa"
+msgstr "토요카와 후우카"
+
+#: .\mltd\services\idol.py:68
+msgid "Miya Miyao"
+msgstr "미야오 미야"
+
+#: .\mltd\services\idol.py:69
+msgid "Noriko Fukuda"
+msgstr "후쿠다 노리코"
+
+#: .\mltd\services\idol.py:70
+msgid "Mizuki Makabe"
+msgstr "마카베 미즈키"
+
+#: .\mltd\services\idol.py:71
+msgid "Karen Shinomiya"
+msgstr "시노미야 카렌"
+
+#: .\mltd\services\idol.py:72
+msgid "Rio Momose"
+msgstr "모모세 리오"
+
+#: .\mltd\services\idol.py:73
+msgid "Subaru Nagayoshi"
+msgstr "나가요시 스바루"
+
+#: .\mltd\services\idol.py:74
+msgid "Reika Kitakami"
+msgstr "키타카미 레이카"
+
+#: .\mltd\services\idol.py:75
+msgid "Momoko Suou"
+msgstr "스오 모모코"
+
+#: .\mltd\services\idol.py:76
+msgid "Julia"
+msgstr "줄리아"
+
+#: .\mltd\services\idol.py:77
+msgid "Tsumugi Shiraishi"
+msgstr "시라이시 츠무기"
+
+#: .\mltd\services\idol.py:78
+msgid "Kaori Sakuramori"
+msgstr "사쿠라모리 카오리"
+
+#: .\mltd\services\idol.py:81
+msgid "Shika"
+msgstr "시이카"
 
 #: .\mltd\services\live.py:1342 .\setup.py:350
 msgid "Unit{unit_num}"
 msgstr "유닛{unit_num}"
+
+#: .\mltd\services\mission.py:93
+msgid "normal mission"
+msgstr "노멀 미션"
+
+#: .\mltd\services\mission.py:95
+msgid "daily mission"
+msgstr "데일리 미션"
+
+#: .\mltd\services\mission.py:97
+msgid "weekly mission"
+msgstr "위클리 미션"
+
+#: .\mltd\services\mission.py:99
+msgid "time-limited mission"
+msgstr "기간 한정 미션"
+
+#: .\mltd\services\mission.py:101
+msgid "panel mission"
+msgstr "패널 미션"
+
+#: .\mltd\services\mission.py:104 .\mltd\services\mission.py:223
+msgid "Successfully complete {goal} live performances"
+msgstr "라이브 {goal}번 성공하기"
+
+#: .\mltd\services\mission.py:108
+msgid "Successfully complete {goal} full combos"
+msgstr "풀콤보 {goal}번 성공하기"
+
+#: .\mltd\services\mission.py:112
+msgid "Live score reaches {goal} points"
+msgstr "라이브에서 스코어 {goal} 달성하기"
+
+#: .\mltd\services\mission.py:116
+msgid "Successfully complete Song Lv{goal} or higher"
+msgstr "음악 Lv.{goal} 이상의 라이브에 성공하기"
+
+#: .\mltd\services\mission.py:120
+msgid "Register {goal} cards in card overview"
+msgstr "카드 목록에 {goal}장 등록하기"
+
+#: .\mltd\services\mission.py:124
+msgid "Reach {option} affection with {goal} idols"
+msgstr "아이돌 {goal}명과  친밀도 {option} 달성하기"
+
+#: .\mltd\services\mission.py:128
+msgid "Producer Lv reaches {goal}"
+msgstr "프로듀서 Lv.{goal} 달성하기"
+
+#: .\mltd\services\mission.py:132
+msgid "Successfully complete {goal} types of songs"
+msgstr "{goal}종류 곡에서 라이브 성공하기"
+
+#: .\mltd\services\mission.py:136
+msgid "Get {goal} costumes"
+msgstr "의상 {goal}벌 획득하기"
+
+#: .\mltd\services\mission.py:141
+msgid "Log in {goal} times"
+msgstr "{goal}회 접속하기"
+
+#: .\mltd\services\mission.py:145
+msgid "Log in on Day {goal}"
+msgstr "{goal}일째도 접속하기"
+
+#: .\mltd\services\mission.py:149
+msgid "Gift {goal} flower stands"
+msgstr "{goal}회 화환 보내기"
+
+#: .\mltd\services\mission.py:153
+msgid "Reach {goal}%% recognition"
+msgstr "지명도 {goal}%% 달성하기"
+
+#: .\mltd\services\mission.py:157
+msgid "Producer gauge reaches MAX {goal} times"
+msgstr "프로듀서 게이지를 {goal}회 MAX로 채우기"
+
+#: .\mltd\services\mission.py:161
+msgid "Successfully complete the assigned song"
+msgstr "과제곡 성공하기"
+
+#: .\mltd\services\mission.py:164
+msgid "Interact with idols {goal} times in the theater"
+msgstr "극장에서 아이돌과 {goal}회 교류하기"
+
+#: .\mltd\services\mission.py:168
+msgid "Interact"
+msgstr "교류하기"
+
+#: .\mltd\services\mission.py:170
+msgid "Complete the above daily missions"
+msgstr "위의 데일리 미션 달성하기"
+
+#: .\mltd\services\mission.py:172
+msgid "Watch main story episode {goal}"
+msgstr "메인 스토리 제{goal}화 보기"
+
+#: .\mltd\services\mission.py:177
+msgid "Conduct a lesson"
+msgstr "레슨 실행하기"
+
+#: .\mltd\services\mission.py:179
+msgid "Conduct {goal} lessons"
+msgstr "레슨 {goal}번 실행하기"
+
+#: .\mltd\services\mission.py:183
+msgid "Conduct a master lesson"
+msgstr "마스터 레슨 실행하기"
+
+#: .\mltd\services\mission.py:185
+msgid "Form a unit"
+msgstr "유닛 편성 하기"
+
+#: .\mltd\services\mission.py:187
+msgid "Do {goal} jobs"
+msgstr "스케줄 {goal}번 실행하기"
+
+#: .\mltd\services\mission.py:191
+msgid "Send a friend request"
+msgstr "동료 신청 보내기"
+
+#: .\mltd\services\mission.py:193
+msgid "Change self-introduction"
+msgstr "자기소개 변경하기"
+
+#: .\mltd\services\mission.py:195
+msgid "Send a message"
+msgstr "메시지 보내기"
+
+#: .\mltd\services\mission.py:197
+msgid "Max out the awakening gauge of a card"
+msgstr "카드 각성 게이지 MAX로 채우기"
+
+#: .\mltd\services\mission.py:199
+msgid "Set a unit name"
+msgstr "유닛명 설정하기"
+
+#: .\mltd\services\mission.py:201
+msgid "Perform awakening"
+msgstr "각성하기"
+
+#: .\mltd\services\mission.py:203
+msgid "Set a guest idol"
+msgstr "게스트 아이돌 설정하기"
+
+#: .\mltd\services\mission.py:205
+msgid "Max out the Lv of a card"
+msgstr "카드 Lv.MAX 만들기"
+
+#: .\mltd\services\mission.py:207
+msgid "Complete all daily missions"
+msgstr "모든 데일리 미션 클리어하기"
+
+#: .\mltd\services\mission.py:209
+msgid "Reach {goal} affection with {idol_name}"
+msgstr "{idol_name}와 친밀도 {goal} 달성하기"
+
+#: .\mltd\services\mission.py:214
+msgid "Reach a total of LP{goal}"
+msgstr "합계 LP {goal} 달성하기"
+
+#: .\mltd\services\mission.py:218
+msgid "Play medal gacha"
+msgstr "메달 촬영 이용하기"
+
+#: .\mltd\services\mission.py:221
+msgid "Successfully complete a live performance"
+msgstr "라이브 성공하기"
+
+#: .\mltd\services\mission.py:228
+msgid "Gift flower stands to {goal} people"
+msgstr "화환을 {goal}명에게 선물하기"
+
+#: .\mltd\services\mission.py:232
+msgid "Gift a flower stand"
+msgstr "화환 선물하기"
+
+#: .\mltd\services\mission.py:234
+msgid "Fill up producer gauge"
+msgstr "프로듀서 게이지를 MAX로 채우기"
+
+#: .\mltd\services\mission.py:236
+msgid "Log in for {goal} consecutive days"
+msgstr "{goal}일간 매일 접속하기"
+
+#: .\mltd\services\mission.py:240
+msgid "Increase the number of theater fans by {goal}"
+msgstr "극장 팬 수를 {goal}명 늘리기"
+
+#: .\mltd\services\mission.py:245
+msgid "Collect all 52 sets of Prologue Rouge"
+msgstr "프롤로그 루주 52벌 모으기"
+
+#: .\mltd\services\mission.py:247
+msgid "Collect all 52 sets of Grateful Blue"
+msgstr "그레이트풀 블루 52벌 모으기"
+
+#: .\mltd\services\mission.py:249
+msgid "Collect all 52 sets of Nouvelle Tricolore"
+msgstr "누벨 트리콜로르 52벌 모으기"
+
+#: .\mltd\services\mission.py:252
+msgid "Collect all 52 sets of Nouvelle Tricolore+"
+msgstr "누벨 트리콜로르+ 52벌 모으기"
+
+#: .\mltd\services\mission.py:255
+msgid "Collect all 52 sets of Parfait Noir"
+msgstr "파르페 느와르 52벌 모으기"
+
+#: .\mltd\services\mission.py:257
+msgid "Collect all 52 sets of Lumière Papillon"
+msgstr "뤼미에르 파피용 52벌 모으기"
+
+#: .\mltd\services\mission.py:259
+msgid "Collect all 52 sets of Lumière Papillon+"
+msgstr "뤼미에르 파피용+ 52벌 모으기"
+
+#: .\mltd\services\mission.py:261
+msgid "Collect all 52 sets of Royal Starlet"
+msgstr "로얄 스탈렛 52벌 모으기"
+
+#: .\mltd\services\mission.py:263
+msgid "Successfully complete a live performance with Shika as the Center"
+msgstr "시이카를 센터로 설정해 라이브를 1번 성공하자"
+
+#: .\mltd\services\mission.py:267
+msgid "Watch the awakening episode of [Holy Maiden Who Loves the World   Shika]"
+msgstr "'세계를 사랑하는 성스러운 소녀　시이카'의 각성 에피소드를 확인하자"
+
+#: .\mltd\services\mission.py:271
+msgid "Play [Blooming Star] 3 times with Shika in the unit"
+msgstr "시이카를 유닛으로 편성해 'Blooming Star' 라이브를 3번 플레이하자"
+
+#: .\mltd\services\mission.py:274
+msgid "Awaken [Holy Maiden Who Loves the World   Shika]"
+msgstr "'세계를 사랑하는 성스러운 소녀　시이카'를 각성시키자"
+
+#: .\mltd\services\mission.py:277
+msgid "Obtain [Holy Maiden Who Loves the World   Shika]"
+msgstr "'세계를 사랑하는 성스러운 소녀　시이카' 획득하기"
+
+#: .\mltd\services\mission.py:280
+msgid "Perform Solo Live of [Blooming Star] with Shika as the Center"
+msgstr "시이카를 센터로 설정해 'Blooming Star' 솔로 라이브를 플레이하자"
+
+#: .\mltd\services\mission.py:283
+msgid "Perform Unit Live of [Blooming Star] with Shika as the Center"
+msgstr "시이카를 센터로 설정해 'Blooming Star' 유닛 라이브를 플레이하자"
+
+#: .\mltd\services\mission.py:286
+msgid "[Holy Maiden Who Loves the World   Shika] reaches Master Rank {goal}"
+msgstr "'세계를 사랑하는 성스러운 소녀　시이카' 마스터 랭크 {goal} 달성하기"
+
+#: .\mltd\services\mission.py:291
+msgid "Princess-type songs reach LP{goal}"
+msgstr "Princess 타입 음악 LP {goal} 달성하기"
+
+#: .\mltd\services\mission.py:295
+msgid "Fairy-type songs reach LP{goal}"
+msgstr "Fairy 타입 음악 LP {goal} 달성하기"
+
+#: .\mltd\services\mission.py:299
+msgid "Angel-type songs reach LP{goal}"
+msgstr "Angel 타입 음악 LP {goal} 달성하기"
+
+#: .\mltd\services\mission.py:303
+msgid "All-type songs reach LP{goal}"
+msgstr "ALL 타입 음악 LP {goal} 달성하기"
+
+#: .\mltd\services\mission.py:307
+msgid "Complete {goal} job offers"
+msgstr "의뢰 {goal}번 완료하기"
+
+
+
+# The following are machine translations.
+
+
+
+#: .\mltd\services\login_bonus.py:214
+msgid ""
+"Reward received on\n"
+"Day {day} of \"Login Bonus.\""
+msgstr ""
+"\"로그인 보너스\" {day}일차에\n"
+"받은 보상입니다."
+
+#: .\mltd\services\mission.py:314
+msgid ""
+"Reward received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"{mission_type} \"{mission_description}\"에서\n"
+"받은 보상입니다."
+
+#: .\mltd\services\mission.py:344
+msgid ""
+"Achievement received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"{mission_type} \"{mission_description}\"에서\n"
+"받은 칭호입니다."
 

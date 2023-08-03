@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-07-23 17:42+0800\n"
+"POT-Creation-Date: 2023-08-04 00:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,519 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2672
+#: .\mltd\models\models.py:2671
 msgid "default profile comment"
 msgstr "請多多指教！"
+
+#: .\mltd\services\idol.py:27
+msgid "Haruka Amami"
+msgstr "天海春香"
+
+#: .\mltd\services\idol.py:28
+msgid "Chihaya Kisaragi"
+msgstr "如月千早"
+
+#: .\mltd\services\idol.py:29
+msgid "Miki Hoshii"
+msgstr "星井美希"
+
+#: .\mltd\services\idol.py:30
+msgid "Yukiho Hagiwara"
+msgstr "萩原雪步"
+
+#: .\mltd\services\idol.py:31
+msgid "Yayoi Takatsuki"
+msgstr "高槻彌生"
+
+#: .\mltd\services\idol.py:32
+msgid "Makoto Kikuchi"
+msgstr "菊地真"
+
+#: .\mltd\services\idol.py:33
+msgid "Iori Minase"
+msgstr "水瀨伊織"
+
+#: .\mltd\services\idol.py:34
+msgid "Takane Shijou"
+msgstr "四條貴音"
+
+#: .\mltd\services\idol.py:35
+msgid "Ritsuko Akizuki"
+msgstr "秋月律子"
+
+#: .\mltd\services\idol.py:36
+msgid "Azusa Miura"
+msgstr "三浦梓"
+
+#: .\mltd\services\idol.py:37
+msgid "Ami Futami"
+msgstr "雙海亞美"
+
+#: .\mltd\services\idol.py:38
+msgid "Mami Futami"
+msgstr "雙海真美"
+
+#: .\mltd\services\idol.py:39
+msgid "Hibiki Ganaha"
+msgstr "我那霸響"
+
+#: .\mltd\services\idol.py:40
+msgid "Mirai Kasuga"
+msgstr "春日未來"
+
+#: .\mltd\services\idol.py:41
+msgid "Shizuka Mogami"
+msgstr "最上靜香"
+
+#: .\mltd\services\idol.py:42
+msgid "Tsubasa Ibuki"
+msgstr "伊吹翼"
+
+#: .\mltd\services\idol.py:43
+msgid "Kotoha Tanaka"
+msgstr "田中琴葉"
+
+#: .\mltd\services\idol.py:44
+msgid "Elena Shimabara"
+msgstr "島原埃琳娜"
+
+#: .\mltd\services\idol.py:45
+msgid "Minako Satake"
+msgstr "佐竹美奈子"
+
+#: .\mltd\services\idol.py:46
+msgid "Megumi Tokoro"
+msgstr "所惠美"
+
+#: .\mltd\services\idol.py:47
+msgid "Matsuri Tokugawa"
+msgstr "德川茉莉"
+
+#: .\mltd\services\idol.py:48
+msgid "Serika Hakozaki"
+msgstr "箱崎星梨花"
+
+#: .\mltd\services\idol.py:49
+msgid "Akane Nonohara"
+msgstr "野野原茜"
+
+#: .\mltd\services\idol.py:50
+msgid "Anna Mochizuki"
+msgstr "望月杏奈"
+
+#: .\mltd\services\idol.py:51
+msgid "Roco Handa"
+msgstr "ROCO"
+
+#: .\mltd\services\idol.py:52
+msgid "Yuriko Nanao"
+msgstr "七尾百合子"
+
+#: .\mltd\services\idol.py:53
+msgid "Sayoko Takayama"
+msgstr "高山紗代子"
+
+#: .\mltd\services\idol.py:54
+msgid "Arisa Matsuda"
+msgstr "松田亞利沙"
+
+#: .\mltd\services\idol.py:55
+msgid "Umi Kousaka"
+msgstr "高坂海美"
+
+#: .\mltd\services\idol.py:56
+msgid "Iku Nakatani"
+msgstr "中谷育"
+
+#: .\mltd\services\idol.py:57
+msgid "Tomoka Tenkubashi"
+msgstr "天空橋朋花"
+
+#: .\mltd\services\idol.py:58
+msgid "Emily Stewart"
+msgstr "艾蜜莉"
+
+#: .\mltd\services\idol.py:59
+msgid "Shiho Kitazawa"
+msgstr "北澤志保"
+
+#: .\mltd\services\idol.py:60
+msgid "Ayumu Maihama"
+msgstr "舞濱步"
+
+#: .\mltd\services\idol.py:61
+msgid "Hinata Kinoshita"
+msgstr "木下日向"
+
+#: .\mltd\services\idol.py:62
+msgid "Kana Yabuki"
+msgstr "矢吹可奈"
+
+#: .\mltd\services\idol.py:63
+msgid "Nao Yokoyama"
+msgstr "橫山奈緒"
+
+#: .\mltd\services\idol.py:64
+msgid "Chizuru Nikaido"
+msgstr "二階堂千鶴"
+
+#: .\mltd\services\idol.py:65
+msgid "Konomi Baba"
+msgstr "馬場木實"
+
+#: .\mltd\services\idol.py:66
+msgid "Tamaki Ogami"
+msgstr "大神環"
+
+#: .\mltd\services\idol.py:67
+msgid "Fuka Toyokawa"
+msgstr "豐川風花"
+
+#: .\mltd\services\idol.py:68
+msgid "Miya Miyao"
+msgstr "宮尾美也"
+
+#: .\mltd\services\idol.py:69
+msgid "Noriko Fukuda"
+msgstr "福田法子"
+
+#: .\mltd\services\idol.py:70
+msgid "Mizuki Makabe"
+msgstr "真壁瑞希"
+
+#: .\mltd\services\idol.py:71
+msgid "Karen Shinomiya"
+msgstr "篠宮可憐"
+
+#: .\mltd\services\idol.py:72
+msgid "Rio Momose"
+msgstr "百瀨莉緒"
+
+#: .\mltd\services\idol.py:73
+msgid "Subaru Nagayoshi"
+msgstr "永吉昴"
+
+#: .\mltd\services\idol.py:74
+msgid "Reika Kitakami"
+msgstr "北上麗花"
+
+#: .\mltd\services\idol.py:75
+msgid "Momoko Suou"
+msgstr "周防桃子"
+
+#: .\mltd\services\idol.py:76
+msgid "Julia"
+msgstr "茱莉亞"
+
+#: .\mltd\services\idol.py:77
+msgid "Tsumugi Shiraishi"
+msgstr "白石紬"
+
+#: .\mltd\services\idol.py:78
+msgid "Kaori Sakuramori"
+msgstr "櫻守歌織"
+
+#: .\mltd\services\idol.py:81
+msgid "Shika"
+msgstr "詩花"
 
 #: .\mltd\services\live.py:1342 .\setup.py:350
 msgid "Unit{unit_num}"
 msgstr "團體{unit_num}"
+
+#: .\mltd\services\login_bonus.py:214
+msgid ""
+"Reward received on\n"
+"Day {day} of \"Login Bonus.\""
+msgstr ""
+"於「登入獎勵」第{day}天\n"
+"獲得的報酬。"
+
+#: .\mltd\services\mission.py:93
+msgid "normal mission"
+msgstr "普通任務"
+
+#: .\mltd\services\mission.py:95
+msgid "daily mission"
+msgstr "每日任務"
+
+#: .\mltd\services\mission.py:97
+msgid "weekly mission"
+msgstr "每週任務"
+
+#: .\mltd\services\mission.py:99
+msgid "time-limited mission"
+msgstr "期間限定任務"
+
+#: .\mltd\services\mission.py:101
+msgid "panel mission"
+msgstr "拼圖任務"
+
+#: .\mltd\services\mission.py:104 .\mltd\services\mission.py:223
+msgid "Successfully complete {goal} live performances"
+msgstr "成功完成{goal}次演唱會"
+
+#: .\mltd\services\mission.py:108
+msgid "Successfully complete {goal} full combos"
+msgstr "成功完成{goal}次Full Combo"
+
+#: .\mltd\services\mission.py:112
+msgid "Live score reaches {goal} points"
+msgstr "演唱會分數達到{goal}分"
+
+#: .\mltd\services\mission.py:116
+msgid "Successfully complete Song Lv{goal} or higher"
+msgstr "成功完成歌曲Lv{goal}以上的演唱會"
+
+#: .\mltd\services\mission.py:120
+msgid "Register {goal} cards in card overview"
+msgstr "於卡片一覽登錄{goal}張卡片"
+
+#: .\mltd\services\mission.py:124
+msgid "Reach {option} affection with {goal} idols"
+msgstr "和{goal}名偶像的親密度達到{option}"
+
+#: .\mltd\services\mission.py:128
+msgid "Producer Lv reaches {goal}"
+msgstr "製作人Lv達到{goal}"
+
+#: .\mltd\services\mission.py:132
+msgid "Successfully complete {goal} types of songs"
+msgstr "成功完成{goal}種歌曲的演唱會"
+
+#: .\mltd\services\mission.py:136
+msgid "Get {goal} costumes"
+msgstr "獲得{goal}套服裝"
+
+#: .\mltd\services\mission.py:141
+msgid "Log in {goal} times"
+msgstr "登入{goal}次"
+
+#: .\mltd\services\mission.py:145
+msgid "Log in on Day {goal}"
+msgstr "連續登入{goal}天"
+
+#: .\mltd\services\mission.py:149
+msgid "Gift {goal} flower stands"
+msgstr "贈送{goal}次花籃"
+
+#: .\mltd\services\mission.py:153
+msgid "Reach {goal}%% recognition"
+msgstr "知名度達到{goal}%%"
+
+#: .\mltd\services\mission.py:157
+msgid "Producer gauge reaches MAX {goal} times"
+msgstr "製作人量表達到MAX {goal}次"
+
+#: .\mltd\services\mission.py:161
+msgid "Successfully complete the assigned song"
+msgstr "成功完成課題歌曲"
+
+#: .\mltd\services\mission.py:164
+msgid "Interact with idols {goal} times in the theater"
+msgstr "在劇場裡和偶像互動{goal}次"
+
+#: .\mltd\services\mission.py:168
+msgid "Interact"
+msgstr "進行互動"
+
+#: .\mltd\services\mission.py:170
+msgid "Complete the above daily missions"
+msgstr "達成以上每日任務"
+
+#: .\mltd\services\mission.py:172
+msgid "Watch main story episode {goal}"
+msgstr "觀看主線劇情第{goal}話"
+
+#: .\mltd\services\mission.py:177
+msgid "Conduct a lesson"
+msgstr "進行訓練課程"
+
+#: .\mltd\services\mission.py:179
+msgid "Conduct {goal} lessons"
+msgstr "進行{goal}次訓練課程"
+
+#: .\mltd\services\mission.py:183
+msgid "Conduct a master lesson"
+msgstr "進行明星課程"
+
+#: .\mltd\services\mission.py:185
+msgid "Form a unit"
+msgstr "進行團體編制"
+
+#: .\mltd\services\mission.py:187
+msgid "Do {goal} jobs"
+msgstr "進行{goal}次工作"
+
+#: .\mltd\services\mission.py:191
+msgid "Send a friend request"
+msgstr "送出同僚申請"
+
+#: .\mltd\services\mission.py:193
+msgid "Change self-introduction"
+msgstr "變更自我介紹"
+
+#: .\mltd\services\mission.py:195
+msgid "Send a message"
+msgstr "送出留言"
+
+#: .\mltd\services\mission.py:197
+msgid "Max out the awakening gauge of a card"
+msgstr "使卡片的覺醒量表達到MAX"
+
+#: .\mltd\services\mission.py:199
+msgid "Set a unit name"
+msgstr "設定團體名"
+
+#: .\mltd\services\mission.py:201
+msgid "Perform awakening"
+msgstr "進行覺醒"
+
+#: .\mltd\services\mission.py:203
+msgid "Set a guest idol"
+msgstr "設定來賓偶像"
+
+#: .\mltd\services\mission.py:205
+msgid "Max out the Lv of a card"
+msgstr "使卡片Lv達到MAX"
+
+#: .\mltd\services\mission.py:207
+msgid "Complete all daily missions"
+msgstr "完成所有每日任務"
+
+#: .\mltd\services\mission.py:209
+msgid "Reach {goal} affection with {idol_name}"
+msgstr "和{idol_name}的親密度達到{goal}"
+
+#: .\mltd\services\mission.py:214
+msgid "Reach a total of LP{goal}"
+msgstr "達到合計LP{goal}"
+
+#: .\mltd\services\mission.py:218
+msgid "Play medal gacha"
+msgstr "進行代幣轉蛋"
+
+#: .\mltd\services\mission.py:221
+msgid "Successfully complete a live performance"
+msgstr "成功完成演唱會"
+
+#: .\mltd\services\mission.py:228
+msgid "Gift flower stands to {goal} people"
+msgstr "贈送花籃給{goal}個人"
+
+#: .\mltd\services\mission.py:232
+msgid "Gift a flower stand"
+msgstr "贈送花籃"
+
+#: .\mltd\services\mission.py:234
+msgid "Fill up producer gauge"
+msgstr "集滿製作人量表"
+
+#: .\mltd\services\mission.py:236
+msgid "Log in for {goal} consecutive days"
+msgstr "連續登入{goal}天"
+
+#: .\mltd\services\mission.py:240
+msgid "Increase the number of theater fans by {goal}"
+msgstr "增加劇場粉絲人數{goal}人"
+
+#: .\mltd\services\mission.py:245
+msgid "Collect all 52 sets of Prologue Rouge"
+msgstr "集齊52套序幕之紅"
+
+#: .\mltd\services\mission.py:247
+msgid "Collect all 52 sets of Grateful Blue"
+msgstr "集齊52套感謝之藍"
+
+#: .\mltd\services\mission.py:249
+msgid "Collect all 52 sets of Nouvelle Tricolore"
+msgstr "集齊52套嶄新三色"
+
+#: .\mltd\services\mission.py:252
+msgid "Collect all 52 sets of Nouvelle Tricolore+"
+msgstr "集齊52套嶄新三色+"
+
+#: .\mltd\services\mission.py:255
+msgid "Collect all 52 sets of Parfait Noir"
+msgstr "集齊52套無瑕之黑"
+
+#: .\mltd\services\mission.py:257
+msgid "Collect all 52 sets of Lumière Papillon"
+msgstr "集齊52套光輝彩蝶"
+
+#: .\mltd\services\mission.py:259
+msgid "Collect all 52 sets of Lumière Papillon+"
+msgstr "集齊52套光輝彩蝶+"
+
+#: .\mltd\services\mission.py:261
+msgid "Collect all 52 sets of Royal Starlet"
+msgstr "集齊52套卓越新星"
+
+#: .\mltd\services\mission.py:263
+msgid "Successfully complete a live performance with Shika as the Center"
+msgstr "將詩花設為Center並成功完成1次演唱會"
+
+#: .\mltd\services\mission.py:267
+msgid "Watch the awakening episode of [Holy Maiden Who Loves the World   Shika]"
+msgstr "觀看『喜愛世界的聖潔少女　詩花』的覺醒故事"
+
+#: .\mltd\services\mission.py:271
+msgid "Play [Blooming Star] 3 times with Shika in the unit"
+msgstr "將詩花編入團體，進行3次『Blooming Star』的演唱會"
+
+#: .\mltd\services\mission.py:274
+msgid "Awaken [Holy Maiden Who Loves the World   Shika]"
+msgstr "讓『喜愛世界的聖潔少女　詩花』進行覺醒"
+
+#: .\mltd\services\mission.py:277
+msgid "Obtain [Holy Maiden Who Loves the World   Shika]"
+msgstr "獲得『喜愛世界的聖潔少女　詩花』"
+
+#: .\mltd\services\mission.py:280
+msgid "Perform Solo Live of [Blooming Star] with Shika as the Center"
+msgstr "將詩花設為Center，進行『Blooming Star』的個人演唱會"
+
+#: .\mltd\services\mission.py:283
+msgid "Perform Unit Live of [Blooming Star] with Shika as the Center"
+msgstr "將詩花設為Center，進行『Blooming Star』的團體演唱會"
+
+#: .\mltd\services\mission.py:286
+msgid "[Holy Maiden Who Loves the World   Shika] reaches Master Rank {goal}"
+msgstr "將『喜愛世界的聖潔少女　詩花』培育至明星階級{goal}"
+
+#: .\mltd\services\mission.py:291
+msgid "Princess-type songs reach LP{goal}"
+msgstr "Princess類型歌曲達到LP{goal}"
+
+#: .\mltd\services\mission.py:295
+msgid "Fairy-type songs reach LP{goal}"
+msgstr "Fairy類型歌曲達到LP{goal}"
+
+#: .\mltd\services\mission.py:299
+msgid "Angel-type songs reach LP{goal}"
+msgstr "Angel類型歌曲達到LP{goal}"
+
+#: .\mltd\services\mission.py:303
+msgid "All-type songs reach LP{goal}"
+msgstr "All類型歌曲達到LP{goal}"
+
+#: .\mltd\services\mission.py:307
+msgid "Complete {goal} job offers"
+msgstr "完成{goal}次工作邀約"
+
+#: .\mltd\services\mission.py:314
+msgid ""
+"Reward received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"於{mission_type}「{mission_description}」\n"
+"獲得的報酬。"
+
+#: .\mltd\services\mission.py:344
+msgid ""
+"Achievement received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"於{mission_type}「{mission_description}」\n"
+"獲得的稱號。"
 

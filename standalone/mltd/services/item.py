@@ -6,15 +6,14 @@ from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import (GashaMedal, GashaMedalExpireDate, Item, Jewel,
-                                MstItem, User)
+from mltd.models.models import GashaMedalExpireDate, Item, Jewel, MstItem, User
 from mltd.models.schemas import ItemSchema
 from mltd.servers.config import server_timezone
 
 
 def add_item(
         session: Session,
-        user_id,
+        user: User,
         mst_item_id,
         item_type,
         amount=1,
@@ -25,7 +24,7 @@ def add_item(
 
     Args:
         session: Existing SQLAlchemy session.
-        user_id: User ID.
+        user: A User object.
         mst_item_id: Master item ID of the item to be added.
         item_type: Item type.
         amount: Amount of the item to be added (default 1).
@@ -37,13 +36,13 @@ def add_item(
     if item_type == 1:      # Jewel
         session.execute(
             update(Jewel)
-            .where(Jewel.user_id == user_id)
+            .where(Jewel.user == user)
             .values(free_jewel_amount=Jewel.free_jewel_amount + amount)
         )
     elif item_type == 2:    # Money
         session.execute(
             update(User)
-            .where(User.user_id == user_id)
+            .where(User.user == user)
             .values(money=func.min(User.money + amount, User.max_money))
         )
     elif item_type == 4:    # Gasha medal pt
@@ -51,10 +50,7 @@ def add_item(
             select(MstItem.value1)
             .where(MstItem.mst_item_id == mst_item_id)
         )
-        gasha_medal = session.scalars(
-            select(GashaMedal)
-            .where(GashaMedal.user_id == user_id)
-        ).one()
+        gasha_medal = user.gasha_medal
         if len(gasha_medal.gasha_medal_expire_dates) >= 10:
             return
         gasha_medal.point_amount += point_amonut
@@ -66,13 +62,12 @@ def add_item(
     else:
         item = session.scalar(
             select(Item)
-            .where(Item.user_id == user_id)
+            .where(Item.user == user)
             .where(Item.mst_item_id == mst_item_id)
         )
         if not item:
-            session.add(Item(
-                item_id=f'{user_id}_{mst_item_id}',
-                user_id=user_id,
+            user.items.append(Item(
+                item_id=f'{user.user_id}_{mst_item_id}',
                 mst_item_id=mst_item_id,
                 amount=amount,
                 expire_date=expire_date

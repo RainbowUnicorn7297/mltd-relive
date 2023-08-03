@@ -1732,7 +1732,7 @@ def finish_song(params, context):
                 if drop_reward_item.mst_item_id:
                     add_item(
                         session=session,
-                        user_id=user.user_id,
+                        user=user,
                         mst_item_id=drop_reward_item.mst_item_id,
                         item_type=drop_reward_item.item_type)
                     if drop_type is not DropType.GASHA_MEDAL_PT:
@@ -1750,7 +1750,7 @@ def finish_song(params, context):
                         lesson_ticket_item_id = 200 if rarity == 1 else 201
                         add_item(
                             session=session,
-                            user_id=user.user_id,
+                            user=user,
                             mst_item_id=lesson_ticket_item_id,
                             item_type=8,
                             amount=2
@@ -1759,7 +1759,7 @@ def finish_song(params, context):
                         master_piece_item_id = 300 if rarity == 1 else 301
                         add_item(
                             session=session,
-                            user_id=user.user_id,
+                            user=user,
                             mst_item_id=master_piece_item_id,
                             item_type=9,
                             amount=1
@@ -1876,7 +1876,7 @@ def finish_song(params, context):
                 == song.mst_song_id):
             update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=daily_song_mission,
                 progress=1
             )
@@ -1891,7 +1891,7 @@ def finish_song(params, context):
             if daily_total_mission:
                 is_complete = update_mission_progress(
                     session=session,
-                    user_id=user.user_id,
+                    user=user,
                     mission=daily_total_mission,
                     progress=daily_total_mission.progress + 1
                 )
@@ -1909,7 +1909,7 @@ def finish_song(params, context):
         if weekly_fan_mission:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=weekly_fan_mission,
                 progress=weekly_fan_mission.progress + gained_fan
             )
@@ -1929,7 +1929,7 @@ def finish_song(params, context):
         for mission in live_clear_missions:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 # Side note: Total live clear count at any given time
                 # can be calculated from the clear count of all courses.
@@ -1955,7 +1955,7 @@ def finish_song(params, context):
                 for mission in full_combo_missions:
                     is_complete = update_mission_progress(
                         session=session,
-                        user_id=user.user_id,
+                        user=user,
                         mission=mission,
                         progress=mission.progress + 1
                     )
@@ -1973,7 +1973,7 @@ def finish_song(params, context):
             for mission in score_missions:
                 is_complete = update_mission_progress(
                     session=session,
-                    user_id=user.user_id,
+                    user=user,
                     mission=mission,
                     progress=params['score']
                 )
@@ -1991,7 +1991,7 @@ def finish_song(params, context):
             for mission in song_level_missions:
                 is_complete = update_mission_progress(
                     session=session,
-                    user_id=user.user_id,
+                    user=user,
                     mission=mission,
                     progress=course.mst_course.level
                 )
@@ -2010,7 +2010,7 @@ def finish_song(params, context):
         for mission in card_missions:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=card_count
             )
@@ -2035,7 +2035,7 @@ def finish_song(params, context):
                     progress += 1
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=progress
             )
@@ -2054,7 +2054,7 @@ def finish_song(params, context):
             for mission in user_level_missions:
                 is_complete = update_mission_progress(
                     session=session,
-                    user_id=user.user_id,
+                    user=user,
                     mission=mission,
                     progress=user.level
                 )
@@ -2077,7 +2077,7 @@ def finish_song(params, context):
         for mission in song_clear_missions:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=cleared_song_count
             )
@@ -2096,7 +2096,7 @@ def finish_song(params, context):
         for mission in costume_missions:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=costume_count
             )
@@ -2114,7 +2114,7 @@ def finish_song(params, context):
         for mission in user_lp_missions:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=new_lp
             )
@@ -2136,7 +2136,7 @@ def finish_song(params, context):
             ])
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=costume_count
             )
@@ -2157,7 +2157,7 @@ def finish_song(params, context):
                 and mode == 2):
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=shika_unit_center_mission,
                 progress=shika_unit_center_mission.progress + 1
             )
@@ -2179,7 +2179,7 @@ def finish_song(params, context):
                 and mode == 1):
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=shika_solo_center_mission,
                 progress=shika_solo_center_mission.progress + 1
             )
@@ -2201,7 +2201,7 @@ def finish_song(params, context):
                 == int(shika_live_mission.mst_mission.option2)):
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=shika_live_mission,
                 progress=shika_live_mission.progress + 1
             )
@@ -2219,7 +2219,7 @@ def finish_song(params, context):
                 == int(shika_center_mission.mst_mission.option)):
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=shika_center_mission,
                 progress=shika_center_mission.progress + 1
             )
@@ -2240,7 +2240,7 @@ def finish_song(params, context):
         if idol_type_lp_mission:
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=idol_type_lp_mission,
                 progress=idol_type_lp
             )
@@ -2267,7 +2267,7 @@ def finish_song(params, context):
                     progress = result_idol['after_affection']
             is_complete = update_mission_progress(
                 session=session,
-                user_id=user.user_id,
+                user=user,
                 mission=mission,
                 progress=progress
             )

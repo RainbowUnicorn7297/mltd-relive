@@ -672,6 +672,19 @@ if __name__ == '__main__':
             last_update_date_type=16
         ))
 
+        achievement_ids = session.scalars(
+            select(MstAchievement.mst_achievement_id)
+            # TODO: Use the following where clauses for a new user.
+            # .where(MstAchievement.achievement_type.in_([1, 2]))
+            # .where(MstAchievement.sort_id < 9000)
+        ).all()
+        for achievement_id in achievement_ids:
+            session.add(Achievement(
+                user_id=user.user_id,
+                mst_achievement_id=achievement_id,
+                is_released=True
+            ))
+
         session.commit()
 
         # Insert friend and guest data.

@@ -66,7 +66,7 @@ class User(Base):
     lp: Mapped[int] = mapped_column(default=0)
     theater_fan: Mapped[int] = mapped_column(default=52)
     last_login_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     is_tutorial_finished: Mapped[bool] = mapped_column(default=False)
     lounge_id: Mapped[Optional[UUID]] = mapped_column(default='',
                                                       insert_default=None)
@@ -74,10 +74,10 @@ class User(Base):
     lounge_user_state: Mapped[int] = mapped_column(default=0)
     producer_rank: Mapped[int] = mapped_column(default=1)
     full_recover_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     auto_recover_interval: Mapped[int] = mapped_column(default=300)
     first_time_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     produce_gauge: Mapped[int] = mapped_column(default=0)
     max_friend: Mapped[int] = mapped_column(default=50)
     is_connected_bnid: Mapped[bool] = mapped_column(default=False)
@@ -516,7 +516,7 @@ class Card(Base):
     awakening_gauge: Mapped[int] = mapped_column(default=1)
     master_rank: Mapped[int] = mapped_column(default=0)
     create_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     is_new: Mapped[bool] = mapped_column(default=True)
 
     user: Mapped['User'] = relationship(back_populates='cards')
@@ -1160,7 +1160,7 @@ class Course(Base):
     is_released: Mapped[bool]
     perfect_rate: Mapped[float] = mapped_column(default=0)
     score_update_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='courses')
     mst_course: Mapped['MstCourse'] = relationship(lazy='joined',
@@ -1818,7 +1818,7 @@ class GashaMedalExpireDate(Base):
                             primary_key=True)
     expire_date: Mapped[datetime] = mapped_column(
         primary_key=True,
-        default=datetime.now(timezone.utc) + timedelta(days=7))
+        default=lambda: datetime.now(timezone.utc) + timedelta(days=7))
 
 
 class Jewel(Base):
@@ -1846,7 +1846,7 @@ class RecordTime(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     kind: Mapped[str] = mapped_column(primary_key=True)
     time: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='record_times')
 
@@ -2095,9 +2095,9 @@ class Mission(Base):
     mst_panel_mission_id: Mapped[int] = mapped_column(primary_key=True)
     mst_idol_mission_id: Mapped[int] = mapped_column(primary_key=True)
     create_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     update_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     finish_date: Mapped[datetime] = mapped_column(default=datetime(1, 1, 1))
     progress: Mapped[int] = mapped_column(default=0)
     mission_state: Mapped[int] = mapped_column(default=1)
@@ -2332,7 +2332,7 @@ class LP(Base):
     lp: Mapped[int]
     is_playable: Mapped[bool] = mapped_column(default=True)
     update_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='lps')
     mst_course: Mapped['MstCourse'] = relationship(
@@ -2349,7 +2349,7 @@ class ChallengeSong(Base):
     daily_challenge_mst_song_id = mapped_column(
         ForeignKey('mst_song.mst_song_id'), nullable=False)
     update_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='challenge_song')
 
@@ -2393,7 +2393,7 @@ class PendingSong(Base):
     guest_user_id = mapped_column(ForeignKey('profile.id_'), default='',
                                   insert_default=None)
     start_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc))
+        default=lambda: datetime.now(timezone.utc))
     is_available: Mapped[bool] = mapped_column(default=True)
     is_expired: Mapped[bool] = mapped_column(default=False)
     is_rehearsal: Mapped[bool] = mapped_column(default=False)
@@ -2477,7 +2477,9 @@ class LoginBonusSchedule(Base):
         ForeignKey('mst_login_bonus_schedule.mst_login_bonus_schedule_id'),
         primary_key=True)
     next_login_date: Mapped[datetime] = mapped_column(
-        default=(datetime.now(server_timezone) + timedelta(days=1)).replace(
+        default=lambda: (
+            datetime.now(server_timezone) + timedelta(days=1)
+        ).replace(
             hour=0, minute=0, second=0, microsecond=0
         ).astimezone(timezone.utc))
 
@@ -2800,9 +2802,11 @@ class Present(Base):
     user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)
     comment: Mapped[str]
     end_date: Mapped[datetime] = mapped_column(
-        default=datetime(2099, 12, 31, 15, 59, 59))
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
     create_date: Mapped[datetime] = mapped_column(
-        default=datetime.now(timezone.utc), unique=True)
+        default=lambda: datetime.now(timezone.utc), unique=True)
     amount: Mapped[int] = mapped_column(default=1)
     present_type: Mapped[int] = mapped_column(default=1)
     item_id = mapped_column(ForeignKey('item.item_id'), default=None)

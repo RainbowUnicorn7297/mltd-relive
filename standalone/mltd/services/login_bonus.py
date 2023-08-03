@@ -6,13 +6,16 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import LastUpdateDate, Mission, MstMission, User
-from mltd.models.schemas import (LoginBonusScheduleSchema, MissionSchema,
-                                 MstBirthdayCalendar)
+from mltd.models.models import (LastUpdateDate, Mission, MstBirthdayCalendar,
+                                MstMission, Present, User)
+from mltd.models.schemas import LoginBonusScheduleSchema, MissionSchema
 from mltd.servers.config import server_timezone
+from mltd.servers.i18n import translation
 from mltd.services.birthday import get_birthday_entrance_direction_resource
-from mltd.services.item import add_item
 from mltd.services.mission import update_mission_progress
+from mltd.services.present import add_present
+
+_ = translation.gettext
 
 
 @dispatcher.add_method(name='LoginBonusService.ExecuteLoginBonus',
@@ -203,13 +206,19 @@ def execute_login_bonus(params, context):
                         item.reward_item_state = 1
                     items[0].reward_item_state = 2
                     today_item = items[0]
-                # TODO: item is added to user's present box instead
-                add_item(
+                add_present(
                     session=session,
-                    user_id=user.user_id,
-                    mst_item_id=today_item.mst_login_bonus_item.mst_item_id,
-                    item_type=today_item.mst_login_bonus_item.item_type,
-                    amount=today_item.mst_login_bonus_item.amount
+                    user=user,
+                    present=Present(
+                        user_id=user.user_id,
+                        comment=_(
+                            'Reward received on\nDay {day} of "Login Bonus."'
+                        ).format(day=today_item.day),
+                        end_date=now + timedelta(weeks=2),
+                        amount=today_item.mst_login_bonus_item.amount,
+                        item_id=f'{user.user_id}_'
+                            + f'{today_item.mst_login_bonus_item.mst_item_id}'
+                    )
                 )
             login_bonus_schedule_schema = LoginBonusScheduleSchema()
             result['login_bonus_list'] = login_bonus_schedule_schema.dump(
@@ -229,7 +238,7 @@ def execute_login_bonus(params, context):
             for mission in missions:
                 is_complete = update_mission_progress(
                     session=session,
-                    user_id=user.user_id,
+                    user=user,
                     mission=mission,
                     progress=mission.progress + 1
                 )
@@ -328,14 +337,6 @@ def execute_login_bonus(params, context):
             poster['poster_image_url'] = ('https://assets.rainbowunicorn7297'
                 + f'.com/images/{poster["resource_id"]}.png')
             result['theater_poster_list'] = [poster]
-
-        # TODO: Move this to add_present
-        session.execute(
-            update(LastUpdateDate)
-            .where(LastUpdateDate.user_id == user.user_id)
-            .where(LastUpdateDate.last_update_date_type == 1)
-            .values(last_update_date=now)
-        )
 
         session.commit()
 

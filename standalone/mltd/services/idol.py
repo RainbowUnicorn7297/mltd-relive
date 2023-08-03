@@ -8,6 +8,77 @@ from mltd.models.engine import engine
 from mltd.models.models import CostumeAdv, Episode, Idol, Memorial
 from mltd.models.schemas import (CostumeAdvSchema, EpisodeSchema, IdolSchema,
                                  MemorialSchema)
+from mltd.servers.i18n import translation
+
+_ = translation.gettext
+
+
+def localize_character_name(mst_character_id):
+    """Get the localized name for a character.
+
+    Args:
+        mst_character_id: Master character ID (1-52, 201).
+    Returns:
+        A str representing the localized name of the character.
+    """
+    if mst_character_id <= 52:
+        return [
+            '',
+            _('Haruka Amami'),
+            _('Chihaya Kisaragi'),
+            _('Miki Hoshii'),
+            _('Yukiho Hagiwara'),
+            _('Yayoi Takatsuki'),
+            _('Makoto Kikuchi'),
+            _('Iori Minase'),
+            _('Takane Shijou'),
+            _('Ritsuko Akizuki'),
+            _('Azusa Miura'),
+            _('Ami Futami'),
+            _('Mami Futami'),
+            _('Hibiki Ganaha'),
+            _('Mirai Kasuga'),
+            _('Shizuka Mogami'),
+            _('Tsubasa Ibuki'),
+            _('Kotoha Tanaka'),
+            _('Elena Shimabara'),
+            _('Minako Satake'),
+            _('Megumi Tokoro'),
+            _('Matsuri Tokugawa'),
+            _('Serika Hakozaki'),
+            _('Akane Nonohara'),
+            _('Anna Mochizuki'),
+            _('Roco Handa'),
+            _('Yuriko Nanao'),
+            _('Sayoko Takayama'),
+            _('Arisa Matsuda'),
+            _('Umi Kousaka'),
+            _('Iku Nakatani'),
+            _('Tomoka Tenkubashi'),
+            _('Emily Stewart'),
+            _('Shiho Kitazawa'),
+            _('Ayumu Maihama'),
+            _('Hinata Kinoshita'),
+            _('Kana Yabuki'),
+            _('Nao Yokoyama'),
+            _('Chizuru Nikaido'),
+            _('Konomi Baba'),
+            _('Tamaki Ogami'),
+            _('Fuka Toyokawa'),
+            _('Miya Miyao'),
+            _('Noriko Fukuda'),
+            _('Mizuki Makabe'),
+            _('Karen Shinomiya'),
+            _('Rio Momose'),
+            _('Subaru Nagayoshi'),
+            _('Reika Kitakami'),
+            _('Momoko Suou'),
+            _('Julia'),
+            _('Tsumugi Shiraishi'),
+            _('Kaori Sakuramori')
+        ][mst_character_id]
+    else:
+        return _('Shika')
 
 
 @dispatcher.add_method(name='IdolService.GetIdolList', context_arg='context')
