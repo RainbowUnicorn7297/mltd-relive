@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-04 00:15+0800\n"
+"POT-Creation-Date: 2023-08-05 21:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,7 +231,40 @@ msgstr "櫻守歌織"
 msgid "Shika"
 msgstr "詩花"
 
-#: .\mltd\services\live.py:1342 .\setup.py:350
+#: .\mltd\services\live.py:1121
+msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
+msgstr "製作人階級晉升為「{rank}」的達成報酬。"
+
+#: .\mltd\services\live.py:1169
+msgid "Solo 2MIX"
+msgstr "個人2MIX"
+
+#: .\mltd\services\live.py:1171
+msgid "Solo 2MIX+"
+msgstr "個人2MIX+"
+
+#: .\mltd\services\live.py:1291 .\mltd\services\live.py:1324
+#: .\mltd\services\live.py:1359
+msgid ""
+"{rank_type} reward for\n"
+"live \"{song_name} (Difficulty: {course})\"."
+msgstr ""
+"演唱會「{song_name} （難易度：{course}）」的\n"
+"{rank_type}達成報酬。"
+
+#: .\mltd\services\live.py:1295
+msgid "Score Rank \"{rank}\""
+msgstr "最高分目標「{rank}」"
+
+#: .\mltd\services\live.py:1328
+msgid "Combo Rank \"{rank}\""
+msgstr "Combo目標「{rank}」"
+
+#: .\mltd\services\live.py:1363
+msgid "Clear Rank \"{rank}\""
+msgstr "完成次數目標「{rank}」"
+
+#: .\mltd\services\live.py:1420 .\setup.py:350
 msgid "Unit{unit_num}"
 msgstr "團體{unit_num}"
 
@@ -530,4 +563,272 @@ msgid ""
 msgstr ""
 "於{mission_type}「{mission_description}」\n"
 "獲得的稱號。"
+
+#: .\mltd\services\song.py:29
+msgid "Kokoro ga Kaeru Basho"
+msgstr "心之歸屬"
+
+#: .\mltd\services\song.py:30
+msgid "Toumei na Prologue"
+msgstr "透明的序章"
+
+#: .\mltd\services\song.py:31
+msgid "Happy☆Lucky☆Jet Machine"
+msgstr "Happy☆Lucky☆雲霄飛車"
+
+#: .\mltd\services\song.py:34
+msgid "Suteki na Kiseki"
+msgstr "美妙的奇蹟"
+
+#: .\mltd\services\song.py:35
+msgid "Tokimeki no Onpu ni Natte"
+msgstr "化為心跳不已的音符"
+
+#: .\mltd\services\song.py:36
+msgid "Marionette wa Nemuranai"
+msgstr "Marionette永不眠"
+
+#: .\mltd\services\song.py:39
+msgid "After School Party Time"
+msgstr "After School Party Time"
+
+#: .\mltd\services\song.py:40
+msgid "Smile Ichiban"
+msgstr "最棒的笑容"
+
+#: .\mltd\services\song.py:42
+msgid "Koi no Lesson Shokyuuhen"
+msgstr "戀愛Lesson初級篇"
+
+#: .\mltd\services\song.py:43
+msgid "Jireru Heart ni Hi o Tsukete"
+msgstr "為焦急的心點燃烈火"
+
+#: .\mltd\services\song.py:44
+msgid "Liar Rouge"
+msgstr "Liar Rouge"
+
+#: .\mltd\services\song.py:45
+msgid "Original Koe ni Natte"
+msgstr "唱出自己的歌聲"
+
+#: .\mltd\services\song.py:47
+msgid "Festa Illumination"
+msgstr "Festa Illumination"
+
+#: .\mltd\services\song.py:48
+msgid "Chou↑Genki Show☆Idol ch@ng!"
+msgstr "超↑元氣Show☆偶像ch@ng!"
+
+#: .\mltd\services\song.py:49
+msgid "Ano ne, Kiite Hoshii Koto ga Arunda"
+msgstr "那個呀，我有話想跟你說"
+
+#: .\mltd\services\song.py:50
+msgid "Kokoro☆Exercise"
+msgstr "心的☆體能鍛鍊"
+
+#: .\mltd\services\song.py:54
+msgid "...In The Name Of。 ...LOVE?"
+msgstr "...In The Name Of。 ...LOVE?"
+
+#: .\mltd\services\song.py:55
+msgid "Happy～ Effect!"
+msgstr "Happy～Effect！"
+
+#: .\mltd\services\song.py:56
+msgid "Heart♡・Days・Night☆"
+msgstr "Heart♡・Days・Night☆"
+
+#: .\mltd\services\song.py:60
+msgid "Ruriiro Kingyo to Hanashoubu"
+msgstr "琉璃色金魚與花菖蒲"
+
+#: .\mltd\services\song.py:61
+msgid "Hummingbird"
+msgstr "Hummingbird"
+
+#: .\mltd\services\song.py:63
+msgid "Jibun REST@RT"
+msgstr "自我REST@RT"
+
+#: .\mltd\services\song.py:64
+msgid "FairyTale ja Irarenai"
+msgstr "不願再只是FairyTale"
+
+#: .\mltd\services\song.py:67
+msgid "DREAM TRAVELER"
+msgstr "夢想旅行者"
+
+#: .\mltd\services\song.py:71
+msgid "Kuraki Hoshi, Tooi Tsuki"
+msgstr "昏暗之星，遙遠之月"
+
+#: .\mltd\services\song.py:72
+msgid "Aikotoba wa Start Up!"
+msgstr "口號是Start-up！"
+
+#: .\mltd\services\song.py:73
+msgid "Nijiiro letters"
+msgstr "彩虹letters"
+
+#: .\mltd\services\song.py:74
+msgid "Unison☆Beat"
+msgstr "Unison☆Beat"
+
+#: .\mltd\services\song.py:75
+msgid "Hoshikuzu no Symphonia"
+msgstr "繁星交響曲"
+
+#: .\mltd\services\song.py:76
+msgid "ZETTAI × BREAK!! Twinkle Rhythm"
+msgstr "ZETTAI × BREAK!! 閃亮節奏"
+
+#: .\mltd\services\song.py:77
+msgid "Machiuke Prince"
+msgstr "等待的王子"
+
+#: .\mltd\services\song.py:81
+msgid "Hanazakari Weekend✿"
+msgstr "花樣Weekend✿"
+
+#: .\mltd\services\song.py:85
+msgid "Saku wa Ukiyo no Kimi Hanabi"
+msgstr "你是塵世中綻放的煙火"
+
+#: .\mltd\services\song.py:88
+msgid "Fantasista Carnival"
+msgstr "夢幻嘉年華"
+
+#: .\mltd\services\song.py:91
+msgid "BigBang's Volleyball!!!!!"
+msgstr "BigBang's Volleyball!!!!!"
+
+#: .\mltd\services\song.py:92
+msgid "Sun Rhythm Orchestra♪"
+msgstr "陽光律動管絃樂♪"
+
+#: .\mltd\services\song.py:94
+msgid "Ordinary Clover"
+msgstr "悠閒日常幸運草"
+
+#: .\mltd\services\song.py:96
+msgid "Last Actress"
+msgstr "最後女演員"
+
+#: .\mltd\services\song.py:98
+msgid "Koigokoro Masquerade"
+msgstr "戀慕之心的假面舞會"
+
+#: .\mltd\services\song.py:99
+msgid "Jungle☆Party"
+msgstr "叢林☆派對"
+
+#: .\mltd\services\song.py:100
+msgid "Harmonics"
+msgstr "Harmonics"
+
+#: .\mltd\services\song.py:101
+msgid "Merry"
+msgstr "Merry"
+
+#: .\mltd\services\song.py:102
+msgid "Harumachi Joshi"
+msgstr "等待春天的女孩"
+
+#: .\mltd\services\song.py:103
+msgid "THE IDOLM@STER Hatsuboshi-mix"
+msgstr "THE IDOLM@STER 初星-mix"
+
+#: .\mltd\services\song.py:104
+msgid "Animal☆Station!"
+msgstr "Animal☆Station!"
+
+#: .\mltd\services\song.py:106
+msgid "Datte Anata wa Princess"
+msgstr "因為你就是公主"
+
+#: .\mltd\services\song.py:108
+msgid "Rolling△Sankaku"
+msgstr "滾動△三角"
+
+#: .\mltd\services\song.py:109
+msgid "SeichouChu→LOVER!!"
+msgstr "成長Chu→LOVER!!"
+
+#: .\mltd\services\song.py:110
+msgid "Asayake no Crescendo"
+msgstr "朝霞的漸強音符"
+
+#: .\mltd\services\song.py:111
+msgid "Getsuyoubi no Cream Soda"
+msgstr "星期一的冰淇淋汽水"
+
+#: .\mltd\services\song.py:114
+msgid "PicoPico IIKO! Invader"
+msgstr "PIKO PIKO IIKO! 侵略者"
+
+#: .\mltd\services\song.py:116
+msgid "OVERMASTER"
+msgstr "OVERMASTER"
+
+#: .\mltd\services\song.py:117
+msgid "Invincible Justice"
+msgstr "Invincible Justice"
+
+#: .\mltd\services\song.py:119
+msgid "Beginner's☆Strike"
+msgstr "Beginner's☆Strike"
+
+#: .\mltd\services\song.py:121
+msgid "Oshiete last note…"
+msgstr "告訴我last note……"
+
+#: .\mltd\services\song.py:122
+msgid "Primula"
+msgstr "報春花"
+
+#: .\mltd\services\song.py:123
+msgid "Hana Shirabe"
+msgstr "花調"
+
+#: .\mltd\services\song.py:125
+msgid "Ryuuseigun"
+msgstr "流星雨"
+
+#: .\mltd\services\song.py:127
+msgid "Orange no Sora no Shita"
+msgstr "在橙色天空之下"
+
+#: .\mltd\services\song.py:134
+msgid "Marionette no Kokoro"
+msgstr "牽線木偶之心"
+
+#: .\mltd\services\song.py:135
+msgid "Running High"
+msgstr "Running High"
+
+#: .\mltd\services\song.py:136
+msgid "Sakashima no Kotoba"
+msgstr "相反的話語"
+
+#: .\mltd\services\song.py:137
+msgid "Rabbit Fur"
+msgstr "Rabbit Fur"
+
+#: .\mltd\services\song.py:139
+msgid "Akai Sekai ga Kieru Koro"
+msgstr "當紅色世界消失時"
+
+#: .\mltd\services\song.py:140
+msgid "Mirai Hikou"
+msgstr "未來飛行"
+
+#: .\mltd\services\song.py:142
+msgid "Kyun! Vampire Girl"
+msgstr "啾！吸血鬼女孩"
+
+#: .\mltd\services\song.py:143
+msgid "Kiramekirari"
+msgstr "閃閃發光"
 

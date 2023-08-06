@@ -8,7 +8,8 @@ from sqlalchemy import and_, func, or_, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Item, LastUpdateDate, MstItem, Present, User
+from mltd.models.models import (Achievement, Item, LastUpdateDate, MstItem,
+                                Present, User)
 from mltd.models.schemas import PresentSchema
 from mltd.servers.config import server_timezone
 
@@ -25,15 +26,28 @@ def add_present(session: Session, user: User, present: Present):
         None.
     """
     if present.present_type == 1:
-        item = session.scalar(
-            select(Item)
+        item_id = session.scalar(
+            select(Item.item_id)
             .where(Item.item_id == present.item_id)
         )
-        if not item:
+        if not item_id:
             user.items.append(Item(
                 item_id=present.item_id,
                 mst_item_id=int(present.item_id.split('_')[1]),
                 amount=0
+            ))
+    elif present.present_type == 3:
+        achievement_id = session.scalar(
+            select(Achievement.mst_achievement_id)
+            .where(Achievement.user_id == user.user_id)
+            .where(Achievement.mst_achievement_id
+                   == present.mst_achievement_id)
+        )
+        if not achievement_id:
+            session.add(Achievement(
+                user_id=user.user_id,
+                mst_achievement_id=present.mst_achievement_id,
+                is_released=False
             ))
     session.add(present)
     session.expire(user, ['presents'])

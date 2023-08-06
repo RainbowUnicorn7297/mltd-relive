@@ -6,9 +6,9 @@ from sqlalchemy import and_, or_, select, update
 from sqlalchemy.orm import Session, contains_eager
 
 from mltd.models.engine import engine
-from mltd.models.models import (Achievement, Mission, MstMission,
-                                MstMissionSchedule, MstPanelMissionSheet,
-                                PanelMissionSheet, Present, Song, User)
+from mltd.models.models import (Mission, MstMission, MstMissionSchedule,
+                                MstPanelMissionSheet, PanelMissionSheet,
+                                Present, Song, User)
 from mltd.models.schemas import (MissionSchema, MstMissionScheduleSchema,
                                  MstPanelMissionSheetSchema,
                                  PanelMissionSheetSchema, SongSchema)
@@ -346,18 +346,6 @@ def receive_mission_rewards(session: Session, user: User,
                 '{mission_type} "{mission_description}."'
             ).format(mission_type=mission_type,
                      mission_description=mission_description)
-            achievement_id = session.scalar(
-                select(Achievement.mst_achievement_id)
-                .where(Achievement.user_id == user.user_id)
-                .where(Achievement.mst_achievement_id
-                       == mission_reward.mst_achievement_id)
-            )
-            if not achievement_id:
-                session.add(Achievement(
-                    user_id=user.user_id,
-                    mst_achievement_id=mission_reward.mst_achievement_id,
-                    is_released=False
-                ))
             add_present(
                 session=session,
                 user=user,

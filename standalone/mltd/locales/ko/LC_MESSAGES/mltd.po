@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-04 00:15+0800\n"
+"POT-Creation-Date: 2023-08-05 21:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,7 +231,15 @@ msgstr "사쿠라모리 카오리"
 msgid "Shika"
 msgstr "시이카"
 
-#: .\mltd\services\live.py:1342 .\setup.py:350
+#: .\mltd\services\live.py:1169
+msgid "Solo 2MIX"
+msgstr "솔로 2MIX"
+
+#: .\mltd\services\live.py:1171
+msgid "Solo 2MIX+"
+msgstr "솔로 2MIX+"
+
+#: .\mltd\services\live.py:1420 .\setup.py:350
 msgid "Unit{unit_num}"
 msgstr "유닛{unit_num}"
 
@@ -507,11 +515,304 @@ msgstr "ALL 타입 음악 LP {goal} 달성하기"
 msgid "Complete {goal} job offers"
 msgstr "의뢰 {goal}번 완료하기"
 
+#: .\mltd\services\song.py:29
+msgid "Kokoro ga Kaeru Basho"
+msgstr "마음이 돌아가는 장소"
+
+#: .\mltd\services\song.py:30
+msgid "Toumei na Prologue"
+msgstr "투명한 프롤로그"
+
+#: .\mltd\services\song.py:31
+msgid "Happy☆Lucky☆Jet Machine"
+msgstr "해피☆러키☆제트 머신"
+
+#: .\mltd\services\song.py:34
+msgid "Suteki na Kiseki"
+msgstr "근사한 기적"
+
+#: .\mltd\services\song.py:35
+msgid "Tokimeki no Onpu ni Natte"
+msgstr "설렘의 음표가 되어"
+
+#: .\mltd\services\song.py:36
+msgid "Marionette wa Nemuranai"
+msgstr "Marionette는 잠들지 않아"
+
+#: .\mltd\services\song.py:39
+msgid "After School Party Time"
+msgstr "애프터 스쿨 파티 타임"
+
+#: .\mltd\services\song.py:40
+msgid "Smile Ichiban"
+msgstr "최고의 스마일"
+
+#: .\mltd\services\song.py:42
+msgid "Koi no Lesson Shokyuuhen"
+msgstr "사랑의 Lesson 초급편"
+
+#: .\mltd\services\song.py:43
+msgid "Jireru Heart ni Hi o Tsukete"
+msgstr "애타는 마음에 불을 붙이고"
+
+#: .\mltd\services\song.py:44
+msgid "Liar Rouge"
+msgstr "라이어 루주"
+
+#: .\mltd\services\song.py:45
+msgid "Original Koe ni Natte"
+msgstr "나만의 목소리로"
+
+#: .\mltd\services\song.py:47
+msgid "Festa Illumination"
+msgstr "페스타 일루미네이션"
+
+#: .\mltd\services\song.py:48
+msgid "Chou↑Genki Show☆Idol ch@ng!"
+msgstr "초자연현상☆아이돌!"
+
+#: .\mltd\services\song.py:49
+msgid "Ano ne, Kiite Hoshii Koto ga Arunda"
+msgstr "있지, 들어줬으면 하는 말이 있어"
+
+#: .\mltd\services\song.py:50
+msgid "Kokoro☆Exercise"
+msgstr "마음☆엑서사이즈"
+
+#: .\mltd\services\song.py:54
+msgid "...In The Name Of。 ...LOVE?"
+msgstr "…In The Name Of. …LOVE?"
+
+#: .\mltd\services\song.py:55
+msgid "Happy～ Effect!"
+msgstr "해피~ 이펙트!"
+
+#: .\mltd\services\song.py:56
+msgid "Heart♡・Days・Night☆"
+msgstr "Heart♡ 데이즈 Night☆"
+
+#: .\mltd\services\song.py:60
+msgid "Ruriiro Kingyo to Hanashoubu"
+msgstr "유리색 금붕어와 꽃창포"
+
+#: .\mltd\services\song.py:61
+msgid "Hummingbird"
+msgstr "허밍버드"
+
+#: .\mltd\services\song.py:63
+msgid "Jibun REST@RT"
+msgstr "자신REST@RT"
+
+#: .\mltd\services\song.py:64
+msgid "FairyTale ja Irarenai"
+msgstr "FairyTale로 남을 수는 없어"
+
+#: .\mltd\services\song.py:67
+msgid "DREAM TRAVELER"
+msgstr "드림 트래블러"
+
+#: .\mltd\services\song.py:71
+msgid "Kuraki Hoshi, Tooi Tsuki"
+msgstr "어두운 별, 머나먼 달"
+
+#: .\mltd\services\song.py:72
+msgid "Aikotoba wa Start Up!"
+msgstr "구호는 스타트 업!"
+
+#: .\mltd\services\song.py:73
+msgid "Nijiiro letters"
+msgstr "무지갯빛 letters"
+
+#: .\mltd\services\song.py:74
+msgid "Unison☆Beat"
+msgstr "유니슨☆비트"
+
+#: .\mltd\services\song.py:75
+msgid "Hoshikuzu no Symphonia"
+msgstr "별들의 심포니아"
+
+#: .\mltd\services\song.py:76
+msgid "ZETTAI × BREAK!! Twinkle Rhythm"
+msgstr "ZETTAI × BREAK!! 트윙클 리듬"
+
+#: .\mltd\services\song.py:77
+msgid "Machiuke Prince"
+msgstr "기다리는 프린스"
+
+#: .\mltd\services\song.py:81
+msgid "Hanazakari Weekend✿"
+msgstr "꽃이 만발한 Weekend✿"
+
+#: .\mltd\services\song.py:85
+msgid "Saku wa Ukiyo no Kimi Hanabi"
+msgstr "피는 것은 속세의 그대란 불꽃"
+
+#: .\mltd\services\song.py:88
+msgid "Fantasista Carnival"
+msgstr "판타지스타 카니발"
+
+#: .\mltd\services\song.py:91
+msgid "BigBang's Volleyball!!!!!"
+msgstr "빅뱅즈 발리볼!!!!!"
+
+#: .\mltd\services\song.py:92
+msgid "Sun Rhythm Orchestra♪"
+msgstr "썬 리듬 오케스트라♪"
+
+#: .\mltd\services\song.py:94
+msgid "Ordinary Clover"
+msgstr "오디너리 클로버"
+
+#: .\mltd\services\song.py:96
+msgid "Last Actress"
+msgstr "라스트 액트리스"
+
+#: .\mltd\services\song.py:98
+msgid "Koigokoro Masquerade"
+msgstr "연정의 매스커레이드"
+
+#: .\mltd\services\song.py:99
+msgid "Jungle☆Party"
+msgstr "정글☆파티"
+
+#: .\mltd\services\song.py:100
+msgid "Harmonics"
+msgstr "하모닉스"
+
+#: .\mltd\services\song.py:101
+msgid "Merry"
+msgstr "메리"
+
+#: .\mltd\services\song.py:102
+msgid "Harumachi Joshi"
+msgstr "봄을 기다리는 여인"
+
+#: .\mltd\services\song.py:103
+msgid "THE IDOLM@STER Hatsuboshi-mix"
+msgstr "THE IDOLM@STER 초성-mix"
+
+#: .\mltd\services\song.py:104
+msgid "Animal☆Station!"
+msgstr "애니멀☆스테이션!"
+
+#: .\mltd\services\song.py:106
+msgid "Datte Anata wa Princess"
+msgstr "당신은 프린세스니까"
+
+#: .\mltd\services\song.py:108
+msgid "Rolling△Sankaku"
+msgstr "롤링△삼각"
+
+#: .\mltd\services\song.py:109
+msgid "SeichouChu→LOVER!!"
+msgstr "성장 Chu→LOVER!!"
+
+#: .\mltd\services\song.py:110
+msgid "Asayake no Crescendo"
+msgstr "아침노을 크레셴도"
+
+#: .\mltd\services\song.py:111
+msgid "Getsuyoubi no Cream Soda"
+msgstr "월요일의 크림 소다"
+
+#: .\mltd\services\song.py:114
+msgid "PicoPico IIKO! Invader"
+msgstr "뿅뿅IIKO! 인베이더"
+
+#: .\mltd\services\song.py:116
+msgid "OVERMASTER"
+msgstr "오버 마스터"
+
+#: .\mltd\services\song.py:117
+msgid "Invincible Justice"
+msgstr "인빈서블 저스티스"
+
+#: .\mltd\services\song.py:119
+msgid "Beginner's☆Strike"
+msgstr "비기너즈☆스트라이크"
+
+#: .\mltd\services\song.py:121
+msgid "Oshiete last note…"
+msgstr "가르쳐줘 last note…"
+
+#: .\mltd\services\song.py:122
+msgid "Primula"
+msgstr "프리뮬러"
+
+#: .\mltd\services\song.py:123
+msgid "Hana Shirabe"
+msgstr "꽃의 가락"
+
+#: .\mltd\services\song.py:125
+msgid "Ryuuseigun"
+msgstr "유성군"
+
+#: .\mltd\services\song.py:127
+msgid "Orange no Sora no Shita"
+msgstr "오렌지빛 하늘 아래"
+
+#: .\mltd\services\song.py:134
+msgid "Marionette no Kokoro"
+msgstr "마리오네트의 마음"
+
+#: .\mltd\services\song.py:135
+msgid "Running High"
+msgstr "러닝 하잇"
+
+#: .\mltd\services\song.py:136
+msgid "Sakashima no Kotoba"
+msgstr "정반대의 말"
+
+#: .\mltd\services\song.py:137
+msgid "Rabbit Fur"
+msgstr "래빗 퍼"
+
+#: .\mltd\services\song.py:139
+msgid "Akai Sekai ga Kieru Koro"
+msgstr "붉은 세계가 사라질 무렵"
+
+#: .\mltd\services\song.py:140
+msgid "Mirai Hikou"
+msgstr "미래 비행"
+
+#: .\mltd\services\song.py:142
+msgid "Kyun! Vampire Girl"
+msgstr "두근! 뱀파이어 걸"
+
+#: .\mltd\services\song.py:143
+msgid "Kiramekirari"
+msgstr "반짝 반짝임"
+
 
 
 # The following are machine translations.
 
 
+
+#: .\mltd\services\live.py:1121
+msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
+msgstr "프로듀서 랭크를 \"{rank}\"로 달성 보상입니다."
+
+#: .\mltd\services\live.py:1291 .\mltd\services\live.py:1324
+#: .\mltd\services\live.py:1359
+msgid ""
+"{rank_type} reward for\n"
+"live \"{song_name} (Difficulty: {course})\"."
+msgstr ""
+"라이브 \"{song_name} (난이도: {course})\"\n"
+"{rank_type} 달성 보상입니다."
+
+#: .\mltd\services\live.py:1295
+msgid "Score Rank \"{rank}\""
+msgstr "하이스코어 목표 \"{rank}\""
+
+#: .\mltd\services\live.py:1328
+msgid "Combo Rank \"{rank}\""
+msgstr "콤보 목표 \"{rank}\""
+
+#: .\mltd\services\live.py:1363
+msgid "Clear Rank \"{rank}\""
+msgstr "클리어 횟수 목표 \"{rank}\""
 
 #: .\mltd\services\login_bonus.py:214
 msgid ""

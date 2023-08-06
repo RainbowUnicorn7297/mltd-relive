@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-04 00:15+0800\n"
+"POT-Creation-Date: 2023-08-05 21:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,7 +231,38 @@ msgstr ""
 msgid "Shika"
 msgstr ""
 
-#: .\mltd\services\live.py:1342 .\setup.py:350
+#: .\mltd\services\live.py:1121
+msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
+msgstr ""
+
+#: .\mltd\services\live.py:1169
+msgid "Solo 2MIX"
+msgstr ""
+
+#: .\mltd\services\live.py:1171
+msgid "Solo 2MIX+"
+msgstr ""
+
+#: .\mltd\services\live.py:1291 .\mltd\services\live.py:1324
+#: .\mltd\services\live.py:1359
+msgid ""
+"{rank_type} reward for\n"
+"live \"{song_name} (Difficulty: {course})\"."
+msgstr ""
+
+#: .\mltd\services\live.py:1295
+msgid "Score Rank \"{rank}\""
+msgstr ""
+
+#: .\mltd\services\live.py:1328
+msgid "Combo Rank \"{rank}\""
+msgstr ""
+
+#: .\mltd\services\live.py:1363
+msgid "Clear Rank \"{rank}\""
+msgstr ""
+
+#: .\mltd\services\live.py:1420 .\setup.py:350
 msgid "Unit{unit_num}"
 msgstr ""
 
@@ -523,5 +554,273 @@ msgstr ""
 msgid ""
 "Achievement received from\n"
 "{mission_type} \"{mission_description}.\""
+msgstr ""
+
+#: .\mltd\services\song.py:29
+msgid "Kokoro ga Kaeru Basho"
+msgstr ""
+
+#: .\mltd\services\song.py:30
+msgid "Toumei na Prologue"
+msgstr ""
+
+#: .\mltd\services\song.py:31
+msgid "Happy☆Lucky☆Jet Machine"
+msgstr ""
+
+#: .\mltd\services\song.py:34
+msgid "Suteki na Kiseki"
+msgstr ""
+
+#: .\mltd\services\song.py:35
+msgid "Tokimeki no Onpu ni Natte"
+msgstr ""
+
+#: .\mltd\services\song.py:36
+msgid "Marionette wa Nemuranai"
+msgstr ""
+
+#: .\mltd\services\song.py:39
+msgid "After School Party Time"
+msgstr ""
+
+#: .\mltd\services\song.py:40
+msgid "Smile Ichiban"
+msgstr ""
+
+#: .\mltd\services\song.py:42
+msgid "Koi no Lesson Shokyuuhen"
+msgstr ""
+
+#: .\mltd\services\song.py:43
+msgid "Jireru Heart ni Hi o Tsukete"
+msgstr ""
+
+#: .\mltd\services\song.py:44
+msgid "Liar Rouge"
+msgstr ""
+
+#: .\mltd\services\song.py:45
+msgid "Original Koe ni Natte"
+msgstr ""
+
+#: .\mltd\services\song.py:47
+msgid "Festa Illumination"
+msgstr ""
+
+#: .\mltd\services\song.py:48
+msgid "Chou↑Genki Show☆Idol ch@ng!"
+msgstr ""
+
+#: .\mltd\services\song.py:49
+msgid "Ano ne, Kiite Hoshii Koto ga Arunda"
+msgstr ""
+
+#: .\mltd\services\song.py:50
+msgid "Kokoro☆Exercise"
+msgstr ""
+
+#: .\mltd\services\song.py:54
+msgid "...In The Name Of。 ...LOVE?"
+msgstr ""
+
+#: .\mltd\services\song.py:55
+msgid "Happy～ Effect!"
+msgstr ""
+
+#: .\mltd\services\song.py:56
+msgid "Heart♡・Days・Night☆"
+msgstr ""
+
+#: .\mltd\services\song.py:60
+msgid "Ruriiro Kingyo to Hanashoubu"
+msgstr ""
+
+#: .\mltd\services\song.py:61
+msgid "Hummingbird"
+msgstr ""
+
+#: .\mltd\services\song.py:63
+msgid "Jibun REST@RT"
+msgstr ""
+
+#: .\mltd\services\song.py:64
+msgid "FairyTale ja Irarenai"
+msgstr ""
+
+#: .\mltd\services\song.py:67
+msgid "DREAM TRAVELER"
+msgstr ""
+
+#: .\mltd\services\song.py:71
+msgid "Kuraki Hoshi, Tooi Tsuki"
+msgstr ""
+
+#: .\mltd\services\song.py:72
+msgid "Aikotoba wa Start Up!"
+msgstr ""
+
+#: .\mltd\services\song.py:73
+msgid "Nijiiro letters"
+msgstr ""
+
+#: .\mltd\services\song.py:74
+msgid "Unison☆Beat"
+msgstr ""
+
+#: .\mltd\services\song.py:75
+msgid "Hoshikuzu no Symphonia"
+msgstr ""
+
+#: .\mltd\services\song.py:76
+msgid "ZETTAI × BREAK!! Twinkle Rhythm"
+msgstr ""
+
+#: .\mltd\services\song.py:77
+msgid "Machiuke Prince"
+msgstr ""
+
+#: .\mltd\services\song.py:81
+msgid "Hanazakari Weekend✿"
+msgstr ""
+
+#: .\mltd\services\song.py:85
+msgid "Saku wa Ukiyo no Kimi Hanabi"
+msgstr ""
+
+#: .\mltd\services\song.py:88
+msgid "Fantasista Carnival"
+msgstr ""
+
+#: .\mltd\services\song.py:91
+msgid "BigBang's Volleyball!!!!!"
+msgstr ""
+
+#: .\mltd\services\song.py:92
+msgid "Sun Rhythm Orchestra♪"
+msgstr ""
+
+#: .\mltd\services\song.py:94
+msgid "Ordinary Clover"
+msgstr ""
+
+#: .\mltd\services\song.py:96
+msgid "Last Actress"
+msgstr ""
+
+#: .\mltd\services\song.py:98
+msgid "Koigokoro Masquerade"
+msgstr ""
+
+#: .\mltd\services\song.py:99
+msgid "Jungle☆Party"
+msgstr ""
+
+#: .\mltd\services\song.py:100
+msgid "Harmonics"
+msgstr ""
+
+#: .\mltd\services\song.py:101
+msgid "Merry"
+msgstr ""
+
+#: .\mltd\services\song.py:102
+msgid "Harumachi Joshi"
+msgstr ""
+
+#: .\mltd\services\song.py:103
+msgid "THE IDOLM@STER Hatsuboshi-mix"
+msgstr ""
+
+#: .\mltd\services\song.py:104
+msgid "Animal☆Station!"
+msgstr ""
+
+#: .\mltd\services\song.py:106
+msgid "Datte Anata wa Princess"
+msgstr ""
+
+#: .\mltd\services\song.py:108
+msgid "Rolling△Sankaku"
+msgstr ""
+
+#: .\mltd\services\song.py:109
+msgid "SeichouChu→LOVER!!"
+msgstr ""
+
+#: .\mltd\services\song.py:110
+msgid "Asayake no Crescendo"
+msgstr ""
+
+#: .\mltd\services\song.py:111
+msgid "Getsuyoubi no Cream Soda"
+msgstr ""
+
+#: .\mltd\services\song.py:114
+msgid "PicoPico IIKO! Invader"
+msgstr ""
+
+#: .\mltd\services\song.py:116
+msgid "OVERMASTER"
+msgstr ""
+
+#: .\mltd\services\song.py:117
+msgid "Invincible Justice"
+msgstr ""
+
+#: .\mltd\services\song.py:119
+msgid "Beginner's☆Strike"
+msgstr ""
+
+#: .\mltd\services\song.py:121
+msgid "Oshiete last note…"
+msgstr ""
+
+#: .\mltd\services\song.py:122
+msgid "Primula"
+msgstr ""
+
+#: .\mltd\services\song.py:123
+msgid "Hana Shirabe"
+msgstr ""
+
+#: .\mltd\services\song.py:125
+msgid "Ryuuseigun"
+msgstr ""
+
+#: .\mltd\services\song.py:127
+msgid "Orange no Sora no Shita"
+msgstr ""
+
+#: .\mltd\services\song.py:134
+msgid "Marionette no Kokoro"
+msgstr ""
+
+#: .\mltd\services\song.py:135
+msgid "Running High"
+msgstr ""
+
+#: .\mltd\services\song.py:136
+msgid "Sakashima no Kotoba"
+msgstr ""
+
+#: .\mltd\services\song.py:137
+msgid "Rabbit Fur"
+msgstr ""
+
+#: .\mltd\services\song.py:139
+msgid "Akai Sekai ga Kieru Koro"
+msgstr ""
+
+#: .\mltd\services\song.py:140
+msgid "Mirai Hikou"
+msgstr ""
+
+#: .\mltd\services\song.py:142
+msgid "Kyun! Vampire Girl"
+msgstr ""
+
+#: .\mltd\services\song.py:143
+msgid "Kiramekirari"
 msgstr ""
 

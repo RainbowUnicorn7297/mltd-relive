@@ -15,9 +15,9 @@ from mltd.models.models import (Card, Costume, Course, Friend, Item, LP,
                                 MstGameSetting, MstItem, MstMainStory,
                                 MstMainStoryContactStatus, MstMemorial,
                                 MstMission, MstRewardItem, MstScoreThreshold,
-                                MstTheaterRoomStatus, PendingSong, Profile,
-                                RandomLive, RandomLiveIdol, Song, SongUnit,
-                                Unit, User)
+                                MstTheaterRoomStatus, PendingSong, Present,
+                                Profile, RandomLive, RandomLiveIdol, Song,
+                                SongUnit, Unit, User)
 from mltd.models.schemas import (CardSchema, GashaMedalSchema, GuestSchema,
                                  IdolSchema, ItemSchema, MemorialSchema,
                                  MissionSchema, MstRewardItemSchema,
@@ -30,6 +30,8 @@ from mltd.services.card import add_card
 from mltd.services.game_setting import get_item_day_idol_type
 from mltd.services.item import add_item
 from mltd.services.mission import update_mission_progress
+from mltd.services.present import add_present
+from mltd.services.song import localize_song_name
 
 _ = translation.gettext
 
@@ -675,9 +677,9 @@ def finish_song(params, context):
             full_recover_date: Date when vitality will be fully
                                recovered after this song.
             map_level: A dict representing current map level of the user
-                       after this song. See thes return value
-                       'map_level' of the method 'AuthService.Login' for
-                       the dict definition.
+                       after this song. See the return value 'map_level'
+                       of the method 'AuthService.Login' for the dict
+                       definition.
             release_all_live_course: Whether all live courses should be
                                      released as a result of leveling up
                                      to 50 after this song. This value
@@ -1110,7 +1112,21 @@ def finish_song(params, context):
 
         user.level = new_level
         user.producer_rank = new_rank
-        # TODO: receive rank reward
+        if rank_reward.mst_item_id:
+            add_present(
+                session=session,
+                user=user,
+                present=Present(
+                    user_id=user.user_id,
+                    comment=_(
+                        'Reward obtained from reaching Producer Rank "{rank}."'
+                    ).format(
+                        rank=['E', 'D', 'C', 'B', 'A', 'S', 'SS'][new_rank-2]
+                    ),
+                    amount=rank_reward.amount,
+                    item_id=f'{user.user_id}_{rank_reward.mst_item_id}'
+                )
+            )
         user.vitality = new_vitality
         user.max_vitality = new_max_vitality
         user.max_friend = new_max_friend
@@ -1141,6 +1157,9 @@ def finish_song(params, context):
         user.map_level.user_recognition = new_recognition
         user.map_level.actual_map_level = new_map_level
         user.map_level.actual_recognition = new_recognition
+        # TODO: Receive achievement for every 20% recognition (when
+        # should it be received? added to present list or achievement
+        # list?)
 
         #endregion
 
@@ -1149,6 +1168,14 @@ def finish_song(params, context):
 
         song = user.pending_song.song
         course = song.courses[course_id-1]
+        course_name = [
+            _('Solo 2MIX'),
+            '2MIX',
+            _('Solo 2MIX+'),
+            '4MIX',
+            '6MIX',
+            'MILLION MIX'
+        ][course_id-1]
         mode = user.pending_song.mode
         level = course.mst_course.level
         notes = course.mst_course.notes
@@ -1258,7 +1285,25 @@ def finish_song(params, context):
                 for i in range(live_result_reward['before_score_rank'],
                                live_result_reward['after_score_rank']):
                     score_reward_item_list[i]['status'] = 2
-                    # TODO: receive score rank reward
+                    reward = score_reward_items[i]
+                    add_present(
+                        session=session,
+                        user=user,
+                        present=Present(
+                            user_id=user.user_id,
+                            comment=_(
+                                '{rank_type} reward for\n'
+                                'live "{song_name} (Difficulty: {course})".'
+                            ).format(
+                                rank_type=_('Score Rank "{rank}"').format(
+                                    rank=['C', 'B', 'A', 'S'][i]),
+                                song_name=localize_song_name(song.mst_song_id),
+                                course=course_name
+                            ),
+                            amount=reward.amount,
+                            item_id=f'{user.user_id}_{reward.mst_item_id}'
+                        )
+                    )
             if params['combo'] > course.combo:
                 course.combo = params['combo']
             combo_rank = 0
@@ -1273,7 +1318,25 @@ def finish_song(params, context):
                 for i in range(live_result_reward['before_combo_rank'],
                                live_result_reward['after_combo_rank']):
                     combo_reward_item_list[i]['status'] = 2
-                    # TODO: receive combo rank reward
+                    reward = combo_reward_items[i]
+                    add_present(
+                        session=session,
+                        user=user,
+                        present=Present(
+                            user_id=user.user_id,
+                            comment=_(
+                                '{rank_type} reward for\n'
+                                'live "{song_name} (Difficulty: {course})".'
+                            ).format(
+                                rank_type=_('Combo Rank "{rank}"').format(
+                                    rank=['C', 'B', 'A', 'S'][i]),
+                                song_name=localize_song_name(song.mst_song_id),
+                                course=course_name
+                            ),
+                            amount=reward.amount,
+                            item_id=f'{user.user_id}_{reward.mst_item_id}'
+                        )
+                    )
             if perfect_rate > course.perfect_rate:
                 course.perfect_rate = perfect_rate
                 after_perfect_rate = perfect_rate
@@ -1290,7 +1353,25 @@ def finish_song(params, context):
             for i in range(live_result_reward['before_clear_rank'],
                             live_result_reward['after_clear_rank']):
                 clear_reward_item_list[i]['status'] = 2
-                # TODO: receive clear rank reward
+                reward = clear_reward_items[i]
+                add_present(
+                    session=session,
+                    user=user,
+                    present=Present(
+                        user_id=user.user_id,
+                        comment=_(
+                            '{rank_type} reward for\n'
+                            'live "{song_name} (Difficulty: {course})".'
+                        ).format(
+                            rank_type=_('Clear Rank "{rank}"').format(
+                                rank=['C', 'B', 'A', 'S'][i]),
+                            song_name=localize_song_name(song.mst_song_id),
+                            course=course_name
+                        ),
+                        amount=reward.amount,
+                        item_id=f'{user.user_id}_{reward.mst_item_id}'
+                    )
+                )
         if course_id in [1, 2, 4, 5] and not song.courses[2].is_released:
             song.courses[2].is_released = True
         if course_id == 5 and not song.courses[5].is_released:
