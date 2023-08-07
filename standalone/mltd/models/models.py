@@ -1100,7 +1100,6 @@ class MstCourse(Base):
         4=4M
         5=6M
         6=MM
-    TODO: add score/combo/clear rank requirements?
     """
     __tablename__ = 'mst_course'
 
@@ -1832,15 +1831,8 @@ class Jewel(Base):
     user: Mapped['User'] = relationship(back_populates='jewel')
 
 
-# class MstRecordTime(Base):
-#     """Master table for user actions that require tracking (e.g. tutorials)."""
-#     __tablename__ = 'mst_record_time'
-
-#     kind: Mapped[str] = mapped_column(primary_key=True)
-
-
 class RecordTime(Base):
-    """Recorded times for actions performed by each user."""
+    """Recorded times for user actions that require tracking."""
     __tablename__ = 'record_time'
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)

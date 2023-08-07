@@ -15,7 +15,10 @@ from mltd.models.schemas import (PendingJobSchema, PendingSongSchema,
 def get_self(params, context):
     """Service for getting self user info.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the user gives up a song or rehearsal.
+    2. When the user starts or finishes a rehearsal.
     Args:
         params: An empty dict.
     Returns:
@@ -112,7 +115,9 @@ def get_self_profile(params, context):
 def get_record_time_list(params, context):
     """Service for getting a list of recorded times for user actions.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:
@@ -173,7 +178,9 @@ def record_time(params, context):
 def get_direct_messages(params):
     """Service for getting a list of direct messages sent to the user.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:

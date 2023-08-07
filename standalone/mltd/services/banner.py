@@ -13,7 +13,9 @@ from mltd.models.schemas import MstBannerSchema
 def get_banner_list(params, context):
     """Service for getting a list of banners.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:

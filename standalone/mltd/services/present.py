@@ -65,7 +65,9 @@ def add_present(session: Session, user: User, present: Present):
 def get_present_count(params, context):
     """Service for getting number of presents for a user.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:

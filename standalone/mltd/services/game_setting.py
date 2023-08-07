@@ -56,7 +56,9 @@ def get_item_day_idol_type(
 def get_setting(params):
     """Service for getting game settings.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:

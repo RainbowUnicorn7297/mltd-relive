@@ -5,7 +5,11 @@ from jsonrpc import dispatcher
 def get_theater(params):
     """Service for getting theater info.
 
-    Invoked after logging in.
+    Invoked in the following situations.
+    1. After logging in.
+    2. When the game is transitioning back to the theater screen after a
+       long period of time (at least 15 minutes after the last
+       invocation).
     Args:
         params: A empty dict.
     Returns:

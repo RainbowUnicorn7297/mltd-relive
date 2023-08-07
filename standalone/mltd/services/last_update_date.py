@@ -14,7 +14,9 @@ from mltd.models.schemas import LastUpdateDateSchema
 def get_last_update_date_list(params, context):
     """Service for getting a list of last update dates for a user.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     It is unclear what the last update dates mean or what they are used
     for. My current guess is the game client uses these dates to
     determine whether any of its previously cached game data needs to be

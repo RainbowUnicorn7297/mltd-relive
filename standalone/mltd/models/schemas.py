@@ -2032,6 +2032,9 @@ class PendingSongSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def _convert(self, data, **kwargs):
+        if not data['guest_user_id']:
+            data['guest_user_id'] = ''
+
         # Populate user_summary.
         if not data['guest_profile']:
             data['user_summary'] = {

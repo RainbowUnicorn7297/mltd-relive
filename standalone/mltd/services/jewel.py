@@ -16,6 +16,7 @@ def get_jewel(params, context):
     Invoked in the following situations.
     1. As part of the initial batch requests after logging in.
     2. After the user spent jewels to contiune a song.
+    3. When the user gives up a song or rehearsal.
     Args:
         params: An empty dict.
     Returns:

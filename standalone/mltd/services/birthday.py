@@ -51,7 +51,9 @@ def get_birthday_entrance_direction_resource(
 def get_birthday(params, context):
     """Service for getting character birthday info for a user.
 
-    Invoked as part of the initial batch requests after logging in.
+    Invoked in the following situations.
+    1. As part of the initial batch requests after logging in.
+    2. When the game is transitioning to the theater screen.
     Args:
         params: An empty dict.
     Returns:
