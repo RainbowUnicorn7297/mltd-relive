@@ -2708,7 +2708,8 @@ def start_rehearsal(params, context):
     }
 
 
-@dispatcher.add_method(name='LiveService.BreakRehearsal', context_arg='context')
+@dispatcher.add_method(name='LiveService.BreakRehearsal',
+                       context_arg='context')
 def break_rehearsal(params, context):
     """Service for giving up a rehearsal for a user.
 
@@ -2745,7 +2746,8 @@ def break_rehearsal(params, context):
     }
 
 
-@dispatcher.add_method(name='LiveService.FinishRehearsal', context_arg='context')
+@dispatcher.add_method(name='LiveService.FinishRehearsal',
+                       context_arg='context')
 def finish_rehearsal(params, context):
     """Service for finishing a rehearsal for a user.
 
