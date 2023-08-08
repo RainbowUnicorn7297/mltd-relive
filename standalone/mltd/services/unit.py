@@ -99,13 +99,6 @@ def set_unit(params, context):
             .where(User.user_id == UUID(context['user_id']))
         ).one()
 
-        lesson_wear_to_idol = {}
-        result = session.execute(
-            select(MstLessonWear.mst_lesson_wear_id, MstLessonWear.mst_idol_id)
-        )
-        for lesson_wear_id, idol_id in result:
-            lesson_wear_to_idol[lesson_wear_id] = idol_id
-
         card_ids = set()
         for p in params['param_list']:
             for i in range(5):
@@ -127,17 +120,13 @@ def set_unit(params, context):
             unit.name = p['name']
             for i in range(5):
                 idol = unit.unit_idols[i]
-                idol.card_id = p['card_id_list'][i]
+                if idol.card_id != p['card_id_list'][i]:
+                    idol.card_id = p['card_id_list'][i]
+                    idol.mst_lesson_wear_id = card_to_idol[idol.card_id]
                 idol.mst_costume_id = p['mst_costume_id_list'][i]
                 idol.costume_is_random = p['costume_is_random_list'][i]
                 if p['mst_lesson_wear_id_list']:
                     idol.mst_lesson_wear_id = p['mst_lesson_wear_id_list'][i]
-                else:
-                    card_idol_id = card_to_idol[idol.card_id]
-                    lesson_wear_idol_id = lesson_wear_to_idol[
-                        idol.mst_lesson_wear_id]
-                    if card_idol_id != lesson_wear_idol_id:
-                        idol.mst_lesson_wear_id = card_idol_id
             units.append(unit)
 
         unit_schema = UnitSchema()
