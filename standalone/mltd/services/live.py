@@ -1163,6 +1163,7 @@ def finish_song(params, context):
         # TODO: Receive achievement for every 20% recognition (when
         # should it be received? added to present list or achievement
         # list?)
+        # TODO: ClearSongCount, FullComboSongCount
 
         #endregion
 
@@ -2380,8 +2381,6 @@ def finish_song(params, context):
         pending_song_schema = PendingSongSchema()
         pending_song = pending_song_schema.dump(user.pending_song)
         user.pending_song = None
-
-        # TODO: Verify song ranking works
 
         session.commit()
 

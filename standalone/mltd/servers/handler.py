@@ -55,7 +55,10 @@ def application(environ, start_response):
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))
         response = encrypt_response(response)
-        if environ['PATH_INFO'] == '/rpc/LiveService.FinishSong':
+        if environ['PATH_INFO'] in [
+            '/rpc/LiveService.GetRandomGuestList',
+            '/rpc/LiveService.FinishSong',
+        ]:
             print(response)     # For debugging
 
         start_response(status, headers)

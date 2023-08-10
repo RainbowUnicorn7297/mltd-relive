@@ -18,7 +18,7 @@ def get_self(params, context):
     Invoked in the following situations.
     1. As part of the initial batch requests after logging in.
     2. When the user gives up a song or rehearsal.
-    2. When the user starts or finishes a rehearsal.
+    3. When the user starts or finishes a rehearsal.
     Args:
         params: An empty dict.
     Returns:

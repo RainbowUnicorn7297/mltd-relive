@@ -2403,6 +2403,11 @@ class GuestSchema(SQLAlchemyAutoSchema):
         user = data['user']
         data['level'] = user['level']
 
+        # Populate mst_achievement_id_list.
+        if data['mst_achievement_id_list']:
+            data['mst_achievement_id_list'] = [
+                int(x) for x in data['mst_achievement_id_list'].split(',')]
+
         # Populate helper_card_list.
         data['helper_card_list'] = data['helper_cards']
         del data['helper_cards']

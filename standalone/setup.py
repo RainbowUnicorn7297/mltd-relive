@@ -1,14 +1,14 @@
 import csv
+import os
 from base64 import b64encode
-from os import listdir
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, text
+from sqlalchemy import insert, select, text
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
-from mltd.servers.config import server_timezone
+from mltd.servers.config import server_language, server_timezone
 from mltd.servers.i18n import translation
 
 _ = translation.gettext
@@ -127,7 +127,8 @@ def _insert_cards(session: Session, user: User):
         card.vocal = card.after_awakened_vocal
         card.dance = card.after_awakened_dance
         card.visual = card.after_awakened_visual
-        card.skill_level = card.skill_level_max
+        card.skill_level = (1 if not mst_card.mst_card_skill_id
+                            else card.skill_level_max)
         card.skill_probability=None if not mst_card.mst_card_skill_id else (
             _skill_probability(mst_card.mst_card_skill.probability_base,
                                card.skill_level_max)
@@ -140,43 +141,106 @@ if __name__ == '__main__':
     Base.metadata.create_all(engine)
 
     # Insert master data.
-    mst_data_dir = 'mltd/models/mst_data/'
+    mst_data_dirs = ['mltd/models/mst_data',
+                     f'mltd/models/mst_data/{server_language}']
     with Session(engine) as session:
         session.execute(text('PRAGMA foreign_keys=OFF'))
 
-        for filename in listdir(mst_data_dir):
-            if 'mst' not in filename:
-                continue
-            table_name = filename.split('.')[0]
-            table = Base.metadata.tables[table_name]
-            with open(f'{mst_data_dir}{table_name}.csv',
-                      encoding='utf-8-sig') as f:
-                reader = csv.DictReader(f)
-                fieldnames = reader.fieldnames
-                data = list(reader)
-            # Convert CSV data into proper data types because they are
-            # all read as strs.
-            for row in data:
-                for fieldname in fieldnames:
-                    column = table.c[fieldname]
-                    if column.nullable and not row[fieldname]:
-                        # If column is nullable, replace null-equivalent
-                        # values with None.
-                        row[fieldname] = None
-                    elif str(column.type) == 'BOOLEAN' and row[fieldname]:
-                        row[fieldname] = (False if row[fieldname] == '0'
-                                          else True)
-                    elif str(column.type) == 'INTEGER' and row[fieldname]:
-                        row[fieldname] = int(row[fieldname])
-                    elif str(column.type) == 'DATETIME' and row[fieldname]:
-                        # Convert str to UTC datetime.
-                        row[fieldname] = datetime.strptime(
-                            row[fieldname], '%Y-%m-%dT%H:%M:%S%z'
-                        ).astimezone(timezone.utc)
-                    elif (column.type.__class__.__name__ == 'Uuid'
-                            and row[fieldname]):
-                        row[fieldname] = UUID(row[fieldname])
-            session.execute(table.insert(), data)
+        for dir in mst_data_dirs:
+            for filename in os.listdir(dir):
+                if '.csv' not in filename:
+                    continue
+                table_name = filename.split('.')[0]
+                table = Base.metadata.tables[table_name]
+                with open(os.path.join(dir, filename),
+                          encoding='utf-8-sig') as f:
+                    reader = csv.DictReader(f)
+                    fieldnames = reader.fieldnames
+                    data = list(reader)
+                # Convert CSV data into proper data types because they are
+                # all read as strs.
+                for row in data:
+                    for fieldname in fieldnames:
+                        column = table.c[fieldname]
+                        if column.nullable and not row[fieldname]:
+                            # If column is nullable, replace null-equivalent
+                            # values with None.
+                            row[fieldname] = None
+                        elif str(column.type) == 'BOOLEAN' and row[fieldname]:
+                            row[fieldname] = (False if row[fieldname] == '0'
+                                            else True)
+                        elif str(column.type) == 'INTEGER' and row[fieldname]:
+                            row[fieldname] = int(row[fieldname])
+                        elif str(column.type) == 'DATETIME' and row[fieldname]:
+                            # Convert str to UTC datetime.
+                            row[fieldname] = datetime.strptime(
+                                row[fieldname], '%Y-%m-%dT%H:%M:%S%z'
+                            ).astimezone(timezone.utc)
+                        elif (column.type.__class__.__name__ == 'Uuid'
+                                and row[fieldname]):
+                            row[fieldname] = UUID(row[fieldname])
+                session.execute(table.insert(), data)
+
+        user_ids = session.scalars(
+            select(User.user_id)
+        ).all()
+        session.execute(
+            insert(ChallengeSong),
+            [{
+                'user_id': user_id,
+                'daily_challenge_mst_song_id': 2
+            } for user_id in user_ids]
+        )
+        session.execute(
+            insert(PanelMissionSheet),
+            [{'user_id': user_id} for user_id in user_ids]
+        )
+        session.execute(
+            insert(MapLevel),
+            [{'user_id': user_id} for user_id in user_ids]
+        )
+        session.execute(
+            insert(UnLockSongStatus),
+            [{'user_id': user_id} for user_id in user_ids]
+        )
+
+        mst_idol_ids = session.scalars(
+            select(MstIdol.mst_idol_id)
+        ).all()
+        session.execute(
+            insert(Idol),
+            [{
+                'idol_id': f'{user_id}_{mst_idol_id}',
+                'user_id': user_id,
+                'mst_idol_id': mst_idol_id,
+                'fan': 0,
+                'affection': 0,
+                'has_another_appeal': True
+            } for mst_idol_id in mst_idol_ids for user_id in user_ids]
+        )
+
+        session.execute(
+            insert(LessonWearConfig),
+            [{
+                'user_id': user_id,
+                'mst_lesson_wear_setting_id': 1
+            } for user_id in user_ids]
+        )
+
+        session.execute(
+            insert(ClearSongCount),
+            [{
+                'id_': user_id,
+                'live_course': course
+            } for course in range(1, 7) for user_id in user_ids]
+        )
+        session.execute(
+            insert(FullComboSongCount),
+            [{
+                'id_': user_id,
+                'live_course': course
+            } for course in range(1, 7) for user_id in user_ids]
+        )
 
         session.execute(text('PRAGMA foreign_keys=ON'))
         # Validate foreign keys after inserting master data.
@@ -716,7 +780,22 @@ if __name__ == '__main__':
             another_user.un_lock_song_status = UnLockSongStatus()
             session.add(another_user)
 
+            for mst_idol_id in mst_idol_ids:
+                session.add(Idol(
+                    idol_id=f'{another_user.user_id}_{mst_idol_id}',
+                    user_id=another_user.user_id,
+                    mst_idol_id=mst_idol_id,
+                    fan=0,
+                    affection=0,
+                    has_another_appeal=True
+                ))
+
             _insert_cards(session, another_user)
+
+            session.add(LessonWearConfig(
+                user_id=another_user.user_id,
+                mst_lesson_wear_setting_id=1
+            ))
 
             profile = Profile(
                 id_=another_user.user_id,
