@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-05 21:41+0800\n"
+"POT-Creation-Date: 2023-08-12 05:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2671
+#: .\mltd\models\models.py:2663
 msgid "default profile comment"
 msgstr "請多多指教！"
 
@@ -231,20 +231,20 @@ msgstr "櫻守歌織"
 msgid "Shika"
 msgstr "詩花"
 
-#: .\mltd\services\live.py:1121
+#: .\mltd\services\live.py:1125
 msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
 msgstr "製作人階級晉升為「{rank}」的達成報酬。"
 
-#: .\mltd\services\live.py:1169
+#: .\mltd\services\live.py:1176
 msgid "Solo 2MIX"
 msgstr "個人2MIX"
 
-#: .\mltd\services\live.py:1171
+#: .\mltd\services\live.py:1178
 msgid "Solo 2MIX+"
 msgstr "個人2MIX+"
 
-#: .\mltd\services\live.py:1291 .\mltd\services\live.py:1324
-#: .\mltd\services\live.py:1359
+#: .\mltd\services\live.py:1298 .\mltd\services\live.py:1331
+#: .\mltd\services\live.py:1366
 msgid ""
 "{rank_type} reward for\n"
 "live \"{song_name} (Difficulty: {course})\"."
@@ -252,19 +252,19 @@ msgstr ""
 "演唱會「{song_name} （難易度：{course}）」的\n"
 "{rank_type}達成報酬。"
 
-#: .\mltd\services\live.py:1295
+#: .\mltd\services\live.py:1302
 msgid "Score Rank \"{rank}\""
 msgstr "最高分目標「{rank}」"
 
-#: .\mltd\services\live.py:1328
+#: .\mltd\services\live.py:1335
 msgid "Combo Rank \"{rank}\""
 msgstr "Combo目標「{rank}」"
 
-#: .\mltd\services\live.py:1363
+#: .\mltd\services\live.py:1370
 msgid "Clear Rank \"{rank}\""
 msgstr "完成次數目標「{rank}」"
 
-#: .\mltd\services\live.py:1420 .\setup.py:350
+#: .\mltd\services\live.py:1444 .\setup.py:414
 msgid "Unit{unit_num}"
 msgstr "團體{unit_num}"
 

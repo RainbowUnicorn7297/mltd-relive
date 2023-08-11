@@ -9,10 +9,11 @@ from sqlalchemy import func, or_, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import (Card, Costume, Course, Friend, Item, LP,
-                                MainStoryChapter, Memorial, Mission, MstCard,
-                                MstCostume, MstCourse, MstCourseReward,
-                                MstGameSetting, MstItem, MstMainStory,
+from mltd.models.models import (Card, ClearSongCount, Costume, Course, Friend,
+                                FullComboSongCount, Item, LP, MainStoryChapter,
+                                Memorial, Mission, MstCard, MstCostume,
+                                MstCourse, MstCourseReward, MstGameSetting,
+                                MstItem, MstMainStory,
                                 MstMainStoryContactStatus, MstMemorial,
                                 MstMission, MstRewardItem, MstScoreThreshold,
                                 MstTheaterRoomStatus, PendingSong, Present,
@@ -1163,7 +1164,6 @@ def finish_song(params, context):
         # TODO: Receive achievement for every 20% recognition (when
         # should it be received? added to present list or achievement
         # list?)
-        # TODO: ClearSongCount, FullComboSongCount
 
         #endregion
 
@@ -1388,6 +1388,23 @@ def finish_song(params, context):
             )
         song_schema = SongSchema()
         song_dict = song_schema.dump(song)
+
+        if (live_result_reward['before_clear_rank'] == 0
+                and live_result_reward['after_clear_rank'] > 0):
+            session.execute(
+                update(ClearSongCount)
+                .where(ClearSongCount.id_ == user.user_id)
+                .where(ClearSongCount.live_course == course_id)
+                .values(count=ClearSongCount.count + 1)
+            )
+        if (live_result_reward['before_combo_rank'] < 4
+                and live_result_reward['after_combo_rank'] == 4):
+            session.execute(
+                update(FullComboSongCount)
+                .where(FullComboSongCount.id_ == user.user_id)
+                .where(FullComboSongCount.live_course == course_id)
+                .values(count=FullComboSongCount.count + 1)
+            )
 
         #endregion
 

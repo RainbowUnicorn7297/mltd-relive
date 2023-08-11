@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-05 21:41+0800\n"
+"POT-Creation-Date: 2023-08-12 05:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2671
+#: .\mltd\models\models.py:2663
 msgid "default profile comment"
 msgstr "잘 부탁드립니다!"
 
@@ -231,15 +231,15 @@ msgstr "사쿠라모리 카오리"
 msgid "Shika"
 msgstr "시이카"
 
-#: .\mltd\services\live.py:1169
+#: .\mltd\services\live.py:1176
 msgid "Solo 2MIX"
 msgstr "솔로 2MIX"
 
-#: .\mltd\services\live.py:1171
+#: .\mltd\services\live.py:1178
 msgid "Solo 2MIX+"
 msgstr "솔로 2MIX+"
 
-#: .\mltd\services\live.py:1420 .\setup.py:350
+#: .\mltd\services\live.py:1444 .\setup.py:414
 msgid "Unit{unit_num}"
 msgstr "유닛{unit_num}"
 
@@ -789,12 +789,12 @@ msgstr "반짝 반짝임"
 
 
 
-#: .\mltd\services\live.py:1121
+#: .\mltd\services\live.py:1125
 msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
 msgstr "프로듀서 랭크를 \"{rank}\"로 달성 보상입니다."
 
-#: .\mltd\services\live.py:1291 .\mltd\services\live.py:1324
-#: .\mltd\services\live.py:1359
+#: .\mltd\services\live.py:1298 .\mltd\services\live.py:1331
+#: .\mltd\services\live.py:1366
 msgid ""
 "{rank_type} reward for\n"
 "live \"{song_name} (Difficulty: {course})\"."
@@ -802,15 +802,15 @@ msgstr ""
 "라이브 \"{song_name} (난이도: {course})\"\n"
 "{rank_type} 달성 보상입니다."
 
-#: .\mltd\services\live.py:1295
+#: .\mltd\services\live.py:1302
 msgid "Score Rank \"{rank}\""
 msgstr "하이스코어 목표 \"{rank}\""
 
-#: .\mltd\services\live.py:1328
+#: .\mltd\services\live.py:1335
 msgid "Combo Rank \"{rank}\""
 msgstr "콤보 목표 \"{rank}\""
 
-#: .\mltd\services\live.py:1363
+#: .\mltd\services\live.py:1370
 msgid "Clear Rank \"{rank}\""
 msgstr "클리어 횟수 목표 \"{rank}\""
 
