@@ -4,7 +4,7 @@ from decimal import Decimal
 from typing import List, Optional
 from uuid import UUID, uuid4
 
-from sqlalchemy import ForeignKey, ForeignKeyConstraint, String
+from sqlalchemy import ForeignKey, ForeignKeyConstraint, Index, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy_utils import force_instant_defaults
@@ -198,6 +198,9 @@ class Idol(Base):
     can_perform: false only when Ex card not yet obtained
     """
     __tablename__ = 'idol'
+    __table_args__ = (
+        Index('idol_idx1', 'user_id', 'mst_idol_id', unique=True),
+    )
 
     idol_id: Mapped[str] = mapped_column(primary_key=True)
     user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)
@@ -490,6 +493,9 @@ class Card(Base):
     create_date: Card obtained by user
     """
     __tablename__ = 'card'
+    __table_args__ = (
+        Index('card_idx1', 'user_id', 'mst_card_id', unique=True),
+    )
 
     card_id: Mapped[str] = mapped_column(primary_key=True)
     user_id = mapped_column(ForeignKey('user.user_id'), nullable=False)

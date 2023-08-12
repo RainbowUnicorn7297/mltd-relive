@@ -10,6 +10,7 @@ from mltd.models.engine import engine
 from mltd.models.models import *
 from mltd.servers.config import server_language, server_timezone
 from mltd.servers.i18n import translation
+from mltd.servers.logging import logger
 
 _ = translation.gettext
 
@@ -137,6 +138,8 @@ def _insert_cards(session: Session, user: User):
 
 
 if __name__ == '__main__':
+    logger.handlers[0].doRollover()
+
     # Create tables.
     Base.metadata.create_all(engine)
 
