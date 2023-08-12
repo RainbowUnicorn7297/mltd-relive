@@ -6,6 +6,8 @@ from ssl import PROTOCOL_TLS_SERVER, SSLContext
 import requests
 import urllib3
 
+from mltd.servers.logging import logger
+
 _proxy_port = 443
 _api_port = 8443
 
@@ -56,7 +58,7 @@ def start(port):
     # Uncomment next line to debug SSL errors
     # httpd.socket.accept()
 
-    print(f'Reverse proxy is running on port {port}...')
+    logger.info(f'Reverse proxy is running on port {port}...')
     httpd.serve_forever()
 
 

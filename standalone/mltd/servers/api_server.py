@@ -4,6 +4,7 @@ from ssl import PROTOCOL_TLS_SERVER, SSLContext
 from wsgiref.simple_server import make_server
 
 from mltd.servers.handler import application
+from mltd.servers.logging import logger
 
 _port = 8443
 
@@ -23,7 +24,7 @@ def start(port):
         # Uncomment next line to debug SSL errors
         # httpd.socket.accept()
 
-        print(f'Serving HTTPS on port {port}...')
+        logger.info(f'Serving HTTPS on port {port}...')
         httpd.serve_forever()
 
 

@@ -3,7 +3,9 @@ from socket import AF_INET, SOCK_DGRAM, socket
 from time import sleep
 
 from dnslib.intercept import InterceptResolver
-from dnslib.server import DNSServer
+from dnslib.server import DNSLogger, DNSServer
+
+from mltd.servers.logging import logger
 
 _port = 53
 
@@ -37,8 +39,9 @@ def start(port):
                                  forward=[],
                                  all_qtypes=False,
                                  timeout=5)
-    udp_server = DNSServer(resolver, port=port)
-    print(f'DNS is running on port {port}...')
+    dns_logger = DNSLogger(logf=logger.debug)
+    udp_server = DNSServer(resolver, port=port, logger=dns_logger)
+    logger.info(f'DNS is running on port {port}...')
     udp_server.start_thread()
 
 

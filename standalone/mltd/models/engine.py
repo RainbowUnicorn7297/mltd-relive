@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 
-engine = create_engine('sqlite+pysqlite:///mltd.db', echo=True)
+engine = create_engine('sqlite+pysqlite:///mltd-relive.db')
 
 
 @event.listens_for(Engine, 'connect')

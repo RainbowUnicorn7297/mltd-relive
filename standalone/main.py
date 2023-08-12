@@ -2,6 +2,7 @@ from multiprocessing import Process, freeze_support
 from time import sleep
 
 from mltd.servers import api_server, dns, proxy
+from mltd.servers.logging import handler, logger
 
 _api_port = 8443
 _proxy_port = 443
@@ -10,6 +11,8 @@ _dns_port = 53
 
 if __name__ == '__main__':
     freeze_support()
+
+    handler.doRollover()
 
     api_process = Process(target=api_server.start,
                           args=(_api_port,), daemon=True)

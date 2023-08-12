@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
@@ -6,6 +7,7 @@ from uuid import UUID
 from jsonrpc import JSONRPCResponseManager, dispatcher
 
 from mltd.servers.encryption import decrypt_request, encrypt_response
+from mltd.servers.logging import logger
 from mltd.servers.utilities import format_datetime
 from mltd.services import *
 
@@ -27,6 +29,8 @@ def application(environ, start_response):
     if ('theaterdays-zh.appspot.com' in host
             or 'theaterdays-ko.appspot.com' in host
             or 'localhost' in host):    # For debugging
+        full_start_time = time.perf_counter_ns()
+
         status = '200 OK'
         headers = [
             ('Content-Type', 'application/json'),
@@ -38,28 +42,26 @@ def application(environ, start_response):
 
         request_len = int(environ['CONTENT_LENGTH'])
         request = environ['wsgi.input'].read(request_len)
-        print(request)  # For debugging
+        logger.debug(request)
         request = decrypt_request(request)
 
         context = {
             'user_id': environ.get('HTTP_X_APPLICATION_USER_ID'),
         }
+        svc_start_time = time.perf_counter_ns()
         response = JSONRPCResponseManager.handle(request, dispatcher, context)
-        if environ['PATH_INFO'] not in [
-            '/rpc/BatchReqest_MakeCache_Login1',
-            '/rpc/BatchReqest_MakeCache_Login2',
-            '/rpc/LiveService.GetRandomGuestList',
-            '/rpc/LiveService.FinishSong',
-        ]:
-            print(json.dumps(response.data, cls=CustomJSONEncoder, indent=2))   # For debugging
+        svc_end_time = time.perf_counter_ns()
+        logger.debug(
+            json.dumps(response.data, cls=CustomJSONEncoder, indent=2))
         response = json.dumps(response.data, cls=CustomJSONEncoder,
                               separators=(',', ':'))
         response = encrypt_response(response)
-        if environ['PATH_INFO'] in [
-            '/rpc/LiveService.GetRandomGuestList',
-            '/rpc/LiveService.FinishSong',
-        ]:
-            print(response)     # For debugging
+
+        full_end_time = time.perf_counter_ns()
+        logger.debug('Service execution time: '
+                     + f'{(svc_end_time-svc_start_time) // 1_000_000} ms')
+        logger.debug('Full execution time: '
+                     + f'{(full_end_time-full_start_time) // 1_000_000} ms')
 
         start_response(status, headers)
         return [response]

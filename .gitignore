@@ -4,4 +4,5 @@ assets-*/
 prototype/build/*
 tools/imgui.ini
 standalone/mltd*.db
+standalone/mltd*.log*
 standalone/mltd/locales/*.cmd
