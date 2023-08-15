@@ -6,7 +6,7 @@ from wsgiref.simple_server import make_server
 from mltd.servers.handler import application
 from mltd.servers.logging import logger
 
-_port = 8443
+api_port = 8443
 
 
 def key_path():
@@ -14,7 +14,7 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port):
+def start(port=api_port):
     with make_server('', port, application) as httpd:
         certfile = path.join(key_path(), 'api.crt')
         keyfile = path.join(key_path(), 'api.key')
@@ -29,5 +29,5 @@ def start(port):
 
 
 if __name__ == '__main__':
-    start(_port)
+    start()
 

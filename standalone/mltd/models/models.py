@@ -252,8 +252,7 @@ class MstCostume(Base):
     __tablename__ = 'mst_costume'
 
     mst_costume_id: Mapped[int] = mapped_column(primary_key=True)
-    mst_idol_id = mapped_column(ForeignKey('mst_idol.mst_idol_id'),
-                                nullable=False)
+    mst_idol_id: Mapped[int]
     resource_id: Mapped[str]
     mst_costume_group_id: Mapped[int]
     costume_name: Mapped[str]
@@ -2896,6 +2895,13 @@ class Friend(Base):
 
     user_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
     friend_id = mapped_column(ForeignKey('user.user_id'), primary_key=True)
+
+
+class ServerVersion(Base):
+    """server version used to create this database (custom table)."""
+    __tablename__ = 'server_version'
+
+    version: Mapped[str] = mapped_column(primary_key=True)
 
 
 if __name__ == '__main__':

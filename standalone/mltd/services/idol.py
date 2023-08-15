@@ -102,7 +102,7 @@ def get_idol_list(params, context):
             tension: 100.
             is_best_condition: false.
             area: Unknown (0-7).
-            offer_type: Unknown (0-4):
+            offer_type: Unknown (0-4).
             mst_costume_id: 0.
             having_costume_list: A list of 'mst_costume_ids' of all
                                  unlocked costumes for this idol.

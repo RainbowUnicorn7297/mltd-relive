@@ -1,6 +1,8 @@
 *.pyc
 *.exe
+config.ini
 assets-*/
+env/
 prototype/build/*
 tools/imgui.ini
 standalone/mltd*.db

@@ -29,6 +29,7 @@ def application(environ, start_response):
     if ('theaterdays-zh.appspot.com' in host
             or 'theaterdays-ko.appspot.com' in host
             or 'localhost' in host):    # For debugging
+        logger.info(f'Request received for service {environ["PATH_INFO"]}')
         full_start_time = time.perf_counter_ns()
 
         status = '200 OK'
@@ -58,9 +59,9 @@ def application(environ, start_response):
         response = encrypt_response(response)
 
         full_end_time = time.perf_counter_ns()
-        logger.debug('Service execution time: '
+        logger.info('Service execution time: '
                      + f'{(svc_end_time-svc_start_time) // 1_000_000} ms')
-        logger.debug('Full execution time: '
+        logger.info('Full execution time: '
                      + f'{(full_end_time-full_start_time) // 1_000_000} ms')
 
         start_response(status, headers)

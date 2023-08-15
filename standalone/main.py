@@ -1,27 +1,21 @@
-from multiprocessing import Process, freeze_support
+from multiprocessing import Process
 from time import sleep
 
 from mltd.servers import api_server, dns, proxy
-from mltd.servers.logging import handler, logger
-
-_api_port = 8443
-_proxy_port = 443
-_dns_port = 53
+from mltd.servers.logging import handler
 
 
 if __name__ == '__main__':
-    freeze_support()
-
     handler.doRollover()
 
-    api_process = Process(target=api_server.start,
-                          args=(_api_port,), daemon=True)
-    api_process.start()
-    proxy_process = Process(target=proxy.start,
-                            args=(_proxy_port,), daemon=True)
+    proxy_process = Process(target=proxy.start, daemon=True)
     proxy_process.start()
-    dns.start(_dns_port)
+    api_process = Process(target=api_server.start, daemon=True)
+    api_process.start()
+    dns_process = Process(target=dns.start, daemon=True)
+    dns_process.start()
 
+    dns_process.join()
     api_process.join()
     proxy_process.join()
 

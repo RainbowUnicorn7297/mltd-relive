@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
-from mltd.servers.config import server_language, server_timezone
+from mltd.servers.config import server_language, server_timezone, version
 from mltd.servers.i18n import translation
 from mltd.servers.logging import logger
 
@@ -137,11 +137,17 @@ def _insert_cards(session: Session, user: User):
         session.add(card)
 
 
-if __name__ == '__main__':
-    logger.handlers[0].doRollover()
+def setup():
+    """Initialize database by creating tables and inserting data."""
+    logger.info('Initializing database...')
 
     # Create tables.
     Base.metadata.create_all(engine)
+
+    # Insert server version.
+    with Session(engine) as session:
+        session.add(ServerVersion(version=version))
+        session.commit()
 
     # Insert master data.
     mst_data_dirs = ['mltd/models/mst_data',
@@ -187,63 +193,64 @@ if __name__ == '__main__':
         user_ids = session.scalars(
             select(User.user_id)
         ).all()
-        session.execute(
-            insert(ChallengeSong),
-            [{
-                'user_id': user_id,
-                'daily_challenge_mst_song_id': 2
-            } for user_id in user_ids]
-        )
-        session.execute(
-            insert(PanelMissionSheet),
-            [{'user_id': user_id} for user_id in user_ids]
-        )
-        session.execute(
-            insert(MapLevel),
-            [{'user_id': user_id} for user_id in user_ids]
-        )
-        session.execute(
-            insert(UnLockSongStatus),
-            [{'user_id': user_id} for user_id in user_ids]
-        )
+        if user_ids:
+            session.execute(
+                insert(ChallengeSong),
+                [{
+                    'user_id': user_id,
+                    'daily_challenge_mst_song_id': 2
+                } for user_id in user_ids]
+            )
+            session.execute(
+                insert(PanelMissionSheet),
+                [{'user_id': user_id} for user_id in user_ids]
+            )
+            session.execute(
+                insert(MapLevel),
+                [{'user_id': user_id} for user_id in user_ids]
+            )
+            session.execute(
+                insert(UnLockSongStatus),
+                [{'user_id': user_id} for user_id in user_ids]
+            )
 
-        mst_idol_ids = session.scalars(
-            select(MstIdol.mst_idol_id)
-        ).all()
-        session.execute(
-            insert(Idol),
-            [{
-                'idol_id': f'{user_id}_{mst_idol_id}',
-                'user_id': user_id,
-                'mst_idol_id': mst_idol_id,
-                'fan': 0,
-                'affection': 0,
-                'has_another_appeal': True
-            } for mst_idol_id in mst_idol_ids for user_id in user_ids]
-        )
+            mst_idol_ids = session.scalars(
+                select(MstIdol.mst_idol_id)
+            ).all()
+            session.execute(
+                insert(Idol),
+                [{
+                    'idol_id': f'{user_id}_{mst_idol_id}',
+                    'user_id': user_id,
+                    'mst_idol_id': mst_idol_id,
+                    'fan': 0,
+                    'affection': 0,
+                    'has_another_appeal': True
+                } for mst_idol_id in mst_idol_ids for user_id in user_ids]
+            )
 
-        session.execute(
-            insert(LessonWearConfig),
-            [{
-                'user_id': user_id,
-                'mst_lesson_wear_setting_id': 1
-            } for user_id in user_ids]
-        )
+            session.execute(
+                insert(LessonWearConfig),
+                [{
+                    'user_id': user_id,
+                    'mst_lesson_wear_setting_id': 1
+                } for user_id in user_ids]
+            )
 
-        session.execute(
-            insert(ClearSongCount),
-            [{
-                'id_': user_id,
-                'live_course': course
-            } for course in range(1, 7) for user_id in user_ids]
-        )
-        session.execute(
-            insert(FullComboSongCount),
-            [{
-                'id_': user_id,
-                'live_course': course
-            } for course in range(1, 7) for user_id in user_ids]
-        )
+            session.execute(
+                insert(ClearSongCount),
+                [{
+                    'id_': user_id,
+                    'live_course': course
+                } for course in range(1, 7) for user_id in user_ids]
+            )
+            session.execute(
+                insert(FullComboSongCount),
+                [{
+                    'id_': user_id,
+                    'live_course': course
+                } for course in range(1, 7) for user_id in user_ids]
+            )
 
         session.execute(text('PRAGMA foreign_keys=ON'))
         # Validate foreign keys after inserting master data.
@@ -834,4 +841,18 @@ if __name__ == '__main__':
                 ))
 
         session.commit()
+
+    logger.info('Database initialized.')
+
+
+def cleanup():
+    """Drop all tables in the database."""
+    with Session(engine) as session:
+        session.execute(text('PRAGMA foreign_keys=OFF'))
+        Base.metadata.drop_all(session.get_bind())
+        session.execute(text('PRAGMA foreign_keys=ON'))
+
+
+if __name__ == '__main__':
+    setup()
 

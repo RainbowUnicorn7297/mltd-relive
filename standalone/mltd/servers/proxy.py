@@ -6,10 +6,10 @@ from ssl import PROTOCOL_TLS_SERVER, SSLContext
 import requests
 import urllib3
 
+from mltd.servers.api_server import api_port
 from mltd.servers.logging import logger
 
-_proxy_port = 443
-_api_port = 8443
+proxy_port = 443
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -19,7 +19,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     close_connection = True
 
     def do_POST(self):
-        host = 'localhost:' + str(_api_port)
+        host = 'localhost:' + str(api_port)
         url = f'https://{host}{self.path}'
         content_len = int(self.headers.get('Content-Length'))
         req_body = self.rfile.read(content_len)
@@ -47,7 +47,7 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port):
+def start(port=proxy_port):
     server_address = ('', port)
     httpd = HTTPServer(server_address, ProxyHTTPRequestHandler)
     certfile = path.join(key_path(), 'api.crt')
@@ -63,5 +63,5 @@ def start(port):
 
 
 if __name__ == '__main__':
-    start(_proxy_port)
+    start()
 
