@@ -1,5 +1,6 @@
 import csv
 import os
+import sys
 from base64 import b64encode
 from uuid import UUID, uuid4
 
@@ -13,6 +14,17 @@ from mltd.servers.i18n import translation
 from mltd.servers.logging import logger
 
 _ = translation.gettext
+
+
+def _mst_data_path():
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath('./mltd/models'))
+    return os.path.join(base_path, 'mst_data')
+
+
+def _localized_mst_data_path():
+    base_path = getattr(
+        sys, '_MEIPASS', os.path.abspath('./mltd/models/mst_data'))
+    return os.path.join(base_path, server_language)
 
 
 def _insert_cards(session: Session, user: User):
@@ -150,8 +162,7 @@ def setup():
         session.commit()
 
     # Insert master data.
-    mst_data_dirs = ['mltd/models/mst_data',
-                     f'mltd/models/mst_data/{server_language}']
+    mst_data_dirs = [_mst_data_path(), _localized_mst_data_path()]
     with Session(engine) as session:
         session.execute(text('PRAGMA foreign_keys=OFF'))
 

@@ -17,7 +17,15 @@ python <Path to Python installation>/Tools/i18n/msgfmt.py <Path to repository>/s
 python <Path to Python installation>/Tools/i18n/msgfmt.py <Path to repository>/standalone/mltd/locales/ko/LC_MESSAGES/mltd.po
 """
 import gettext
+import sys
+from os import path
 
 from mltd.servers.config import server_language
 
-translation = gettext.translation('mltd', 'mltd/locales', [server_language])
+
+def _locales_path():
+    base_path = getattr(sys, '_MEIPASS', path.abspath('./mltd'))
+    return path.join(base_path, 'locales')
+
+
+translation = gettext.translation('mltd', _locales_path(), [server_language])

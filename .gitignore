@@ -4,7 +4,9 @@ config.ini
 assets-*/
 env/
 prototype/build/*
-tools/imgui.ini
+standalone/build/*
+standalone/dist/*
 standalone/mltd*.db
 standalone/mltd*.log*
 standalone/mltd/locales/*.cmd
+tools/imgui.ini
