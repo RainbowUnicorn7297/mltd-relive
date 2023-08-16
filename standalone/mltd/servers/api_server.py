@@ -1,12 +1,19 @@
 import sys
 from os import path
 from ssl import PROTOCOL_TLS_SERVER, SSLContext
-from wsgiref.simple_server import make_server
+from wsgiref.simple_server import WSGIRequestHandler, make_server
 
 from mltd.servers.handler import application
 from mltd.servers.logging import logger
 
 api_port = 8443
+
+
+class SilentWSGIRequestHandler(WSGIRequestHandler):
+
+    def log_message(self, format, *args):
+        # Disable stderr output
+        pass
 
 
 def key_path():
@@ -15,7 +22,8 @@ def key_path():
 
 
 def start(port=api_port):
-    with make_server('', port, application) as httpd:
+    with make_server('', port, application,
+                     handler_class=SilentWSGIRequestHandler) as httpd:
         certfile = path.join(key_path(), 'api.crt')
         keyfile = path.join(key_path(), 'api.key')
         context = SSLContext(PROTOCOL_TLS_SERVER)

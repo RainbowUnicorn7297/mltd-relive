@@ -19,9 +19,8 @@ jobs:
               python -m pip install -r requirements.txt
             cmd-build: |
               cd standalone
-              ..\env\Scripts\pyinstaller gui.spec
-            out-name: mltd-relive-standalone.exe
-            out-path: standalone/dist/mltd-relive-standalone.exe
+              ..\env\Scripts\pyinstaller gui_windows.spec
+            out-name: mltd-relive-standalone-windows
           - os: ubuntu-latest
             target: Ubuntu
             cmd-install: |
@@ -31,9 +30,8 @@ jobs:
               python -m pip install -r requirements.txt
             cmd-build: |
               cd standalone
-              ../env/bin/pyinstaller --onefile --name mltd-relive-standalone --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.pyw
-            out-name: ubuntu-gui.spec
-            out-path: standalone/mltd-relive-standalone.spec
+              ../env/bin/pyinstaller gui_ubuntu.spec
+            out-name: mltd-relive-standalone-ubuntu
           - os: macos-latest
             target: macOS
             cmd-install: |
@@ -43,9 +41,8 @@ jobs:
               python -m pip install -r requirements.txt
             cmd-build: |
               cd standalone
-              ../env/bin/pyinstaller --onefile --windowed --name mltd-relive-standalone --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset --icon ../app_icon.icns ./gui.pyw
-            out-name: macos-gui.spec
-            out-path: standalone/mltd-relive-standalone.spec
+              ../env/bin/pyinstaller gui_macos.spec
+            out-name: mltd-relive-standalone-macos
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -61,4 +58,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.out-name }}
-        path: ${{ matrix.out-path }}
+        path: standalone/dist

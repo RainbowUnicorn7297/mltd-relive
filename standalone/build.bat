@@ -1,1 +1,1 @@
-pyinstaller --clean gui.spec
+..\env\Scripts\pyinstaller --clean gui_windows.spec

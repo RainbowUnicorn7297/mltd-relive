@@ -6,7 +6,7 @@ block_cipher = None
 
 a = Analysis(
     ['gui.pyw'],
-    pathex=['..\\env\\Lib\\site-packages'],
+    pathex=['../env/python3.11/site-packages'],
     binaries=[],
     datas=[],
     hiddenimports=[
@@ -54,9 +54,9 @@ a = Analysis(
 )
 a.datas += Tree('../key', prefix='key', excludes=['*.cmd'])
 a.datas += Tree('mltd/locales', prefix='locales', excludes=['*.cmd'])
-a.datas += Tree('mltd/models/mst_data', prefix='mst_data', excludes=['*.cmd'])
-a.datas += Tree('mltd/models/mst_data/zh', prefix='zh', excludes=['*.cmd'])
-a.datas += Tree('mltd/models/mst_data/ko', prefix='ko', excludes=['*.cmd'])
+a.datas += Tree('mltd/models/mst_data', prefix='mst_data')
+a.datas += Tree('mltd/models/mst_data/zh', prefix='zh')
+a.datas += Tree('mltd/models/mst_data/ko', prefix='ko')
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
@@ -73,11 +73,10 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='../app_icon.ico',
 )

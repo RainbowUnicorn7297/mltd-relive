@@ -41,6 +41,10 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(content)
 
+    def log_message(self, format, *args):
+        # Disable stderr output
+        pass
+
 
 def key_path():
     base_path = getattr(sys, '_MEIPASS', path.abspath('..'))
