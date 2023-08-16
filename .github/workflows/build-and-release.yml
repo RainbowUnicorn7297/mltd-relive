@@ -24,9 +24,9 @@ jobs:
               cd standalone
               ..\env\Scripts\pyinstaller gui_windows.spec
               cd dist
-              ren mltd-relive-standalone.exe mltd-relive-${{ github.ref }}-windows.exe
+              ren mltd-relive-standalone.exe mltd-relive-${{ github.ref_name }}-windows.exe
             out-name: windows
-            out-path: standalone/dist/mltd-relive-${{ github.ref }}-windows.exe
+            out-path: standalone/dist/mltd-relive-${{ github.ref_name }}-windows.exe
           - os: ubuntu-latest
             target: Ubuntu
             cmd-install: |
@@ -38,9 +38,9 @@ jobs:
               cd standalone
               ../env/bin/pyinstaller gui_ubuntu.spec
               cd dist
-              mv mltd-relive-standalone mltd-relive-${{ github.ref }}-ubuntu
+              mv mltd-relive-standalone mltd-relive-${{ github.ref_name }}-ubuntu
             out-name: ubuntu
-            out-path: standalone/dist/mltd-relive-${{ github.ref }}-ubuntu
+            out-path: standalone/dist/mltd-relive-${{ github.ref_name }}-ubuntu
           - os: macos-latest
             target: macOS
             cmd-install: |
@@ -52,9 +52,9 @@ jobs:
               cd standalone
               ../env/bin/pyinstaller gui_macos.spec
               cd dist
-              zip -r9 mltd-relive-${{ github.ref }}-macos mltd-relive-standalone.app
+              zip -r9 mltd-relive-${{ github.ref_name }}-macos mltd-relive-standalone.app
             out-name: macos
-            out-path: standalone/dist/mltd-relive-${{ github.ref }}-macos.zip
+            out-path: standalone/dist/mltd-relive-${{ github.ref_name }}-macos.zip
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -85,5 +85,5 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@v1
       with:
-        name: mltd-relive-${{ github.ref }}
+        name: mltd-relive-${{ github.ref_name }}
         artifacts: 'LICENSE,windows/*,ubuntu/*,macos/*'
