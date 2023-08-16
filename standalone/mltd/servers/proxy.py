@@ -19,7 +19,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     close_connection = True
 
     def do_POST(self):
-        host = 'localhost:' + str(api_port)
+        host = f'127.0.0.1:{api_port}'
         url = f'https://{host}{self.path}'
         content_len = int(self.headers.get('Content-Length'))
         req_body = self.rfile.read(content_len)
