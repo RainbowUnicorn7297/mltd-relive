@@ -52,7 +52,7 @@ jobs:
               cd standalone
               ../env/bin/pyinstaller gui_macos.spec
               cd dist
-              zip -r9 mltd-relive-${{ github.ref_name }}-macos mltd-relive-standalone.app
+              zip -r9 mltd-relive-${{ github.ref_name }}-macos.zip mltd-relive-standalone.app
             out-name: macos
             out-path: standalone/dist/mltd-relive-${{ github.ref_name }}-macos.zip
     steps:

@@ -2,7 +2,7 @@ import configparser
 import logging
 from datetime import timedelta, timezone
 
-_version = '0.0.0'
+_version = '0.0.3'
 # 'zh' for Traditional Chinese, 'ko' for Korean
 _language = 'zh'
 _log_level = str(logging.INFO)
