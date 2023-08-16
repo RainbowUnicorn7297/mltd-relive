@@ -33,7 +33,7 @@ jobs:
               cd standalone
               ../env/bin/pyinstaller --onefile --name mltd-relive-standalone --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.pyw
             out-name: ubuntu-gui.spec
-            out-path: standalone/gui.spec
+            out-path: standalone/mltd-relive-standalone.spec
           - os: macos-latest
             target: macOS
             cmd-install: |
@@ -45,7 +45,7 @@ jobs:
               cd standalone
               ../env/bin/pyinstaller --onefile --windowed --name mltd-relive-standalone --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset --icon ../app_icon.icns ./gui.pyw
             out-name: macos-gui.spec
-            out-path: standalone/gui.spec
+            out-path: standalone/mltd-relive-standalone.spec
     steps:
     - name: Checkout
       uses: actions/checkout@v3
