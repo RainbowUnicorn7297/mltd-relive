@@ -31,7 +31,7 @@ jobs:
               python -m pip install -r requirements.txt
             cmd-build: |
               cd standalone
-              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.pyw
             out-name: ubuntu-gui.spec
             out-path: standalone/gui.spec
           - os: macos-latest
@@ -43,7 +43,7 @@ jobs:
               python -m pip install -r requirements.txt
             cmd-build: |
               cd standalone
-              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.pyw
             out-name: macos-gui.spec
             out-path: standalone/gui.spec
     steps:
