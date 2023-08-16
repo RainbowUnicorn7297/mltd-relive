@@ -23,6 +23,7 @@ jobs:
             cmd-build: |
               cd standalone
               ..\env\Scripts\pyinstaller gui_windows.spec
+              cd dist
               ren mltd-relive-standalone.exe mltd-relive-${{ github.ref }}-windows.exe
             out-name: windows
             out-path: standalone/dist/mltd-relive-${{ github.ref }}-windows.exe
@@ -36,6 +37,7 @@ jobs:
             cmd-build: |
               cd standalone
               ../env/bin/pyinstaller gui_ubuntu.spec
+              cd dist
               mv mltd-relive-standalone mltd-relive-${{ github.ref }}-ubuntu
             out-name: ubuntu
             out-path: standalone/dist/mltd-relive-${{ github.ref }}-ubuntu
@@ -72,6 +74,7 @@ jobs:
 
   createrelease:
     name: Create Release
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
