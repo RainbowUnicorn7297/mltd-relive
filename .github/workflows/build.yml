@@ -60,5 +60,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: {{ matrix.out-name }}
-        path: {{ matrix.out-path }}
+        name: ${{ matrix.out-name }}
+        path: ${{ matrix.out-path }}
