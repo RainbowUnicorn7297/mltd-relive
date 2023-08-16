@@ -18,9 +18,8 @@ jobs:
               python -m pip install --upgrade pip
               python -m pip install -r requirements.txt
             cmd-build: |
-              .\env\Scripts\activate
               cd standalone
-              python -m pyinstaller gui.spec
+              ..\env\Scripts\pyinstaller gui.spec
             out-name: mltd-relive-standalone.exe
             out-path: standalone/dist/mltd-relive-standalone.exe
           - os: ubuntu-latest
@@ -31,9 +30,8 @@ jobs:
               python -m pip install --upgrade pip
               python -m pip install -r requirements.txt
             cmd-build: |
-              source env/bin/activate
               cd standalone
-              python -m pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
             out-name: ubuntu-gui.spec
             out-path: standalone/gui.spec
           - os: macos-latest
@@ -44,9 +42,8 @@ jobs:
               python -m pip install --upgrade pip
               python -m pip install -r requirements.txt
             cmd-build: |
-              source env/bin/activate
               cd standalone
-              python -m pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+              ../env/bin/pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
             out-name: macos-gui.spec
             out-path: standalone/gui.spec
     steps:
@@ -56,7 +53,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    - name: Install dependencies for $${{ matrix.target }}
+    - name: Install dependencies for ${{ matrix.target }}
       run: ${{ matrix.cmd-install }}    
     - name: Build with PyInstaller for ${{ matrix.target }}
       run: ${{ matrix.cmd-build }}
