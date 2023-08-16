@@ -1,6 +1,6 @@
 import os
 import traceback
-from multiprocessing import Pipe, Process, freeze_support
+from multiprocessing import Pipe, Process, freeze_support, set_start_method
 from tkinter import *
 from tkinter import messagebox, ttk
 
@@ -276,6 +276,7 @@ def report_callback_exception(self, exc, val, tb):
 
 if __name__ == '__main__':
     freeze_support()
+    set_start_method('spawn')
 
     Tk.report_callback_exception = report_callback_exception
 
