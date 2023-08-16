@@ -1,0 +1,64 @@
+name: Build
+
+on: [workflow_dispatch]
+
+jobs:
+
+  build:
+    name: Build packages
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: Windows
+            cmd-install: |
+              python -m pip install --upgrade pip
+              python -m venv env
+              .\env\Scripts\activate
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd standalone
+              pyinstaller gui.spec
+            out-name: mltd-relive-standalone.exe
+            out-path: standalone/dist/mltd-relive-standalone.exe
+          - os: ubuntu-latest
+            target: Ubuntu
+            cmd-install: |
+              python -m pip install --upgrade pip
+              python -m venv env
+              source env/bin/activate
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd standalone
+              pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+            out-name: ubuntu-gui.spec
+            out-path: standalone/gui.spec
+          - os: macos-latest
+            target: macOS
+            cmd-install: |
+              python -m pip install --upgrade pip
+              python -m venv env
+              source env/bin/activate
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd standalone
+              pyinstaller --paths=../env/python3.11/site-packages --hidden-import mltd.services.asset ./gui.py
+            out-name: macos-gui.spec
+            out-path: standalone/gui.spec
+    steps:
+    - name: Checkout
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies for $${{ matrix.target }}
+      run: ${{ matrix.cmd-install }}    
+    - name: Build with PyInstaller for ${{ matrix.target }}
+      run: ${{ matrix.cmd-build }}
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: {{ matrix.out-name }}
+        path: {{ matrix.out-path }}
