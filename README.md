@@ -14,48 +14,135 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 - 未回信的mail不能以回信來解鎖新mail。
 - 未解鎖的覺醒故事不能透過進行覺醒來解鎖。
 
+### Standalone版（最新版本：[standalone-v0.0.3](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.0.3)）
+以一個已解鎖全部內容的通用帳號為基礎的版本，目標於v1.0.0將絕大部分功能以最接近關服前的狀態呈現。具有以下特性：
+- 支援繁中版及韓版。
+- 遊玩過程中的數據會儲存在本地資料庫中。首次啟動本地伺服器時，會在程式的同一個資料夾內建立資料庫檔案。
+- 活動及歌曲排名只有繁中服有關服前的記錄（Blooming Star和THE IDOLM@STER 初星-mix的歌曲排名除外），韓服則沒有記錄。
+- `mltd-relive.db`是SQLite資料庫，可以用[DB Browser for SQLite](https://sqlitebrowser.org)等工具修改遊戲數值。
+
+以下是目前版本支援的主要功能：
+- 使用密碼繼承通用帳號
+- 登入
+   - 登入獎勵
+   - 偶像、事務員及製作人生日對話
+   - 特別節日對話
+- 任務
+   - 每日任務
+   - 每週任務
+- 偶像
+   - 編制團體
+- 演唱會全部功能
+
 ## 使用方法
-1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行`mltd-relive-<程式版本>.exe`
-2. 若果出現Windows防火牆提示，勾選全部選項並按允許存取（Allow access）
+### 注意事項
+- 首次啟動程式時，會在程式的同一個資料夾內建立資料庫、設定檔及記錄檔。啟動前請預留約100MB的空間。
+- 由於伺服器必須使用連接埠53和443，Ubuntu版需要以root權限運行。
+- 程式使用以下作業系統構建：
+   - Windows Server 2022
+   - Ubuntu 22.04
+   - macOS 12 Monterey
 
-   <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/152468770-f79c53e9-31a3-4a61-89c2-0fbbb4feced6.png">
+  Windows版於Windows 11亦測試過可以正常運行。其他作業系統版本若不能運行的話，可以[自行構建](https://github.com/RainbowUnicorn7297/mltd-relive#自行構建)。
 
-3. 在手機上打開Wi-Fi設定，IP設定如下：
+### 步驟
+1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行程式
+   > Ubuntu版需要以root權限運行，例如`sudo ./mltd-relive-standalone-v1.0.0-ubuntu`
+2. 選擇遊戲語言（繁體中文或韓文），然後按＂Start Server＂
 
-   - IP設定：靜態(Static)
-   - IP位址(IP address)：手機的LAN IP
-   - 閘道(Gateway)：路由器的閘道位址
-   - 網路前置碼長度(Network prefix length)：一般家用LAN是24
-   - DNS 1：電腦的LAN IP
-   - DNS 2：可用路由器的DNS或公用DNS(如Google的8.8.8.8)
+   <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/261151800-e8103b40-387e-46c6-8437-0f9ea65b202a.png">
 
+3. 等待程式建立資料庫和啟動伺服器，直至出現＂Server Status: Started＂
+
+   <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/261154195-4420e0ea-b8af-48ce-abd9-2b8d46af8aaf.png">
+
+   > Windows版若果出現Windows防火牆提示，勾選全部選項並按允許存取（Allow access）
+   > <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/152468770-f79c53e9-31a3-4a61-89c2-0fbbb4feced6.png">
+
+4. 將手機的DNS設定成程式上顯示的IPv4或IPv6
+   > 這裡以Android手機作為例子，iOS基本上也是同樣原理
+   <table>
+   <thead>
+   <tr>
+   <th width="500px">方法1（推薦）</th>
+   <th width="500px">方法2</th>
+   </tr>
+   </thead>
+   <tbody>
+   <tr>
+   <td>
+
+   下載[DNSChanger for IPv4/IPv6](https://play.google.com/store/apps/details?id=com.frostnerd.dnschanger)，輸入以下設定：
+   - Primary server: 電腦的LAN IP（程式上顯示的IPv4）
+   - Secondary server: 可用路由器的DNS或公用DNS（如Cloudflare的1.1.1.1或Google的8.8.8.8）
+
+   最後按＂START＂
+   <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/261158575-133e6090-0348-49c7-8aad-f7487f009bd0.png">
+
+   </td>
+   <td>
+   在手機上打開Wi-Fi設定，IP設定如下：
+
+   - IP設定：靜態（Static）
+   - IP位址（IP address）：手機的LAN IP
+   - 閘道（Gateway）：路由器的閘道位址
+   - 網路前置碼長度（Network prefix length）：一般家用LAN是24
+   - DNS 1：電腦的LAN IP（程式上顯示的IPv4）
+   - DNS 2：可用路由器的DNS或公用DNS（如Cloudflare的1.1.1.1或Google的8.8.8.8）
    <img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
+   </td>
+   </tr>
+   </tbody>
+   </table>
 
-4. 運行遊戲
-5. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
+5. 運行遊戲
+6. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208608928-05a71f22-69a2-4ffc-b8d6-3451e06e77e8.png">
 
-6. 按＂使用密碼繼承＂，再按＂OK＂
+7. 按＂使用密碼繼承＂，再按＂OK＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208609764-a79d551b-fdf4-4da8-8a46-c6bad6e884f2.png">
 
-7. 隨意輸入長度為8個字元的密碼，最後按＂決定＂
+8. 隨意輸入長度為8個字元的密碼，最後按＂決定＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208610514-01adc780-a92e-4f50-b459-e51361d7af49.png">
 
 ## 自行構建
-1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.11.1）
-2. 以系統管理員身份（Run as administrator）打開命令提示字元（cmd.exe），安裝以下所需套件：
-```
-pip install pyinstaller
-pip install dnslib
-pip install requests
-pip install msgpack
-pip install pycryptodome
-```
-3. 用GitHub Desktop複製或[手動下載](https://github.com/RainbowUnicorn7297/mltd-relive/archive/refs/heads/main.zip)程式碼至您的電腦上
-4. 運行`prototype/build.bat`，會在`prototype/dist`資料夾裡生成`mltd-relive-prototype.exe`檔案
+1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.11.4）
+2. 用GitHub Desktop複製或[手動下載](https://github.com/RainbowUnicorn7297/mltd-relive/archive/refs/heads/main.zip)程式碼至您的電腦上
+3. 打開CLI（例如Windows的cmd.exe或Linux/macOS的Terminal），移至程式碼的資料夾（`cd mltd-relive`），然後輸入以下指令：
+   - Windows
+   ```
+   python -m venv env
+   .\env\Scripts\activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   cd standalone
+   ..\env\Scripts\pyinstaller gui_windows.spec
+   ```
+   - Unix/Linux
+   ```
+   python -m venv env
+   source env/bin/activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   cd standalone
+   ../env/bin/pyinstaller gui_ubuntu.spec
+   ```
+   - macOS
+   ```
+   python -m venv env
+   source env/bin/activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   cd standalone
+   ../env/bin/pyinstaller gui_macos.spec
+   ```
+4. 以上指令會在`standalone/dist`資料夾裡生成程式檔
+   - Windows: `mltd-relive-standalone.exe`
+   - Unix/Linux: `mltd-relive-standalone`
+   - macOS: `mltd-relive-standalone.app`資料夾
 
 ## 計劃
 
@@ -79,7 +166,7 @@ pip install pycryptodome
 ### 第二階段（已完成）
 以本人帳號為藍本，在最短時間內讓劇情和演唱會，遊戲內最主要的兩個功能可以運作。
 
-### 第三階段（預計2023年4月中完成）
+### 第三階段（預計2023年底完成）
 以一個通用帳號為基礎，已集齊全部卡片和服裝和解鎖所有劇情，將大部分社交類以外功能以最接近關服前的狀態呈現。活動和歌曲排名方面只有繁中服有備份，韓服則沒有。
 
 ### 第四階段（不定期更新）
