@@ -2,10 +2,14 @@ import configparser
 import logging
 from datetime import timedelta, timezone
 
-_version = '0.0.3'
+_version = '0.0.4'
 # 'zh' for Traditional Chinese, 'ko' for Korean
 _language = 'zh'
 _log_level = str(logging.INFO)
+
+
+def version_tuple(v):
+    return tuple(map(int, v.split('.')))
 
 
 class Config:
@@ -23,6 +27,9 @@ class Config:
             default['language'] = _language
             default['log_level'] = _log_level
             self.write_config()
+        elif (version_tuple(self.get_config('version'))
+              < version_tuple(_version)):
+            self.set_config('version', _version)
 
     def write_config(self):
         with open('config.ini', 'w') as config_file:

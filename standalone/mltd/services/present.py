@@ -1,10 +1,12 @@
 import json
+import random
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from datetime import datetime, timezone
+from time import sleep
 from uuid import UUID
 
 from jsonrpc import dispatcher
-from sqlalchemy import and_, func, or_, select, update
+from sqlalchemy import and_, delete, func, or_, select, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
@@ -12,6 +14,7 @@ from mltd.models.models import (Achievement, Item, LastUpdateDate, MstItem,
                                 Present, User)
 from mltd.models.schemas import PresentSchema
 from mltd.servers.config import server_timezone
+from mltd.servers.logging import logger
 
 
 def add_present(session: Session, user: User, present: Present):
@@ -49,6 +52,20 @@ def add_present(session: Session, user: User, present: Present):
                 mst_achievement_id=present.mst_achievement_id,
                 is_released=False
             ))
+
+    # Make sure create_date is unique.
+    while True:
+        create_date = datetime.now(timezone.utc)
+        duplicate_count = session.scalar(
+            select(func.count(Present.present_id))
+            .where(Present.create_date == create_date)
+        )
+        if not duplicate_count:
+            break
+        # TODO: Reproduce before deleting this log
+        logger.info('Found duplicate create_date')
+        sleep(random.uniform(0.001, 0.020))
+    present.create_date = create_date
     session.add(present)
     session.expire(user, ['presents'])
 
@@ -79,6 +96,7 @@ def get_present_count(params, context):
         value = session.scalar(
             select(func.count(Present.present_id))
             .where(Present.user_id == UUID(context['user_id']))
+            .where(datetime.now(timezone.utc) < Present.end_date)
         )
 
     return {'value': min(value, 100)}
@@ -150,6 +168,12 @@ def get_present_list(params, context):
     """
     user_id = UUID(context['user_id'])
     with Session(engine) as session:
+        session.execute(
+            delete(Present)
+            .where(Present.user_id == user_id)
+            .where(Present.end_date <= datetime.now(timezone.utc))
+        )
+
         present_stmt = (
             select(Present)
             .where(Present.user_id == user_id)
@@ -251,6 +275,8 @@ def get_present_list(params, context):
             cursor = urlsafe_b64encode(
                 json.dumps(cursor_dict).encode()
             ).decode()
+
+        session.commit()
 
     return {
         'present_list': present_list,

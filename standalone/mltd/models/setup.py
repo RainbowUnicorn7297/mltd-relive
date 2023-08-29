@@ -4,12 +4,13 @@ import sys
 from base64 import b64encode
 from uuid import UUID, uuid4
 
-from sqlalchemy import insert, select, text
+from sqlalchemy import insert, select, text, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
-from mltd.servers.config import server_language, server_timezone, version
+from mltd.servers.config import (server_language, server_timezone, version,
+                                 version_tuple)
 from mltd.servers.i18n import translation
 from mltd.servers.logging import logger
 
@@ -862,6 +863,32 @@ def cleanup():
         session.execute(text('PRAGMA foreign_keys=OFF'))
         Base.metadata.drop_all(session.get_bind())
         session.execute(text('PRAGMA foreign_keys=ON'))
+
+
+def check_database_version():
+    with Session(engine) as session:
+        db_version = session.scalar(
+            select(ServerVersion.version)
+        )
+    if version_tuple(version) < version_tuple(db_version):
+        raise RuntimeError(
+            f'Database version v{db_version} is newer than application '
+            f'version v{version}. Please download and run the latest '
+            'standalone version from GitHub.')
+    return db_version
+
+
+def upgrade_database():
+    db_version = check_database_version()
+
+    # TODO: Put future database structural changes here
+
+    # if version_tuple(db_version) < version_tuple(version):
+    #     with Session(engine) as session:
+    #         session.execute(
+    #             update(ServerVersion)
+    #             .values(version=version)
+    #         )
 
 
 if __name__ == '__main__':

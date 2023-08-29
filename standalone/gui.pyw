@@ -4,12 +4,8 @@ from multiprocessing import Pipe, Process, freeze_support, set_start_method
 from tkinter import *
 from tkinter import messagebox, ttk
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from mltd.models.engine import engine
-from mltd.models.models import ServerVersion
-from mltd.models.setup import cleanup, setup
+from mltd.models.setup import (check_database_version, cleanup, setup,
+                               upgrade_database)
 from mltd.servers import api_server, dns, proxy
 from mltd.servers.api_server import api_port
 from mltd.servers.config import config, server_language, version
@@ -38,27 +34,6 @@ class CustomProcess(Process):
         return self._exception
 
 
-def version_tuple(v):
-    return tuple(map(int, v.split('.')))
-
-
-def check_database_version():
-    with Session(engine) as session:
-        db_version = session.scalar(
-            select(ServerVersion.version)
-        )
-    if version_tuple(version) < version_tuple(db_version):
-        raise RuntimeError(
-            f'Database version v{db_version} is newer than application '
-            f'version v{version}. Please download and run the latest '
-            'standalone version from GitHub.')
-
-
-def upgrade_database():
-    check_database_version()
-    ...
-
-
 class MLTDReliveGUI:
 
     def __init__(self):
@@ -82,7 +57,7 @@ class MLTDReliveGUI:
         self.server_status = 'Stopped'
         self.status_label = ttk.Label(
             status_frame, text=f'Server Status: {self.server_status}',
-            font=(None, 14), foreground='red', width=18)
+            font=(None, 14), foreground='red', width=20, anchor=CENTER)
         self.status_label.grid(column=0, row=0)
         self.progress_bar = ttk.Progressbar(status_frame, mode='indeterminate')
 
