@@ -5,7 +5,7 @@ dnslib==0.9.23
 glfw==2.6.2
 greenlet==2.0.2
 idna==3.4
-imgui==2.0.0
+imgui==1.4.1
 json-rpc==1.15.0
 marshmallow==3.20.1
 marshmallow-sqlalchemy==0.29.0
