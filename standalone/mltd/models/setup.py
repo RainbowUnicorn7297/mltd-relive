@@ -28,6 +28,36 @@ def _localized_mst_data_path():
     return os.path.join(base_path, server_language)
 
 
+def _insert_csv_data(session: Session, dir: str, filename: str):
+    table_name = filename.split('.')[0]
+    table = Base.metadata.tables[table_name]
+    with open(os.path.join(dir, filename), encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames
+        data = list(reader)
+    # Convert CSV data into proper data types because they are all read
+    # as strs.
+    for row in data:
+        for fieldname in fieldnames:
+            column = table.c[fieldname]
+            if column.nullable and not row[fieldname]:
+                # If column is nullable, replace null-equivalent values
+                # with None.
+                row[fieldname] = None
+            elif str(column.type) == 'BOOLEAN' and row[fieldname]:
+                row[fieldname] = False if row[fieldname] == '0' else True
+            elif str(column.type) == 'INTEGER' and row[fieldname]:
+                row[fieldname] = int(row[fieldname])
+            elif str(column.type) == 'DATETIME' and row[fieldname]:
+                # Convert str to UTC datetime.
+                row[fieldname] = datetime.strptime(
+                    row[fieldname], '%Y-%m-%dT%H:%M:%S%z'
+                ).astimezone(timezone.utc)
+            elif column.type.__class__.__name__ == 'Uuid' and row[fieldname]:
+                row[fieldname] = UUID(row[fieldname])
+    session.execute(table.insert(), data)
+
+
 def _insert_cards(session: Session, user: User):
     def _diff_before_awakened(value_max, level_max):
         return value_max / (2*level_max)
@@ -171,36 +201,7 @@ def setup():
             for filename in os.listdir(dir):
                 if '.csv' not in filename:
                     continue
-                table_name = filename.split('.')[0]
-                table = Base.metadata.tables[table_name]
-                with open(os.path.join(dir, filename),
-                          encoding='utf-8-sig') as f:
-                    reader = csv.DictReader(f)
-                    fieldnames = reader.fieldnames
-                    data = list(reader)
-                # Convert CSV data into proper data types because they are
-                # all read as strs.
-                for row in data:
-                    for fieldname in fieldnames:
-                        column = table.c[fieldname]
-                        if column.nullable and not row[fieldname]:
-                            # If column is nullable, replace null-equivalent
-                            # values with None.
-                            row[fieldname] = None
-                        elif str(column.type) == 'BOOLEAN' and row[fieldname]:
-                            row[fieldname] = (False if row[fieldname] == '0'
-                                            else True)
-                        elif str(column.type) == 'INTEGER' and row[fieldname]:
-                            row[fieldname] = int(row[fieldname])
-                        elif str(column.type) == 'DATETIME' and row[fieldname]:
-                            # Convert str to UTC datetime.
-                            row[fieldname] = datetime.strptime(
-                                row[fieldname], '%Y-%m-%dT%H:%M:%S%z'
-                            ).astimezone(timezone.utc)
-                        elif (column.type.__class__.__name__ == 'Uuid'
-                                and row[fieldname]):
-                            row[fieldname] = UUID(row[fieldname])
-                session.execute(table.insert(), data)
+                _insert_csv_data(session, dir, filename)
 
         user_ids = session.scalars(
             select(User.user_id)
@@ -881,14 +882,20 @@ def check_database_version():
 def upgrade_database():
     db_version = check_database_version()
 
-    # TODO: Put future database structural changes here
+    if version_tuple(db_version) < version_tuple('0.0.4'):
+        with Session(engine) as session:
+            table = Base.metadata.tables['mst_costume_bulk_change_group']
+            table.create(bind=session.get_bind())
 
-    # if version_tuple(db_version) < version_tuple(version):
-    #     with Session(engine) as session:
-    #         session.execute(
-    #             update(ServerVersion)
-    #             .values(version=version)
-    #         )
+            _insert_csv_data(session, _mst_data_path(),
+                             'mst_costume_bulk_change_group.csv')
+
+            session.execute(
+                update(ServerVersion)
+                .values(version='0.0.4')
+            )
+
+            session.commit()
 
 
 if __name__ == '__main__':

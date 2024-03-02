@@ -5,9 +5,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import CostumeAdv, Episode, Idol, Memorial
+from mltd.models.models import (CostumeAdv, Episode, Idol, Memorial,
+                                MstCostumeBulkChangeGroup)
 from mltd.models.schemas import (CostumeAdvSchema, EpisodeSchema, IdolSchema,
-                                 MemorialSchema)
+                                 MemorialSchema,
+                                 MstCostumeBulkChangeGroupSchema)
 from mltd.servers.i18n import translation
 
 _ = translation.gettext
@@ -119,7 +121,7 @@ def get_idol_list(params, context):
                                  Contains the following keys.
                 mst_voice_category_id: Master voice category ID (3001-
                                        3106).
-                sort_id: Sort ID:
+                sort_id: Sort ID.
                 idol_detail_type: 3.
                 value: Required affection to unlock this voice category
                        (0 if unlocked by default).
@@ -273,5 +275,59 @@ def get_idol_list(params, context):
         'memorial_list': memorial_list,
         'episode_list': episode_list,
         'costume_adv_list': costume_adv_list
+    }
+
+
+@dispatcher.add_method(name='IdolService.GetBulkChangeCostumeGroupList')
+def get_bulk_change_costume_group_list(params):
+    """Get a list of costume bulk change groups.
+
+    Invoked when the user presses Bulk Change button while changing
+    costumes for 13 live (13人演唱會) on the unit confirmation screen
+    under Live tab.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing the following keys.
+        bulk_change_costume_group_list: A list of dicts, where each dict
+                                        represents a single costume bulk
+                                        change group and contains the
+                                        following keys.
+            mst_costume_bulk_change_group_id: Master costume bulk change
+                                              group ID.
+            cbc_group_name: Costume bulk change group name.
+            cbc_target_id: An integer representing the target of this
+                           costume bulk change group. Non-positive IDs
+                           have special meanings.
+                           0=765 MILLION ALLSTARS
+                           -1=PRINCESS STARS
+                           -2=FAIRY STARS
+                           -3=ANGEL STARS
+                           -4=765PRO ALLSTARS
+            cbc_sort_id: Sort ID.
+            cbc_icon_resource_id: A string for getting icon-related
+                                  resources.
+            cbc_target_sort_id_format: A string representing the sort ID
+                                       format for the costumes within
+                                       this costume bulk change group.
+            cbc_target_sort_id_format_list: A list containing exactly
+                                            one string. This string is
+                                            the same as
+                                            cbc_target_sort_id_format.
+            begin_date: '2018-01-01T00:00:00+0800'.
+            end_date: '2099-12-31T23:59:59+0800'.
+    """
+    with Session(engine) as session:
+        mst_costume_bulk_change_groups = session.scalars(
+            select(MstCostumeBulkChangeGroup)
+        ).all()
+
+        bulk_change_costume_group_schema = MstCostumeBulkChangeGroupSchema()
+        bulk_change_costume_group_list = bulk_change_costume_group_schema.dump(
+            mst_costume_bulk_change_groups, many=True
+        )
+
+    return {
+        'bulk_change_costume_group_list': bulk_change_costume_group_list
     }
 

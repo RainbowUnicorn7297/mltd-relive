@@ -290,6 +290,24 @@ class MstCostumeSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstCostumeBulkChangeGroupSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstCostumeBulkChangeGroup
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        # Populate cbc_target_sort_id_format_list.
+        data['cbc_target_sort_id_format_list'] = [
+            data['cbc_target_sort_id_format']]
+
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            server_timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            server_timezone)
+        return data
+
+
 class MstCenterEffectSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstCenterEffect

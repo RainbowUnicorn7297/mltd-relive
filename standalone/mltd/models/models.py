@@ -280,6 +280,35 @@ class Costume(Base):
                                                      innerjoin=True)
 
 
+class MstCostumeBulkChangeGroup(Base):
+    """Master table for costume bulk change groups.
+
+    cbc_target_id: 0=765 MILLION ALLSTARS
+                   -1=PRINCESS STARS
+                   -2=FAIRY STARS
+                   -3=ANGEL STARS
+                   -4=765PRO ALLSTARS
+    """
+    __tablename__ = 'mst_costume_bulk_change_group'
+
+    mst_costume_bulk_change_group_id: Mapped[int] = mapped_column(
+        primary_key=True)
+    cbc_group_name: Mapped[str]
+    cbc_target_id: Mapped[int]
+    cbc_sort_id: Mapped[int]
+    cbc_icon_resource_id: Mapped[str]
+    cbc_target_sort_id_format: Mapped[str]
+    begin_date: Mapped[datetime] = mapped_column(
+        default=datetime(
+            2018, 1, 1, tzinfo=server_timezone
+        ).astimezone(timezone.utc))
+    end_date: Mapped[datetime] = mapped_column(
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+        ).astimezone(timezone.utc)
+    )
+
+
 class MstCenterEffect(Base):
     """Master table for card center skills.
 

@@ -23,3 +23,7 @@ is "login for 1000 days" JP only?
 
 mst_achievement
 incomplete?
+
+mst_costume_bulk_change_group
+manually reconstructed from JP responses
+mst_costume_bulk_change_group_ids are mapped into ld_cbc_group_names in md_zh.gtx.unity3d

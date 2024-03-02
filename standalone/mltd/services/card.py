@@ -175,7 +175,6 @@ def get_card_list(params, context):
                 duration: Skill duration.
                 evaluation: Required note types for triggering the
                             effect during skill activation.
-                            skill.
                             0=N/A
                             1=Perfect
                             2=Perfect/Great
