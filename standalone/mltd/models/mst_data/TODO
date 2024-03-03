@@ -9,9 +9,9 @@ event_type=3-5 are manually reconstructed
 
 mst_offer
 the following mst_offer_ids are from JP data
-8,10,17,24,25,37,46,50,52,63,65,75,77,88,90,95,97,98,105,112,115,120,125,129,133,137,138,139,144,148,152,167,175,184,185,186,189,199,203,205
+8,10,17,24,25,37,43,46,50,52,63,65,75,77,88,90,95,97,98,105,112,115,120,125,129,133,137,138,139,144,148,152,167,175,184,185,186,189,199,203,205
 the following mst_offer_ids are manually reconstructed with unconfirmed resource_id
-43,198
+198
 
 mst_mission
 these are manually reconstructed; need to verify with actual JP data

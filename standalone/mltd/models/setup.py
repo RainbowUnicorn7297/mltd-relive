@@ -891,6 +891,12 @@ def upgrade_database():
                              'mst_costume_bulk_change_group.csv')
 
             session.execute(
+                update(MstOffer)
+                .where(MstOffer.mst_offer_id == 43)
+                .values(resource_id='bg2d_g1121')
+            )
+
+            session.execute(
                 update(ServerVersion)
                 .values(version='0.0.4')
             )
