@@ -111,6 +111,9 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208610514-01adc780-a92e-4f50-b459-e51361d7af49.png">
 
+### 升級版本
+新版本的程式檔可放進舊版本所在的資料夾內，然後直接運行新版本。舊版本的遊玩記錄會被保留。
+
 ## 自行構建
 1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.11.4）
 2. 用GitHub Desktop複製或[手動下載](https://github.com/RainbowUnicorn7297/mltd-relive/archive/refs/heads/main.zip)程式碼至您的電腦上
