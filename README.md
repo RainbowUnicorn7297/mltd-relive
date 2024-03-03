@@ -14,7 +14,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 - 未回信的mail不能以回信來解鎖新mail。
 - 未解鎖的覺醒故事不能透過進行覺醒來解鎖。
 
-### Standalone版（最新版本：[standalone-v0.0.3](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.0.3)）
+### Standalone版（最新版本：[standalone-v0.0.4](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.0.4)）
 以一個已解鎖全部內容的通用帳號為基礎的版本，目標於v1.0.0將絕大部分功能以最接近關服前的狀態呈現。具有以下特性：
 - 支援繁中版及韓版。
 - 遊玩過程中的數據會儲存在本地資料庫中。首次啟動本地伺服器時，會在程式的同一個資料夾內建立資料庫檔案。
@@ -43,7 +43,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - Ubuntu 22.04
    - macOS 12 Monterey
 
-  Windows版於Windows 11亦測試過可以正常運行。其他作業系統版本若不能運行的話，可以[自行構建](https://github.com/RainbowUnicorn7297/mltd-relive#自行構建)。
+  Windows版於Windows 11亦測試過可以正常運行。其他作業系統版本若不能運行的話，可以[自行構建](#自行構建)。
 
 ### 步驟
 1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行程式
@@ -74,10 +74,10 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 
    下載[DNSChanger for IPv4/IPv6](https://play.google.com/store/apps/details?id=com.frostnerd.dnschanger)，輸入以下設定：
    - Primary server: 電腦的LAN IP（程式上顯示的IPv4）
-   - Secondary server: 可用路由器的DNS或公用DNS（如Cloudflare的1.1.1.1或Google的8.8.8.8）
 
    最後按＂START＂
-   <img width="392" alt="image" src="https://user-images.githubusercontent.com/67099591/261158575-133e6090-0348-49c7-8aad-f7487f009bd0.png">
+
+   <img width="200" alt="image" src="https://github.com/RainbowUnicorn7297/mltd-relive/assets/67099591/01b36c40-b114-4b6f-8a80-237970115fd5">
 
    </td>
    <td>
@@ -88,14 +88,17 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - 閘道（Gateway）：路由器的閘道位址
    - 網路前置碼長度（Network prefix length）：一般家用LAN是24
    - DNS 1：電腦的LAN IP（程式上顯示的IPv4）
-   - DNS 2：可用路由器的DNS或公用DNS（如Cloudflare的1.1.1.1或Google的8.8.8.8）
-   <img width="200" alt="image" src="https://user-images.githubusercontent.com/67099591/152469590-782286c0-2a97-4326-8531-336524fa945c.png">
+
+   最後關掉再打開手機Wi-Fi
+
+   <img width="200" alt="image" src="https://github.com/RainbowUnicorn7297/mltd-relive/assets/67099591/6b11959a-c1ee-4bfc-8677-fbaf244dfb26">
    </td>
    </tr>
    </tbody>
    </table>
 
 5. 運行遊戲
+   > 原始APK在Android 12L或以上不能運行，可下載[繁中版](https://mega.nz/file/HMgiTSbI#cy7z52H6zBOSdSX5Xok1GKQ4yT7k6K1ctjV6Heceu3I)或[韓版](https://mega.nz/file/2dBgiBQY#NBgo-1rTW7g1Jtm9FLYZ61KoOP4HFoElxO75dzMyXew)經修正後的APK。
 6. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208608928-05a71f22-69a2-4ffc-b8d6-3451e06e77e8.png">
@@ -166,7 +169,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 ### 第二階段（已完成）
 以本人帳號為藍本，在最短時間內讓劇情和演唱會，遊戲內最主要的兩個功能可以運作。
 
-### 第三階段（預計2023年底完成）
+### 第三階段（預計2024年5月完成）
 以一個通用帳號為基礎，已集齊全部卡片和服裝和解鎖所有劇情，將大部分社交類以外功能以最接近關服前的狀態呈現。活動和歌曲排名方面只有繁中服有備份，韓服則沒有。
 
 ### 第四階段（不定期更新）
