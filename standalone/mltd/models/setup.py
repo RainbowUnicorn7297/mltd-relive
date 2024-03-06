@@ -4,7 +4,7 @@ import sys
 from base64 import b64encode
 from uuid import UUID, uuid4
 
-from sqlalchemy import insert, select, text, update
+from sqlalchemy import delete, insert, select, text, update
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
@@ -507,20 +507,21 @@ def setup():
                 ))
                 position += 1
             session.add(song_unit)
-        song_unit = SongUnit(
-            user_id=user.user_id,
-            mst_song_id=10021,
-            unit_song_type=2,
-            is_new=True
-        )
-        for i in range(1, 14):
-            song_unit.song_unit_idols.append(SongUnitIdol(
-                position=i,
-                card_id=n_card_ids[i-1],
-                mst_costume_id=i,
-                mst_lesson_wear_id=i
-            ))
-        session.add(song_unit)
+        # Unknown master song ID 10021.
+        # song_unit = SongUnit(
+        #     user_id=user.user_id,
+        #     mst_song_id=10021,
+        #     unit_song_type=2,
+        #     is_new=True
+        # )
+        # for i in range(1, 14):
+        #     song_unit.song_unit_idols.append(SongUnitIdol(
+        #         position=i,
+        #         card_id=n_card_ids[i-1],
+        #         mst_costume_id=i,
+        #         mst_lesson_wear_id=i
+        #     ))
+        # session.add(song_unit)
 
         result = session.execute(
             select(MstMainStoryChapter.mst_main_story_id,
@@ -883,6 +884,7 @@ def upgrade_database():
     db_version = check_database_version()
 
     if version_tuple(db_version) < version_tuple('0.0.4'):
+        logger.info('Upgrading database to v0.0.4...')
         with Session(engine) as session:
             table = Base.metadata.tables['mst_costume_bulk_change_group']
             table.create(bind=session.get_bind())
@@ -902,6 +904,27 @@ def upgrade_database():
             )
 
             session.commit()
+        logger.info('Database upgraded to v0.0.4.')
+
+    if version_tuple(db_version) < version_tuple('0.1.0'):
+        logger.info('Upgrading database to v0.1.0...')
+        with Session(engine) as session:
+            session.execute(
+                delete(SongUnitIdol)
+                .where(SongUnitIdol.mst_song_id == 10021)
+            )
+            session.execute(
+                delete(SongUnit)
+                .where(SongUnit.mst_song_id == 10021)
+            )
+
+            session.execute(
+                update(ServerVersion)
+                .values(version='0.1.0')
+            )
+
+            session.commit()
+        logger.info('Database upgraded to v0.1.0.')
 
 
 if __name__ == '__main__':
