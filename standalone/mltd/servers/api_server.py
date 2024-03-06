@@ -21,18 +21,19 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port=api_port):
+def start(port=api_port, secure=True):
     with make_server('', port, application,
                      handler_class=SilentWSGIRequestHandler) as httpd:
-        certfile = path.join(key_path(), 'api.crt')
-        keyfile = path.join(key_path(), 'api.key')
-        context = SSLContext(PROTOCOL_TLS_SERVER)
-        context.load_cert_chain(certfile, keyfile)
-        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-        # Uncomment next line to debug SSL errors
-        # httpd.socket.accept()
+        if secure:
+            certfile = path.join(key_path(), 'api.crt')
+            keyfile = path.join(key_path(), 'api.key')
+            context = SSLContext(PROTOCOL_TLS_SERVER)
+            context.load_cert_chain(certfile, keyfile)
+            httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+            # Uncomment next line to debug SSL errors
+            # httpd.socket.accept()
 
-        logger.info(f'Serving HTTPS on port {port}...')
+        logger.info(f'Serving HTTP{"S" if secure else ""} on port {port}...')
         httpd.serve_forever()
 
 

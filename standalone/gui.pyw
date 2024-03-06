@@ -15,6 +15,7 @@ from mltd.servers.proxy import proxy_port
 
 
 class CustomProcess(Process):
+
     def __init__(self, *args, **kwargs):
         Process.__init__(self, *args, **kwargs)
         self.parent_conn, self.child_conn = Pipe()

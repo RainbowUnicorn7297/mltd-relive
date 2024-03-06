@@ -28,7 +28,7 @@ def application(environ, start_response):
 
     if ('theaterdays-zh.appspot.com' in host
             or 'theaterdays-ko.appspot.com' in host
-            or 'localhost' in host):    # For debugging
+            or '127.0.0.1' in host):
         logger.info(f'Request received for service {environ["PATH_INFO"]}')
         full_start_time = time.perf_counter_ns()
 
