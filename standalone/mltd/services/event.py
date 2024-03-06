@@ -243,9 +243,9 @@ def get_event_story_list(params, context):
         params: An empty dict.
     Returns:
         A dict containing the following keys.
-        special_story_status_list: A list of dicts representing event
-                                   story info. Each dict contains the
-                                   following keys.
+        event_story_status_list: A list of dicts representing event
+                                 story info. Each dict contains the
+                                 following keys.
             mst_event_story_id: Master event story ID.
             mst_idol_id_list: A list of at least 5 master idol IDs
                               representing the idols in this event

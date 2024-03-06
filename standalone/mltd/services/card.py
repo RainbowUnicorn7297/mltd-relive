@@ -79,7 +79,7 @@ def get_card_list(params, context):
             resource_id: A string for getting card-related resources.
             rarity: An int representing the rarity of the card (1=N,
                     2=R, 3=SR, 4=SSR).
-            idol_type: An int (1 to 4) representing the song's idol type
+            idol_type: An int (1 to 4) representing the card's idol type
                        (Princess/Fairy/Angel/All).
             exp: Current card experience.
             level: Current card level.
@@ -113,7 +113,7 @@ def get_card_list(params, context):
             visual_diff: Additional visual value gained per level.
             visual_max: Maximum possible visual value.
             visual_master_bonus: Bonus visual value gained per master
-                                rank.
+                                 rank.
             before_awakened_params: A dict representing the current
                                     values of the card if it is not
                                     awakened, based on the card's
