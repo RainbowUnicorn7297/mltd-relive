@@ -66,6 +66,7 @@ if __name__ == '__main__':
                         help='reset data')
     args = parser.parse_args()
 
+    config.set_config('is_local', True)
     if args.language:
         change_language(args.language)
     start_server(args.reset)

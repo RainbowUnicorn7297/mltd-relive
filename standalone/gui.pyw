@@ -102,7 +102,7 @@ class MLTDReliveGUI:
         ttk.Label(options_frame, text='Game Client Language:').grid(
             column=0, row=0, rowspan=2, sticky=E)
         self.language = StringVar()
-        self.language.set(config.get_config('language'))
+        self.language.set(config['default']['language'])
         self.zh_radio_button = ttk.Radiobutton(
             options_frame, text='繁體中文', variable=self.language, value='zh',
             command=self.change_language

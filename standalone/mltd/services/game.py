@@ -2,7 +2,8 @@ from datetime import datetime
 
 from jsonrpc import dispatcher
 
-from mltd.servers.config import server_language, server_timezone
+from mltd.servers.config import (api_port, is_local, server_language,
+                                 server_timezone)
 from mltd.servers.utilities import format_datetime
 
 
@@ -19,12 +20,13 @@ def get_version(params):
     """
     return {
         'support_client_version': '2.1.000',
-        'game_url': f'https://theaterdays-{server_language}.appspot.com/',
+        'game_url': (f'https://theaterdays-{server_language}.appspot.com/'
+                     if not is_local else f'http://127.0.0.1:{api_port}/'),
         'webview_url': (f'https://webview-dot-theaterdays-{server_language}'
-                        + '.appspot.com/'),
+                        '.appspot.com/'),
         'store_url': ('https://play.google.com/store/apps/details?id='
-                      + 'com.bandainamcoent.imas_millionlive_theaterdays_'
-                      + 'ch' if server_language == 'zh' else 'kr'),
+                      'com.bandainamcoent.imas_millionlive_theaterdays_'
+                      'ch' if server_language == 'zh' else 'kr'),
         'policy_last_update_date': format_datetime(
             datetime(2017, 9, 6, 18, 0, 0, tzinfo=server_timezone)),
         'terms_url': 'https://legal.bandainamcoent.co.jp/terms/',
