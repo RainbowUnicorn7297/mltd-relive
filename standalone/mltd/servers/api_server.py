@@ -1,11 +1,23 @@
+import socket
 import sys
 from os import path
-from ssl import PROTOCOL_TLS_SERVER, SSLContext
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 
 from mltd.servers.config import api_port
 from mltd.servers.handler import application
 from mltd.servers.logging import logger
+
+
+# A hack to prevent slow http.server.HTTPServer startup time on Windows.
+# When a new HTTPServer object is created, it calls socket.getfqdn('')
+# to get the fully qualified domain name of the device this Python
+# program is running on. Since this program is expected to only run on
+# PCs and phones, the hostname returned by the OS usually cannot be
+# resolved by the DNS. DNS lookup failures are especially bad on Windows
+# due to its long default timeout.
+def bare_getfqdn(name=''):
+    return ''
+socket.getfqdn = bare_getfqdn
 
 
 class SilentWSGIRequestHandler(WSGIRequestHandler):
