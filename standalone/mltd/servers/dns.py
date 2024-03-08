@@ -24,7 +24,7 @@ def get_lan_ips():
     return ipv4, ipv6
 
 
-def start(port=dns_port):
+def start(port=dns_port, conn=None):
     lan_ipv4, lan_ipv6 = get_lan_ips()
     zone_record = ''
     if lan_ipv4:
@@ -54,6 +54,9 @@ def start(port=dns_port):
     logger.info(f'DNS is running on port {port}...')
     logger.info(f'IPv4: {lan_ipv4}')
     logger.info(f'IPv6: {lan_ipv6}')
+    if conn:
+        conn.send(True)
+        conn.close()
     udp_server.start()
 
 

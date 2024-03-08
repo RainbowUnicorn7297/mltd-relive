@@ -1,6 +1,6 @@
 import os
 import traceback
-from multiprocessing import Pipe, Process, freeze_support, set_start_method
+from multiprocessing import freeze_support, set_start_method
 from tkinter import *
 from tkinter import messagebox, ttk
 
@@ -10,28 +10,8 @@ from mltd.servers import api_server, dns, proxy
 from mltd.servers.config import api_port, config, version
 from mltd.servers.dns import dns_port, get_lan_ips
 from mltd.servers.logging import handler, logger
+from mltd.servers.process import CustomProcess
 from mltd.servers.proxy import proxy_port
-
-
-class CustomProcess(Process):
-
-    def __init__(self, *args, **kwargs):
-        Process.__init__(self, *args, **kwargs)
-        self.parent_conn, self.child_conn = Pipe()
-        self._exception = None
-
-    def run(self):
-        try:
-            Process.run(self)
-            self.child_conn.send(None)
-        except Exception:
-            self.child_conn.send(traceback.format_exc())
-
-    @property
-    def exception(self):
-        if self.parent_conn.poll():
-            self._exception = self.parent_conn.recv()
-        return self._exception
 
 
 class MLTDReliveGUI:
@@ -128,7 +108,10 @@ class MLTDReliveGUI:
             elif self.dns_process.exception:
                 logger.error(self.dns_process.exception)
                 messagebox.showerror('Error', self.dns_process.exception)
-            if self.server_status == 'Starting':
+            if (self.server_status == 'Starting'
+                    and self.api_process.is_started()
+                    and self.proxy_process.is_started()
+                    and self.dns_process.is_started()):
                 self.server_status = 'Started'
                 self.status_label.config(
                     text=f'Server Status: {self.server_status}',
@@ -180,7 +163,7 @@ class MLTDReliveGUI:
         self.api_process.start()
         self.dns_process = CustomProcess(target=dns.start, daemon=True)
         self.dns_process.start()
-        self.root.after(13400, self.update_server_status)
+        self.root.after(200, self.update_server_status)
 
     def stop_server(self):
         self.server_status = 'Stopping'

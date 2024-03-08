@@ -51,7 +51,7 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port=proxy_port):
+def start(port=proxy_port, conn=None):
     server_address = ('', port)
     httpd = HTTPServer(server_address, ProxyHTTPRequestHandler)
     certfile = path.join(key_path(), 'api.crt')
@@ -63,6 +63,9 @@ def start(port=proxy_port):
     # httpd.socket.accept()
 
     logger.info(f'Reverse proxy is running on port {port}...')
+    if conn:
+        conn.send(True)
+        conn.close()
     httpd.serve_forever()
 
 

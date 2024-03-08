@@ -20,10 +20,13 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port=api_port):
+def start(port=api_port, conn=None):
     with make_server('', port, application,
                      handler_class=SilentWSGIRequestHandler) as httpd:
         logger.info(f'Serving HTTP on port {port}...')
+        if conn:
+            conn.send(True)
+            conn.close()
         httpd.serve_forever()
 
 

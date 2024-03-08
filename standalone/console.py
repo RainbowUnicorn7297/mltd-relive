@@ -3,13 +3,14 @@ import os
 import sys
 import time
 from logging import StreamHandler
-from multiprocessing import Process, set_start_method
+from multiprocessing import freeze_support, set_start_method
 
 from mltd.models.setup import (check_database_version, cleanup, setup,
                                upgrade_database)
 from mltd.servers import api_server
 from mltd.servers.config import config
 from mltd.servers.logging import formatter, handler, logger
+from mltd.servers.process import CustomProcess
 
 stream_handler = StreamHandler(sys.stdout)
 stream_handler.setFormatter(formatter)
@@ -23,10 +24,11 @@ def start_server(reset=False):
 
     handler.doRollover()
     logger.info(f'Starting server...')
-    api_process = Process(target=api_server.start, daemon=True)
+    api_process = CustomProcess(target=api_server.start, daemon=True)
     api_process.start()
 
-    time.sleep(2)
+    while not api_process.is_started():
+        time.sleep(0.2)
     logger.info(f'Server started.')
     api_process.join()
 
@@ -45,6 +47,7 @@ def reset_data():
 
 
 if __name__ == '__main__':
+    freeze_support()
     set_start_method('spawn')
 
     parser = argparse.ArgumentParser()
