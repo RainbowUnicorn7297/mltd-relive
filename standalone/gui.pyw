@@ -100,14 +100,14 @@ class MLTDReliveGUI:
                 or self.proxy_process.is_alive()
                 or self.dns_process.is_alive()):
             if self.api_process.exception:
-                logger.error(self.api_process.exception)
-                messagebox.showerror('Error', self.api_process.exception)
+                self.stop_server_on_error(self.api_process.exception)
+                return
             elif self.proxy_process.exception:
-                logger.error(self.proxy_process.exception)
-                messagebox.showerror('Error', self.proxy_process.exception)
+                self.stop_server_on_error(self.proxy_process.exception)
+                return
             elif self.dns_process.exception:
-                logger.error(self.dns_process.exception)
-                messagebox.showerror('Error', self.dns_process.exception)
+                self.stop_server_on_error(self.dns_process.exception)
+                return
             if (self.server_status == 'Starting'
                     and self.api_process.is_started()
                     and self.proxy_process.is_started()
@@ -175,6 +175,13 @@ class MLTDReliveGUI:
         self.api_process.terminate()
         self.dns_process.terminate()
         self.root.after(200, self.update_server_status)
+
+    def stop_server_on_error(self, message):
+        logger.error(message)
+        messagebox.showerror('Error', message)
+        self.progress_bar.stop()
+        self.progress_bar.grid_forget()
+        self.stop_server()
 
     def update_reset_data_progress(self):
         if self.process.is_alive():
