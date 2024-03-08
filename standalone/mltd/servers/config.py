@@ -29,11 +29,12 @@ class CustomConfigParser(ConfigParser):
         if not self.read('config.ini'):
             self.write_config()
         if version_tuple(self['default']['version']) < version_tuple(version):
-            self.set_config('version', version)
+            self['default']['version'] = version
+            self.write_config()
 
     @property
     def language(self):
-        return config['default']['language']
+        return self['default']['language']
 
     @language.setter
     def language(self, value):
@@ -46,11 +47,11 @@ class CustomConfigParser(ConfigParser):
 
     @property
     def log_level(self):
-        return config.getint('default', 'log_level')
+        return self.getint('default', 'log_level')
 
     @property
     def is_local(self):
-        return config.getboolean('default', 'is_local')
+        return self.getboolean('default', 'is_local')
 
     @is_local.setter
     def is_local(self, value):
