@@ -6,7 +6,7 @@ from ssl import PROTOCOL_TLS_SERVER, SSLContext
 import requests
 import urllib3
 
-from mltd.servers.api_server import api_port
+from mltd.servers.config import api_port
 from mltd.servers.logging import logger
 
 proxy_port = 443
@@ -20,7 +20,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         host = f'127.0.0.1:{api_port}'
-        url = f'https://{host}{self.path}'
+        url = f'http://{host}{self.path}'
         content_len = int(self.headers.get('Content-Length'))
         req_body = self.rfile.read(content_len)
 

@@ -3,10 +3,9 @@ from os import path
 from ssl import PROTOCOL_TLS_SERVER, SSLContext
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 
+from mltd.servers.config import api_port
 from mltd.servers.handler import application
 from mltd.servers.logging import logger
-
-api_port = 8443
 
 
 class SilentWSGIRequestHandler(WSGIRequestHandler):
@@ -21,19 +20,10 @@ def key_path():
     return path.join(base_path, 'key')
 
 
-def start(port=api_port, secure=True):
+def start(port=api_port):
     with make_server('', port, application,
                      handler_class=SilentWSGIRequestHandler) as httpd:
-        if secure:
-            certfile = path.join(key_path(), 'api.crt')
-            keyfile = path.join(key_path(), 'api.key')
-            context = SSLContext(PROTOCOL_TLS_SERVER)
-            context.load_cert_chain(certfile, keyfile)
-            httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-            # Uncomment next line to debug SSL errors
-            # httpd.socket.accept()
-
-        logger.info(f'Serving HTTP{"S" if secure else ""} on port {port}...')
+        logger.info(f'Serving HTTP on port {port}...')
         httpd.serve_forever()
 
 

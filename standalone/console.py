@@ -11,8 +11,6 @@ from mltd.servers import api_server
 from mltd.servers.config import config, server_language
 from mltd.servers.logging import formatter, handler, logger
 
-api_port = 7650
-
 stream_handler = StreamHandler(sys.stdout)
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
@@ -25,14 +23,10 @@ def start_server(reset=False):
 
     handler.doRollover()
     logger.info(f'Starting server...')
-    api_process = Process(
-        target=api_server.start,
-        kwargs={'port': api_port, 'secure': False},
-        daemon=True
-    )
+    api_process = Process(target=api_server.start, daemon=True)
     api_process.start()
 
-    time.sleep(1)
+    time.sleep(2)
     logger.info(f'Server started.')
     api_process.join()
 

@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from datetime import timedelta, timezone
 
 version = '0.1.0'
+api_port = 7650
 # 'zh' for Traditional Chinese, 'ko' for Korean
 _language = 'zh'
 _log_level = logging.INFO
@@ -46,5 +47,4 @@ server_timezone = timezone(timedelta(
     hours=8 if server_language == 'zh' else 9))
 log_level = config.getint('default', 'log_level')
 is_local = config.getboolean('default', 'is_local')
-api_port = 7650 if is_local else 8443
 
