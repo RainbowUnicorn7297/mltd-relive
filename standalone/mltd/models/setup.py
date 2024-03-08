@@ -9,8 +9,7 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import *
-from mltd.servers.config import (server_language, server_timezone, version,
-                                 version_tuple)
+from mltd.servers.config import config, version, version_tuple
 from mltd.servers.i18n import translation
 from mltd.servers.logging import logger
 
@@ -25,7 +24,7 @@ def _mst_data_path():
 def _localized_mst_data_path():
     base_path = getattr(
         sys, '_MEIPASS', os.path.abspath('./mltd/models/mst_data'))
-    return os.path.join(base_path, server_language)
+    return os.path.join(base_path, config.language)
 
 
 def _insert_csv_data(session: Session, dir: str, filename: str):
@@ -715,44 +714,44 @@ def setup():
                 user_id=user.user_id,
                 last_update_date_type=i,
                 last_update_date=(
-                    datetime(2021, 9, 27, 15, tzinfo=server_timezone)
+                    datetime(2021, 9, 27, 15, tzinfo=config.timezone)
                     .astimezone(timezone.utc))
             ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=11,
             last_update_date=(
-                datetime(2018, 1, 1, 0, 0, 18, tzinfo=server_timezone)
+                datetime(2018, 1, 1, 0, 0, 18, tzinfo=config.timezone)
                 .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=12,
-            last_update_date=(datetime(2021, 8, 31, 15, tzinfo=server_timezone)
+            last_update_date=(datetime(2021, 8, 31, 15, tzinfo=config.timezone)
                               .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=13,
-            last_update_date=(datetime(2021, 9, 27, 12, tzinfo=server_timezone)
+            last_update_date=(datetime(2021, 9, 27, 12, tzinfo=config.timezone)
                               .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=17,
-            last_update_date=(datetime(2021, 6, 29, tzinfo=server_timezone)
+            last_update_date=(datetime(2021, 6, 29, tzinfo=config.timezone)
                               .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=14,
-            last_update_date=(datetime(2021, 9, 26, tzinfo=server_timezone)
+            last_update_date=(datetime(2021, 9, 26, tzinfo=config.timezone)
                               .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(
             user_id=user.user_id,
             last_update_date_type=15,
-            last_update_date=(datetime(2020, 11, 5, 15, tzinfo=server_timezone)
+            last_update_date=(datetime(2020, 11, 5, 15, tzinfo=config.timezone)
                               .astimezone(timezone.utc))
         ))
         session.add(LastUpdateDate(

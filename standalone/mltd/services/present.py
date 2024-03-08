@@ -13,7 +13,7 @@ from mltd.models.engine import engine
 from mltd.models.models import (Achievement, Item, LastUpdateDate, MstItem,
                                 Present, User)
 from mltd.models.schemas import PresentSchema
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.logging import logger
 
 
@@ -181,7 +181,7 @@ def get_present_list(params, context):
         )
 
         default_end_date = datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc)
         if params['present_end_date_type'] == 1:
             present_stmt = present_stmt.where(

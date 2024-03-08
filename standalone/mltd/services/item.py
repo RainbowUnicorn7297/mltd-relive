@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from mltd.models.engine import engine
 from mltd.models.models import GashaMedalExpireDate, Item, Jewel, MstItem, User
 from mltd.models.schemas import ItemSchema
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 
 
 def add_item(
@@ -18,7 +18,7 @@ def add_item(
         item_type,
         amount=1,
         expire_date=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc)):
     """Give specified amount of an item to a user.
 

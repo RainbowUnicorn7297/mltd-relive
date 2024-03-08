@@ -25,7 +25,7 @@ from mltd.models.schemas import (CardSchema, GashaMedalSchema, GuestSchema,
                                  PendingSongSchema, RandomLiveSchema,
                                  SongSchema, SongUnitSchema, UnitSchema,
                                  UserSchema)
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.i18n import translation
 from mltd.services.card import add_card
 from mltd.services.game_setting import get_item_day_idol_type
@@ -447,7 +447,7 @@ def start_song(params, context):
         'mst_song_id': params['mst_song_id'],
         'live_mode': params['mode'],
         'course_id': params['course'],
-        'start_date': now.astimezone(server_timezone),
+        'start_date': now.astimezone(config.timezone),
         'guest_user_id': params['guest_user_id'],
         'unit_num': params['unit_num'],
         'threshold': threshold_list[-1],
@@ -2718,7 +2718,7 @@ def start_rehearsal(params, context):
         'mst_song_id': params['mst_song_id'],
         'live_mode': params['mode'],
         'course_id': params['course'],
-        'start_date': now.astimezone(server_timezone),
+        'start_date': now.astimezone(config.timezone),
         'guest_user_id': '',
         'unit_num': params['unit_num']
     }

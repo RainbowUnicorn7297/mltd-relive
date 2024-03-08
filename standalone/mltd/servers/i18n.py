@@ -20,7 +20,7 @@ import gettext
 import sys
 from os import path
 
-from mltd.servers.config import server_language
+from mltd.servers.config import config
 
 
 def _locales_path():
@@ -28,4 +28,4 @@ def _locales_path():
     return path.join(base_path, 'locales')
 
 
-translation = gettext.translation('mltd', _locales_path(), [server_language])
+translation = gettext.translation('mltd', _locales_path(), [config.language])

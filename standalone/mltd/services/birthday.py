@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from mltd.models.engine import engine
 from mltd.models.models import Birthday, MstBirthdayCalendar, MstIdol
 from mltd.models.schemas import BirthdaySchema, MstBirthdayCalendarSchema
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 
 
 def get_birthday_entrance_direction_resource(  
@@ -85,9 +85,9 @@ def get_birthday(params, context):
     """
     user_id = UUID(context['user_id'])
     now = datetime.now(timezone.utc)
-    server_year = now.astimezone(server_timezone).year
-    server_month = now.astimezone(server_timezone).month
-    server_day = now.astimezone(server_timezone).day
+    server_year = now.astimezone(config.timezone).year
+    server_month = now.astimezone(config.timezone).month
+    server_day = now.astimezone(config.timezone).day
 
     with Session(engine) as session:
         birthday_calendars = session.scalars(

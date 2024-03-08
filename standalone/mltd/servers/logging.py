@@ -1,10 +1,10 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from mltd.servers.config import log_level
+from mltd.servers.config import config
 
 logger = logging.getLogger()
-logger.setLevel(log_level)
+logger.setLevel(config.log_level)
 handler = RotatingFileHandler('mltd-relive.log', maxBytes=50_000_000,
                               backupCount=3, encoding='utf-8')
 formatter = logging.Formatter(

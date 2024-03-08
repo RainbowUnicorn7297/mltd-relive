@@ -23,12 +23,11 @@ from mltd.models.schemas import (MstAwakeningConfigSchema, MstComicMenuSchema,
                                  MstMasterLesson2ConfigSchema,
                                  MstMasterLessonFiveConfigSchema,
                                  MstTitleImageSchema, MstTrainingUnitSchema)
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.utilities import format_datetime
 
 
-def get_item_day_idol_type(
-        day=datetime.now(timezone.utc).astimezone(server_timezone)):
+def get_item_day_idol_type(day=datetime.now(config.timezone)):
     """Get the daily idol type.
 
     Args:
@@ -381,7 +380,7 @@ def get_item_days(params):
             end_date: Ending datetime for this day (time=23:59:59).
     """
     item_day_list = []
-    begin_date = datetime.now(timezone.utc).astimezone(server_timezone)
+    begin_date = datetime.now(config.timezone)
     begin_date = begin_date.replace(hour=0, minute=0, second=0, microsecond=0)
     for i in range(7):
         item_day_list.append({

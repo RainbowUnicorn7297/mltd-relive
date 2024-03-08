@@ -1,6 +1,6 @@
 from jsonrpc import dispatcher
 
-from mltd.servers.config import server_language
+from mltd.servers.config import config
 
 
 @dispatcher.add_method(name='AssetService.GetAssetVersion')
@@ -29,10 +29,10 @@ def get_asset_version(params):
     os_name = 'android' if params['os_name'] == 'Android' else 'ios'
     return {
         'asset_url': ('https://assets.rainbowunicorn7297.com/'
-                      + f'{server_language}-{os_name}/'),
+                      + f'{config.language}-{os_name}/'),
         'asset_index_name': (
             '85822153578df611a4f852d4e02660f6f34401e4.data'
-            if server_language == 'zh'
+            if config.language == 'zh'
             else '25c292462510f60200eecd8080f4680114b8c576.data'
         ),
         'asset_version': 120000

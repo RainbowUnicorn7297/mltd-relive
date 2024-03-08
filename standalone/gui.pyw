@@ -7,7 +7,7 @@ from tkinter import messagebox, ttk
 from mltd.models.setup import (check_database_version, cleanup, setup,
                                upgrade_database)
 from mltd.servers import api_server, dns, proxy
-from mltd.servers.config import api_port, config, server_language, version
+from mltd.servers.config import api_port, config, version
 from mltd.servers.dns import dns_port, get_lan_ips
 from mltd.servers.logging import handler, logger
 from mltd.servers.proxy import proxy_port
@@ -237,10 +237,8 @@ class MLTDReliveGUI:
         self.root.after(200, self.update_reset_data_progress)
 
     def change_language(self):
-        global server_language
         language = self.language.get()
-        config.set_config('language', language)
-        server_language = language
+        config.language = language
         logger.info(f'Changed language to {language}.')
 
 

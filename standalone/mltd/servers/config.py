@@ -31,20 +31,36 @@ class CustomConfigParser(ConfigParser):
         if version_tuple(self['default']['version']) < version_tuple(version):
             self.set_config('version', version)
 
+    @property
+    def language(self):
+        return config['default']['language']
+
+    @language.setter
+    def language(self, value):
+        self['default']['language'] = value
+        self.write_config()
+
+    @property
+    def timezone(self):
+        return timezone(timedelta(hours=8 if self.language == 'zh' else 9))
+
+    @property
+    def log_level(self):
+        return config.getint('default', 'log_level')
+
+    @property
+    def is_local(self):
+        return config.getboolean('default', 'is_local')
+
+    @is_local.setter
+    def is_local(self, value):
+        self['default']['is_local'] = str(value)
+        self.write_config()
+
     def write_config(self):
         with open('config.ini', 'w') as config_file:
             self.write(config_file)
 
-    def set_config(self, key, value):
-        self['default'][key] = str(value)
-        self.write_config()
-
 
 config = CustomConfigParser()
-
-server_language = config['default']['language']
-server_timezone = timezone(timedelta(
-    hours=8 if server_language == 'zh' else 9))
-log_level = config.getint('default', 'log_level')
-is_local = config.getboolean('default', 'is_local')
 

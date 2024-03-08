@@ -8,7 +8,7 @@ from multiprocessing import Process, set_start_method
 from mltd.models.setup import (check_database_version, cleanup, setup,
                                upgrade_database)
 from mltd.servers import api_server
-from mltd.servers.config import config, server_language
+from mltd.servers.config import config
 from mltd.servers.logging import formatter, handler, logger
 
 stream_handler = StreamHandler(sys.stdout)
@@ -44,12 +44,6 @@ def reset_data():
     setup()
 
 
-def change_language(language):
-    global server_language
-    config.set_config('language', language)
-    server_language = language
-
-
 if __name__ == '__main__':
     set_start_method('spawn')
 
@@ -60,9 +54,9 @@ if __name__ == '__main__':
                         help='reset data')
     args = parser.parse_args()
 
-    config.set_config('is_local', True)
+    config.is_local = True
     if args.language:
-        change_language(args.language)
+        config.language = args.language
     start_server(args.reset)
 
     try:

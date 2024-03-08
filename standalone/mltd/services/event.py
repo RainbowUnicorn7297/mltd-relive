@@ -315,7 +315,8 @@ def get_event_story_list(params, context):
             release_item_begin_date: Date when this event memory becomes
                                      unlockable using items after the
                                      event period.
-            is_released: Whether the user has unlocked this event story.
+            is_released: Whether the user has unlocked this event
+                         memory.
             event_memory_type: Event memory type (1-3).
             event_contact_status: A dict representing the theater
                                   contact info for this event memory

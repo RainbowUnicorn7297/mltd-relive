@@ -10,7 +10,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy_utils import force_instant_defaults
 
 from mltd.models.engine import engine
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.i18n import translation
 
 _ = translation.gettext
@@ -300,11 +300,11 @@ class MstCostumeBulkChangeGroup(Base):
     cbc_target_sort_id_format: Mapped[str]
     begin_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2018, 1, 1, tzinfo=server_timezone
+            2018, 1, 1, tzinfo=config.timezone
         ).astimezone(timezone.utc))
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc)
     )
 
@@ -762,7 +762,7 @@ class Item(Base):
     amount: Mapped[int]
     expire_date: Mapped[Optional[datetime]] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc))
 
     user: Mapped['User'] = relationship(back_populates='items')
@@ -777,7 +777,7 @@ class Item(Base):
 #     item_id: Mapped[str] = mapped_column(ForeignKey('item.item_id'))
 #     expire_date: Mapped[Optional[datetime]] = mapped_column(
 #         default=datetime(
-#             2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+#             2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
 #         ).astimezone(timezone.utc))
 
 
@@ -1009,11 +1009,11 @@ class MstJob(Base):
     reward_live_ticket: Mapped[int] = mapped_column(default=20)
     begin_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2019, 3, 30, tzinfo=server_timezone
+            2019, 3, 30, tzinfo=config.timezone
         ).astimezone(timezone.utc))
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc))
 
 
@@ -1992,7 +1992,7 @@ class MstMissionSchedule(Base):
     begin_date: Mapped[datetime]
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc))
     mission_type: Mapped[int]
 
@@ -2004,11 +2004,11 @@ class MstPanelMissionSheet(Base):
     mst_panel_mission_sheet_id: Mapped[int] = mapped_column(primary_key=True)
     begin_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2018, 1, 1, tzinfo=server_timezone
+            2018, 1, 1, tzinfo=config.timezone
         ).astimezone(timezone.utc))
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc))
 
     mst_mission_reward: Mapped['MstMissionReward'] = relationship(
@@ -2158,7 +2158,7 @@ class MstSpecialStory(Base):
     begin_date: Mapped[datetime]
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, tzinfo=server_timezone
+            2099, 12, 31, tzinfo=config.timezone
         ).astimezone(timezone.utc))
 
     mst_special_mv_unit_idols: Mapped[List[
@@ -2504,7 +2504,7 @@ class LoginBonusSchedule(Base):
         primary_key=True)
     next_login_date: Mapped[datetime] = mapped_column(
         default=lambda: (
-            datetime.now(server_timezone) + timedelta(days=1)
+            datetime.now(config.timezone) + timedelta(days=1)
         ).replace(
             hour=0, minute=0, second=0, microsecond=0
         ).astimezone(timezone.utc))
@@ -2829,7 +2829,7 @@ class Present(Base):
     comment: Mapped[str]
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
-            2099, 12, 31, 23, 59, 59, tzinfo=server_timezone
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
         ).astimezone(timezone.utc))
     create_date: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc), unique=True)

@@ -10,7 +10,7 @@ from mltd.models.engine import engine
 from mltd.models.models import (Item, Mission, MstMission, MstSong, Offer,
                                 Song, User)
 from mltd.models.schemas import UserSchema
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 
 
 @dispatcher.add_method(name='AuthService.TransferPassword')
@@ -224,8 +224,8 @@ def login(params):
         last_login_date = user.last_login_date.replace(tzinfo=timezone.utc)
         user.last_login_date = now
         # Perform daily reset.
-        if (last_login_date.astimezone(server_timezone).date()
-                < now.astimezone(server_timezone).date()):
+        if (last_login_date.astimezone(config.timezone).date()
+                < now.astimezone(config.timezone).date()):
             # Update challenge_song based on user's unplayed and
             # unlocked songs, idols' birthdays and server date.
             unlocked_stmt = (
@@ -236,8 +236,8 @@ def login(params):
             unlocked_song_ids = session.scalars(unlocked_stmt).all()
             unplayed_stmt = unlocked_stmt.where(Song.is_played == False)
             unplayed_song_ids = session.scalars(unplayed_stmt).all()
-            server_month = now.astimezone(server_timezone).month
-            server_day = now.astimezone(server_timezone).day
+            server_month = now.astimezone(config.timezone).month
+            server_day = now.astimezone(config.timezone).day
             # TODO: check idols' birthdays
             if (server_month == 2 and server_day == 27
                 and 1 in unlocked_song_ids):
@@ -289,11 +289,11 @@ def login(params):
             )
 
             # Reset weekly missions.
-            if (last_login_date.astimezone(server_timezone).year
-                    != now.astimezone(server_timezone).year
+            if (last_login_date.astimezone(config.timezone).year
+                    != now.astimezone(config.timezone).year
                     or last_login_date.astimezone(
-                        server_timezone).isocalendar()[1]
-                    != now.astimezone(server_timezone).isocalendar()[1]):
+                        config.timezone).isocalendar()[1]
+                    != now.astimezone(config.timezone).isocalendar()[1]):
                 session.execute(
                     update(Mission)
                     .where(Mission.user == user)

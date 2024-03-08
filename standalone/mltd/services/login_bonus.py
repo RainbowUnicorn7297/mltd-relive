@@ -9,7 +9,7 @@ from mltd.models.engine import engine
 from mltd.models.models import (LastUpdateDate, Mission, MstBirthdayCalendar,
                                 MstMission, Present, User)
 from mltd.models.schemas import LoginBonusScheduleSchema, MissionSchema
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.i18n import translation
 from mltd.services.birthday import get_birthday_entrance_direction_resource
 from mltd.services.mission import update_mission_progress
@@ -185,9 +185,9 @@ def execute_login_bonus(params, context):
         ).one()
 
         now = datetime.now(timezone.utc)
-        server_year = now.astimezone(server_timezone).year
-        server_month = now.astimezone(server_timezone).month
-        server_day = now.astimezone(server_timezone).day
+        server_year = now.astimezone(config.timezone).year
+        server_month = now.astimezone(config.timezone).month
+        server_day = now.astimezone(config.timezone).day
         next_login_date = (user.login_bonus_schedules[0].next_login_date
                            .replace(tzinfo=timezone.utc))
         if next_login_date <= now:
@@ -249,7 +249,7 @@ def execute_login_bonus(params, context):
                     result['mission_list'].append(mission_dict)
 
             next_login_date = (
-                now.astimezone(server_timezone) + timedelta(days=1)).replace(
+                now.astimezone(config.timezone) + timedelta(days=1)).replace(
                     hour=0, minute=0, second=0, microsecond=0
                 ).astimezone(timezone.utc)
             for schedule in user.login_bonus_schedules:
@@ -294,7 +294,7 @@ def execute_login_bonus(params, context):
             elif login_direction['entrance_direction_resource_id']:
                 login_direction['communication_resource_id'] = 'null'
 
-        result['next_login_date'] = next_login_date.astimezone(server_timezone)
+        result['next_login_date'] = next_login_date.astimezone(config.timezone)
 
         # TODO: Theater poster only works for the first login of each
         # day. Default posters are always shown if the user restarts the
@@ -303,34 +303,34 @@ def execute_login_bonus(params, context):
         if server_month == 1 and server_day in [1, 2, 3]:
             poster['resource_id'] = 'theater_poster_201901ny'
             poster['begin_date'] = datetime(
-                server_year, 1, 1, tzinfo=server_timezone
+                server_year, 1, 1, tzinfo=config.timezone
             ).astimezone(timezone.utc)
             poster['end_date'] = datetime(
-                server_year, 1, 3, 23, 59, 59, tzinfo=server_timezone
+                server_year, 1, 3, 23, 59, 59, tzinfo=config.timezone
             ).astimezone(timezone.utc)
         elif server_month == 2 and server_day in [12, 13, 14]:
             poster['resource_id'] = 'theater_poster_valentine2019'
             poster['begin_date'] = datetime(
-                server_year, 2, 12, tzinfo=server_timezone
+                server_year, 2, 12, tzinfo=config.timezone
             ).astimezone(timezone.utc)
             poster['end_date'] = datetime(
-                server_year, 2, 14, 23, 59, 59, tzinfo=server_timezone
+                server_year, 2, 14, 23, 59, 59, tzinfo=config.timezone
             ).astimezone(timezone.utc)
         elif server_month == 3 and server_day in [12, 13, 14]:
             poster['resource_id'] = 'theater_poster_whiteday2019'
             poster['begin_date'] = datetime(
-                server_year, 3, 12, tzinfo=server_timezone
+                server_year, 3, 12, tzinfo=config.timezone
             ).astimezone(timezone.utc)
             poster['end_date'] = datetime(
-                server_year, 3, 14, 23, 59, 59, tzinfo=server_timezone
+                server_year, 3, 14, 23, 59, 59, tzinfo=config.timezone
             ).astimezone(timezone.utc)
         elif server_month == 12 and server_day in [23, 24, 25]:
             poster['resource_id'] = 'theater_poster_201812xm'
             poster['begin_date'] = datetime(
-                server_year, 12, 23, tzinfo=server_timezone
+                server_year, 12, 23, tzinfo=config.timezone
             ).astimezone(timezone.utc)
             poster['end_date'] = datetime(
-                server_year, 12, 25, 23, 59, 59, tzinfo=server_timezone
+                server_year, 12, 25, 23, 59, 59, tzinfo=config.timezone
             ).astimezone(timezone.utc)
         if poster['resource_id']:
             poster['place'] = 1

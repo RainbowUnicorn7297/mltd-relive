@@ -286,7 +286,7 @@ class MstCostumeSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['release_date'] = str_to_datetime(
-            data['release_date']).astimezone(server_timezone)
+            data['release_date']).astimezone(config.timezone)
         return data
 
 
@@ -302,9 +302,9 @@ class MstCostumeBulkChangeGroupSchema(SQLAlchemyAutoSchema):
             data['cbc_target_sort_id_format']]
 
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -336,7 +336,7 @@ class MstCardSchema(SQLAlchemyAutoSchema):
         data['master_lesson_begin_date'] = str_to_datetime(
             data['master_lesson_begin_date'])
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -454,7 +454,7 @@ class MstVoiceCategorySchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['release_date'] = str_to_datetime(
-            data['release_date']).astimezone(server_timezone)
+            data['release_date']).astimezone(config.timezone)
         return data
 
 
@@ -491,7 +491,7 @@ class ItemSchema(SQLAlchemyAutoSchema):
         data['value1'] = mst_item['value1']
         data['value2'] = mst_item['value2']
         data['expire_date'] = str_to_datetime(data['expire_date']).astimezone(
-            server_timezone) if not mst_item['is_extend'] else None
+            config.timezone) if not mst_item['is_extend'] else None
         data['expire_date_list'] = [] if not mst_item['is_extend'] else None
         data['is_extend'] = mst_item['is_extend']
         del data['mst_item']
@@ -550,7 +550,7 @@ class MstMemorialSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -648,9 +648,9 @@ class MstGashaSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -724,9 +724,9 @@ class MstJobSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1304,9 +1304,9 @@ class MstTitleImageSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1325,9 +1325,9 @@ class MstGameSettingSchema(SQLAlchemyAutoSchema):
                 'amount': data['recover_jewel_amount'],
                 'begin_date': str_to_datetime(
                     data['recover_jewel_begin_date']).astimezone(
-                    server_timezone),
+                    config.timezone),
                 'end_date': str_to_datetime(
-                    data['recover_jewel_end_date']).astimezone(server_timezone)
+                    data['recover_jewel_end_date']).astimezone(config.timezone)
             }
         ]
         del data['recover_jewel_amount']
@@ -1340,10 +1340,10 @@ class MstGameSettingSchema(SQLAlchemyAutoSchema):
                 'amount': data['continue_jewel_amount'],
                 'begin_date': str_to_datetime(
                     data['continue_jewel_begin_date']).astimezone(
-                    server_timezone),
+                    config.timezone),
                 'end_date': str_to_datetime(
                     data['continue_jewel_end_date']).astimezone(
-                    server_timezone)
+                    config.timezone)
             }
         ]
         del data['continue_jewel_amount']
@@ -1351,7 +1351,7 @@ class MstGameSettingSchema(SQLAlchemyAutoSchema):
         del data['continue_jewel_end_date']
 
         data['overflow_date'] = str_to_datetime(
-            data['overflow_date']).astimezone(server_timezone)
+            data['overflow_date']).astimezone(config.timezone)
 
         # Populate lounge_chat_fetch_cycle.
         data['lounge_chat_fetch_cycle'] = [
@@ -1363,10 +1363,10 @@ class MstGameSettingSchema(SQLAlchemyAutoSchema):
                 'amount': data['un_lock_song_jewel_amount'],
                 'begin_date': str_to_datetime(
                     data['un_lock_song_jewel_begin_date']).astimezone(
-                    server_timezone),
+                    config.timezone),
                 'end_date': str_to_datetime(
                     data['un_lock_song_jewel_end_date']).astimezone(
-                    server_timezone)
+                    config.timezone)
             }
         ]
         del data['un_lock_song_jewel_amount']
@@ -1388,9 +1388,9 @@ class MstLoadingCharacterSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1401,9 +1401,9 @@ class MstCampaignSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['start_date'] = str_to_datetime(data['start_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1484,7 +1484,7 @@ class MstTopicsSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['release_date'] = str_to_datetime(
-            data['release_date']).astimezone(server_timezone)
+            data['release_date']).astimezone(config.timezone)
         return data
 
 
@@ -1496,13 +1496,13 @@ class MstEventSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['page_begin_date'] = str_to_datetime(
-            data['page_begin_date']).astimezone(server_timezone)
+            data['page_begin_date']).astimezone(config.timezone)
         data['page_end_date'] = str_to_datetime(
-            data['page_end_date']).astimezone(server_timezone)
+            data['page_end_date']).astimezone(config.timezone)
         data['boost_begin_date'] = str_to_datetime(data['boost_begin_date'])
         data['boost_end_date'] = str_to_datetime(data['boost_end_date'])
         return data
@@ -1519,7 +1519,7 @@ class MstEventTalkStorySchema(SQLAlchemyAutoSchema):
             int(x) for x in data['mst_event_talk_speaker_id'].split(',')]
 
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1582,9 +1582,9 @@ class MstMissionScheduleSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1599,9 +1599,9 @@ class MstPanelMissionSheetSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
 
         # Populate sheet_reward_list.
         data['sheet_reward_list'] = [data['mst_mission_reward']]
@@ -1706,9 +1706,9 @@ class MstSpecialStorySchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 
@@ -1810,16 +1810,16 @@ class MstEventStorySchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['end_date'] = str_to_datetime(data['end_date']).astimezone(
-            server_timezone)
+            config.timezone)
         data['page_begin_date'] = str_to_datetime(
-            data['page_begin_date']).astimezone(server_timezone)
+            data['page_begin_date']).astimezone(config.timezone)
         data['page_end_date'] = str_to_datetime(
-            data['page_end_date']).astimezone(server_timezone)
+            data['page_end_date']).astimezone(config.timezone)
         data['release_item_begin_date'] = str_to_datetime(
             data['release_item_begin_date']).astimezone(
-            server_timezone if data['release_mst_item_id'] else timezone.utc)
+            config.timezone if data['release_mst_item_id'] else timezone.utc)
         return data
 
 
@@ -1925,7 +1925,7 @@ class MstEventMemorySchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['release_item_begin_date'] = str_to_datetime(
-            data['release_item_begin_date']).astimezone(server_timezone)
+            data['release_item_begin_date']).astimezone(config.timezone)
         return data
 
 
@@ -2470,7 +2470,7 @@ class LastUpdateDateSchema(SQLAlchemyAutoSchema):
         data['last_update_date'] = str_to_datetime(data['last_update_date'])
         if data['last_update_date_type'] in [9, 10, 11, 12, 13, 14, 15, 17]:
             data['last_update_date'] = data['last_update_date'].astimezone(
-                server_timezone)
+                config.timezone)
         return data
 
 
@@ -2549,7 +2549,7 @@ class MstAchievementSchema(SQLAlchemyAutoSchema):
     @post_dump
     def _convert(self, data, **kwargs):
         data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
-            server_timezone)
+            config.timezone)
         return data
 
 

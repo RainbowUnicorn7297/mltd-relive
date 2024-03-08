@@ -11,7 +11,7 @@ from mltd.models.models import (MainStoryChapter, MstMainStoryContactStatus,
 from mltd.models.schemas import (MainStoryChapterSchema,
                                  MstMainStoryContactStatusSchema,
                                  MstTopicsSchema, SpecialStorySchema)
-from mltd.servers.config import server_timezone
+from mltd.servers.config import config
 from mltd.servers.utilities import format_datetime
 
 
@@ -159,7 +159,7 @@ def get_topics_list(params):
             select(func.max(MstTopics.release_date))
         )
         recent_release_date = recent_release_date.replace(
-            tzinfo=timezone.utc).astimezone(server_timezone)
+            tzinfo=timezone.utc).astimezone(config.timezone)
 
         mst_topics = session.scalars(
             select(MstTopics)
