@@ -14,7 +14,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 - 未回信的mail不能以回信來解鎖新mail。
 - 未解鎖的覺醒故事不能透過進行覺醒來解鎖。
 
-### Standalone版（最新版本：[standalone-v0.0.4](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.0.4)）
+### Standalone版（最新版本：[standalone-v0.1.0](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.1.0)）
 以一個已解鎖全部內容的通用帳號為基礎的版本，目標於v1.0.0將絕大部分功能以最接近關服前的狀態呈現。具有以下特性：
 - 支援繁中版及韓版。
 - 遊玩過程中的數據會儲存在本地資料庫中。首次啟動本地伺服器時，會在程式的同一個資料夾內建立資料庫檔案。
@@ -42,10 +42,30 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - Windows Server 2022
    - Ubuntu 22.04
    - macOS 12 Monterey
+   - Android 13 (aarch64)
+   - Android 9 (x86_64)
 
   Windows版於Windows 11亦測試過可以正常運行。其他作業系統版本若不能運行的話，可以[自行構建](#自行構建)。
 
-### 步驟
+### 以Android裝置運行伺服器
+1. [下載](https://f-droid.org/repo/com.termux_118.apk)、安裝和運行Termux
+2. 輸入以下指令進行伺服器安裝：
+   ```
+   curl https://bit.ly/mltd -o setup.sh -L
+   chmod +x setup.sh
+   ./setup.sh
+   ```
+   出現`Enter game client language: [zh/ko]`時，繁中版輸入`zh`，韓版則輸入`ko`
+   > 以後升級版本只需輸入指令`./setup.sh`
+3. 輸入以下指令運行伺服器：
+   ```
+   cd mltd
+   ./run
+   ```
+   > 要停止伺服器可輸入`Ctrl+C`
+4. 下載和安裝對應此方法的[繁中版](https://mega.nz/file/7B5VHK4T#AR3olYRjV8Y_-sxPvZltoc3YCDQi4VdsTdMrYWNHK1g)或[韓版](https://mega.nz/file/iJohWQbC#KqauZ-10selJMon1NhIIbsiWXte14Rs0n81jGaDDR3E)遊戲APK
+
+### 以電腦運行伺服器（支援Android及iOS）
 1. [下載](https://github.com/RainbowUnicorn7297/mltd-relive/releases)並運行程式
    > Ubuntu版需要以root權限運行，例如`sudo ./mltd-relive-standalone-v1.0.0-ubuntu`
 2. 選擇遊戲語言（繁體中文或韓文），然後按＂Start Server＂
@@ -97,22 +117,21 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    </tbody>
    </table>
 
-5. 運行遊戲
-   > 原始APK在Android 12L或以上不能運行，可下載[繁中版](https://mega.nz/file/HMgiTSbI#cy7z52H6zBOSdSX5Xok1GKQ4yT7k6K1ctjV6Heceu3I)或[韓版](https://mega.nz/file/2dBgiBQY#NBgo-1rTW7g1Jtm9FLYZ61KoOP4HFoElxO75dzMyXew)經修正後的APK。
-6. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
+5. 遊戲的原始APK在Android 12L或以上不能運行，可下載對應此方法的[繁中版](https://mega.nz/file/HMgiTSbI#cy7z52H6zBOSdSX5Xok1GKQ4yT7k6K1ctjV6Heceu3I)或[韓版](https://mega.nz/file/2dBgiBQY#NBgo-1rTW7g1Jtm9FLYZ61KoOP4HFoElxO75dzMyXew)經修正後的APK。
+6. 以後要升級版本時，新版本的程式檔可放進舊版本所在的資料夾內，然後直接運行新版本。舊版本的遊玩記錄會被保留。
+
+### 運行遊戲
+1. 首次進入遊戲時會出現以下提示，按＂繼承資料＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208608928-05a71f22-69a2-4ffc-b8d6-3451e06e77e8.png">
 
-7. 按＂使用密碼繼承＂，再按＂OK＂
+2. 按＂使用密碼繼承＂，再按＂OK＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208609764-a79d551b-fdf4-4da8-8a46-c6bad6e884f2.png">
 
-8. 隨意輸入長度為8個字元的密碼，最後按＂決定＂
+3. 隨意輸入長度為8個字元的密碼，最後按＂決定＂
 
    <img width="520" alt="image" src="https://user-images.githubusercontent.com/67099591/208610514-01adc780-a92e-4f50-b459-e51361d7af49.png">
-
-### 升級版本
-新版本的程式檔可放進舊版本所在的資料夾內，然後直接運行新版本。舊版本的遊玩記錄會被保留。
 
 ## 自行構建
 ### Windows/Unix/Linux/macOS
