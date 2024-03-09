@@ -55,11 +55,15 @@ if __name__ == '__main__':
                         help='game client language')
     parser.add_argument('-r', '--reset', action='store_true',
                         help='reset data')
+    parser.add_argument('-c', '--config-only', action='store_true',
+                        help='only update config; do not start server')
     args = parser.parse_args()
 
     config.is_local = True
     if args.language:
         config.language = args.language
+    if args.config_only:
+        exit()
     start_server(args.reset)
 
     try:
