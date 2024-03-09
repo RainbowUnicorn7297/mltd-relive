@@ -63,7 +63,7 @@ if __name__ == '__main__':
     if args.language:
         config.language = args.language
     if args.config_only:
-        exit()
+        sys.exit()
     start_server(args.reset)
 
     try:

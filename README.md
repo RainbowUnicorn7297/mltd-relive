@@ -115,6 +115,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 新版本的程式檔可放進舊版本所在的資料夾內，然後直接運行新版本。舊版本的遊玩記錄會被保留。
 
 ## 自行構建
+### Windows/Unix/Linux/macOS
 1. 安裝[Python](https://www.python.org/downloads/)最新版本（目前是3.11.4）
 2. 用GitHub Desktop複製或[手動下載](https://github.com/RainbowUnicorn7297/mltd-relive/archive/refs/heads/main.zip)程式碼至您的電腦上
 3. 打開CLI（例如Windows的cmd.exe或Linux/macOS的Terminal），移至程式碼的資料夾（`cd mltd-relive`），然後輸入以下指令：
@@ -149,6 +150,31 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - Windows: `mltd-relive-standalone.exe`
    - Unix/Linux: `mltd-relive-standalone`
    - macOS: `mltd-relive-standalone.app`資料夾
+
+### Termux
+1. 輸入以下指令安裝Git、Python和其他所需套件：
+   ```
+   yes | pkg upg
+   pkg in git
+   pkg in python
+   pkg in ldd
+   pkg in binutils
+   ```
+2. 用Git複製程式碼至您的手機上：
+   ```
+   git clone https://github.com/RainbowUnicorn7297/mltd-relive.git
+   ```
+3. 輸入以下指令：
+   ```
+   cd mltd-relive
+   python -m venv env
+   source env/bin/activate
+   python -m pip install --upgrade pip
+   python -m pip install -r requirements.txt
+   cd standalone
+   ../env/bin/pyinstaller console_termux.spec
+   ```
+4. 以上指令會在`standalone/dist`資料夾裡生成`mltd-relive-standalone`程式檔
 
 ## 計劃
 
