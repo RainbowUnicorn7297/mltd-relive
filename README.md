@@ -14,7 +14,7 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
 - 未回信的mail不能以回信來解鎖新mail。
 - 未解鎖的覺醒故事不能透過進行覺醒來解鎖。
 
-### Standalone版（最新版本：[standalone-v0.1.0](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.1.0)）
+### Standalone版（最新版本：[standalone-v0.1.1](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/standalone-v0.1.1)）
 以一個已解鎖全部內容的通用帳號為基礎的版本，目標於v1.0.0將絕大部分功能以最接近關服前的狀態呈現。具有以下特性：
 - 支援繁中版及韓版。
 - 遊玩過程中的數據會儲存在本地資料庫中。首次啟動本地伺服器時，會在程式的同一個資料夾內建立資料庫檔案。
