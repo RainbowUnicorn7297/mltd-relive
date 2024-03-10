@@ -2,7 +2,8 @@
 
 if [ ! -d ./mltd ]; then
     mkdir mltd
-    pkg ins jq
+    yes | pkg upg
+    yes | pkg ins jq
 fi
 ARCHITECTURE=`dpkg --print-architecture`
 URL=`curl -s 'https://api.github.com/repos/RainbowUnicorn7297/mltd-relive/releases?per_page=3' | jq -r '[.[] | select(.tag_name | startswith("standalone"))][0] | .assets[] | select(.name | contains("'"$ARCHITECTURE"'")).browser_download_url'`
