@@ -179,7 +179,7 @@ def _insert_cards(session: Session, user: User):
         session.add(card)
 
 
-def setup():
+def setup(conn=None):
     """Initialize database by creating tables and inserting data."""
     logger.info('Initializing database...')
 
@@ -856,6 +856,9 @@ def setup():
         session.commit()
 
     logger.info('Database initialized.')
+    if conn:
+        conn.send(True)
+        conn.close()
 
 
 def cleanup():

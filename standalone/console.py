@@ -27,7 +27,7 @@ def start_server(reset=False):
     api_process = CustomProcess(target=api_server.start, daemon=True)
     api_process.start()
 
-    while not api_process.is_started():
+    while not api_process.is_ready():
         time.sleep(0.2)
     logger.info(f'Server started.')
     api_process.join()

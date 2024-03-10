@@ -109,9 +109,9 @@ class MLTDReliveGUI:
                 self.stop_server_on_error(self.dns_process.exception)
                 return
             if (self.server_status == 'Starting'
-                    and self.api_process.is_started()
-                    and self.proxy_process.is_started()
-                    and self.dns_process.is_started()):
+                    and self.api_process.is_ready()
+                    and self.proxy_process.is_ready()
+                    and self.dns_process.is_ready()):
                 self.server_status = 'Started'
                 self.status_label.config(
                     text=f'Server Status: {self.server_status}',
@@ -184,7 +184,7 @@ class MLTDReliveGUI:
         self.stop_server()
 
     def update_reset_data_progress(self):
-        if self.process.is_alive():
+        if not self.process.is_ready():
             if self.process.exception:
                 logger.error(self.process.exception)
                 messagebox.showerror('Error', self.process.exception)

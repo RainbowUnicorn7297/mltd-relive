@@ -11,7 +11,7 @@ class CustomProcess(Process):
         kwargs['kwargs']['conn'] = self._child_status_conn
         super().__init__(*args, **kwargs)
         self._parent_exception_conn, self._child_exception_conn = Pipe()
-        self._is_started = False
+        self._is_ready = False
         self._exception = None
 
     def run(self):
@@ -20,13 +20,13 @@ class CustomProcess(Process):
         except Exception:
             self._child_exception_conn.send(traceback.format_exc())
 
-    def is_started(self):
-        if self._is_started:
+    def is_ready(self):
+        if self._is_ready:
             return True
         if self._parent_status_conn.poll():
             self._parent_status_conn.recv()
             self._parent_status_conn.close()
-            self._is_started = True
+            self._is_ready = True
             return True
         return False
 
