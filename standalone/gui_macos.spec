@@ -6,7 +6,7 @@ block_cipher = None
 
 a = Analysis(
     ['gui.pyw'],
-    pathex=['../env/python3.11/site-packages'],
+    pathex=[],
     binaries=[],
     datas=[],
     hiddenimports=[],

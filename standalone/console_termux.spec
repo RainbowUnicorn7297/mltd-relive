@@ -4,9 +4,16 @@
 block_cipher = None
 
 
+binaries = [
+    ('/data/data/com.termux/files/usr/lib/libandroid-posix-semaphore.so', '.'),
+    ('/data/data/com.termux/files/usr/lib/libsqlite3.so', '.'),
+    ('/data/data/com.termux/files/usr/lib/libffi.so', '.')
+]
+
+
 a = Analysis(
     ['console.py'],
-    pathex=['../env/python3.11/site-packages'],
+    pathex=[],
     binaries=[],
     datas=[],
     hiddenimports=[],
