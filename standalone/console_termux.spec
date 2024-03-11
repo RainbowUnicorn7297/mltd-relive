@@ -14,7 +14,7 @@ binaries = [
 a = Analysis(
     ['console.py'],
     pathex=[],
-    binaries=[],
+    binaries=binaries,
     datas=[],
     hiddenimports=[],
     hookspath=['.'],
