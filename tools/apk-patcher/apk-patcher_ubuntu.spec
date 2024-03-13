@@ -13,10 +13,10 @@ datas = [
 a = Analysis(
     ['apk-patcher.pyw'],
     pathex=[],
-    binaries=[('../../env/lib/python3.11/site-packages/glfw/x11/libglfw.so', '.')],
+    binaries=[],
     datas=datas,
     hiddenimports=[],
-    hookspath=[],
+    hookspath=['.'],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
