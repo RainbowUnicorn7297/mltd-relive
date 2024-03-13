@@ -35,11 +35,11 @@ def current_path():
 
 
 def validate_input():
-    if not apktool_path.endswith('apktool.bat'):
+    if not apktool_path.endswith('apktool.bat') and not apktool_path.endswith('apktool'):
         return 'Invalid apktool.bat Path'
-    if not zipalign_path.endswith('zipalign.exe'):
+    if not zipalign_path.endswith('zipalign.exe') and not zipalign_path.endswith('zipalign'):
         return 'Invalid zipalign.exe Path'
-    if not apksigner_path.endswith('apksigner.bat'):
+    if not apksigner_path.endswith('apksigner.bat') and not apksigner_path.endswith('apksigner'):
         return 'Invalid apksigner.bat Path'
     if not apk_path.endswith('.apk'):
         return 'Invalid Game APK Path'
@@ -170,6 +170,8 @@ def main():
     for p in apktool_search_paths:
         if os.path.isfile(os.path.join(p, 'apktool.bat')):
             apktool_path = os.path.abspath(os.path.join(p, 'apktool.bat'))
+        elif os.path.isfile(os.path.join(p, 'apktool')):
+            apktool_path = os.path.abspath(os.path.join(p, 'apktool'))
 
     imgui.create_context()
     window = impl_glfw_init()
@@ -202,48 +204,52 @@ def main():
         imgui.begin('', flags=imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_RESIZE)
 
         imgui.text('apktool.bat Path:')
-        if not apktool_path.endswith('apktool.bat'):
+        if not apktool_path.endswith('apktool.bat') and not apktool_path.endswith('apktool'):
             imgui.push_style_color(imgui.COLOR_FRAME_BACKGROUND, 0.5, 0.0, 0.0)
         _, apktool_path = imgui.input_text('##apktool', apktool_path, 1024, flags=imgui.INPUT_TEXT_READ_ONLY)
-        if not apktool_path.endswith('apktool.bat'):
+        if not apktool_path.endswith('apktool.bat') and not apktool_path.endswith('apktool'):
             imgui.pop_style_color(1)
         imgui.same_line()
         if imgui.button('Browse apktool.bat...'):
-            new_path = askopenfilename(filetypes=[('Batch', '*.bat')])
+            new_path = askopenfilename(filetypes=[('apktool', 'apktool.bat apktool')])
             if new_path:
                 apktool_path = os.path.abspath(new_path)
 
         imgui.text('zipalign.exe Path:')
-        if not zipalign_path.endswith('zipalign.exe'):
+        if not zipalign_path.endswith('zipalign.exe') and not zipalign_path.endswith('zipalign'):
             imgui.push_style_color(imgui.COLOR_FRAME_BACKGROUND, 0.5, 0.0, 0.0)
         _, zipalign_path = imgui.input_text('##zipalign', zipalign_path, 1024, flags=imgui.INPUT_TEXT_READ_ONLY)
-        if not zipalign_path.endswith('zipalign.exe'):
+        if not zipalign_path.endswith('zipalign.exe') and not zipalign_path.endswith('zipalign'):
             imgui.pop_style_color(1)
         imgui.same_line()
         if imgui.button('Browse zipalign.exe...'):
-            new_path = askopenfilename(filetypes=[('Executable', '*.exe')])
+            new_path = askopenfilename(filetypes=[('zipalign', 'zipalign.exe zipalign')])
             if new_path:
                 zipalign_path = os.path.abspath(new_path)
-                if not apksigner_path.endswith('apksigner.bat'):
+                if not apksigner_path.endswith('apksigner.bat') and not apksigner_path.endswith('apksigner'):
                     zipalign_dir = os.path.dirname(zipalign_path)
                     if os.path.isfile(os.path.join(zipalign_dir, 'apksigner.bat')):
                         apksigner_path = os.path.abspath(os.path.join(zipalign_dir, 'apksigner.bat'))
+                    elif os.path.isfile(os.path.join(zipalign_dir, 'apksigner')):
+                        apksigner_path = os.path.abspath(os.path.join(zipalign_dir, 'apksigner'))
 
         imgui.text('apksigner.bat Path:')
-        if not apksigner_path.endswith('apksigner.bat'):
+        if not apksigner_path.endswith('apksigner.bat') and not apksigner_path.endswith('apksigner'):
             imgui.push_style_color(imgui.COLOR_FRAME_BACKGROUND, 0.5, 0.0, 0.0)
         _, apksigner_path = imgui.input_text('##apksigner', apksigner_path, 1024, flags=imgui.INPUT_TEXT_READ_ONLY)
-        if not apksigner_path.endswith('apksigner.bat'):
+        if not apksigner_path.endswith('apksigner.bat') and not apksigner_path.endswith('apksigner'):
             imgui.pop_style_color(1)
         imgui.same_line()
         if imgui.button('Browse apksigner.bat...'):
-            new_path = askopenfilename(filetypes=[('Batch', '*.bat')])
+            new_path = askopenfilename(filetypes=[('apksigner', 'apksigner.bat apksigner')])
             if new_path:
                 apksigner_path = os.path.abspath(new_path)
-                if not zipalign_path.endswith('zipalign.exe'):
+                if not zipalign_path.endswith('zipalign.exe') and not zipalign_path.endswith('zipalign'):
                     apksigner_dir = os.path.dirname(apksigner_path)
                     if os.path.isfile(os.path.join(apksigner_dir, 'zipalign.exe')):
                         zipalign_path = os.path.abspath(os.path.join(apksigner_dir, 'zipalign.exe'))
+                    elif os.path.isfile(os.path.join(apksigner_dir, 'zipalign')):
+                        zipalign_path = os.path.abspath(os.path.join(apksigner_dir, 'zipalign'))
 
         imgui.text('Game APK Path:')
         if not apk_path.endswith('.apk'):
