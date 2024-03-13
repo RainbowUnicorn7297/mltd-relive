@@ -10,3 +10,5 @@ standalone/mltd*.db
 standalone/mltd*.log*
 standalone/mltd/locales/*.cmd
 tools/imgui.ini
+tools/apk-patcher/build/*
+tools/apk-patcher/dist/*

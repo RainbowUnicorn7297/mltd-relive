@@ -1,0 +1,63 @@
+name: Build APK Patcher
+
+on: [workflow_dispatch]
+
+jobs:
+
+  build:
+    name: Build packages
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: Windows
+            cmd-install: |
+              python -m venv env
+              .\env\Scripts\activate
+              python -m pip install --upgrade pip
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd tools\apk-patcher
+              ..\..\env\Scripts\pyinstaller apk-patcher_windows.spec
+            out-name: mltd-relive-apk-patcher-windows
+          - os: ubuntu-latest
+            target: Ubuntu
+            cmd-install: |
+              python -m venv env
+              source env/bin/activate
+              python -m pip install --upgrade pip
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd tools/apk-patcher
+              ../../env/bin/pyinstaller apk-patcher_ubuntu.spec
+            out-name: mltd-relive-apk-patcher-ubuntu
+          - os: macos-latest
+            target: macOS
+            cmd-install: |
+              python -m venv env
+              source env/bin/activate
+              python -m pip install --upgrade pip
+              python -m pip install -r requirements.txt
+            cmd-build: |
+              cd tools/apk-patcher
+              ../../env/bin/pyinstaller apk-patcher_macos.spec
+              cd dist
+              zip -r9 mltd-relive-apk-patcher-macos.zip mltd-relive-apk-patcher.app
+            out-name: mltd-relive-apk-patcher-macos
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies for ${{ matrix.target }}
+      run: ${{ matrix.cmd-install }}    
+    - name: Build with PyInstaller for ${{ matrix.target }}
+      run: ${{ matrix.cmd-build }}
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.out-name }}
+        path: tools/apk-patcher/dist
