@@ -340,6 +340,50 @@ class MstCardSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class AlbumSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstCard
+        include_fk = True
+        include_relationships = True
+        exclude = ('mst_costume_id', 'bonus_costume_id', 'rank5_costume_id',
+                   'idol_type', 'level_max', 'life', 'vocal_base', 'vocal_max',
+                   'vocal_master_bonus', 'dance_base', 'dance_max',
+                   'dance_master_bonus', 'visual_base', 'visual_max',
+                   'visual_master_bonus', 'awakening_gauge_max',
+                   'master_rank_max', 'cheer_point', 'mst_card_skill_id',
+                   'variation', 'master_lesson_begin_date',
+                   'training_item_list', 'card_category',
+                   'extend_card_level_max', 'extend_card_life',
+                   'extend_card_vocal_max', 'extend_card_vocal_master_bonus',
+                   'extend_card_dance_max', 'extend_card_dance_master_bonus',
+                   'extend_card_visual_max', 'extend_card_visual_master_bonus',
+                   'is_master_lesson_five_available', 'barrier_mission_list',
+                   'training_point', 'sign_type', 'sign_type2', 'mst_costume',
+                   'bonus_costume', 'rank5_costume')
+        ordered = True
+
+    mst_center_effect = Nested('MstCenterEffectSchema')
+    mst_card_skill = Nested('MstCardSkillSchema')
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        mst_center_effect = data['mst_center_effect']
+        data['attribute'] = mst_center_effect['attribute']
+        del data['mst_center_effect']
+
+        # Populate effect_id_list.
+        mst_card_skill = data['mst_card_skill']
+        if not mst_card_skill:
+            data['effect_id_list'] = [0, 0]
+        else:
+            data['effect_id_list'] = [mst_card_skill['effect_id'], 0]
+        del data['mst_card_skill']
+
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            config.timezone)
+        return data
+
+
 class CardSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Card

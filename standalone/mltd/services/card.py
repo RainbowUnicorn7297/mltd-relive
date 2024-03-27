@@ -5,8 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
-from mltd.models.models import Card, MstCard, User
-from mltd.models.schemas import CardSchema
+from mltd.models.models import Card, MstCard, MstCostume, User
+from mltd.models.schemas import AlbumSchema, CardSchema, MstCostumeSchema
 
 
 def add_card(session: Session, user: User, mst_card_id):
@@ -56,7 +56,7 @@ def add_card(session: Session, user: User, mst_card_id):
 
 @dispatcher.add_method(name='CardService.GetCardList', context_arg='context')
 def get_card_list(params, context):
-    """Service for getting a list of cards obtained by the user.
+    """Get a list of cards obtained by the user.
 
     Invoked as part of the initial batch requests after logging in.
     Args:
@@ -202,7 +202,8 @@ def get_card_list(params, context):
                                       For any other card, this date is
                                       set to '0001-01-01T00:00:00+0000'.
             training_item_list: null.
-            begin_date: Date when the card was released.
+            begin_date: Date when the card was released on the server
+                        and became available for any user to obtain.
             sort_id: Sort ID.
             is_new: Whether the card is new to the user. For a newly
                     registered user, all cards are new except the five
@@ -265,4 +266,98 @@ def get_card_list(params, context):
         card_list = card_schema.dump(cards, many=True)
 
     return {'card_list': card_list}
+
+
+@dispatcher.add_method(name='CardService.GetAlbumList', context_arg='context')
+def get_album_list(params, context):
+    """Get the card and costume albums of the user.
+
+    Invoked in the following situations.
+    1. When the user presses Cards/Costumes button under Idols tab.
+    2. When the user presses Data Download button under Navigation tab.
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing the following keys.
+        album_list: A list of dicts representing the states of each card
+                    within the card album of the user. Each of these
+                    dicts contains the following keys.
+            mst_card_id: Master card ID.
+            mst_idol_id: Master idol ID.
+            sort_id: Sort ID.
+            is_awakened: Whether the card is awakened. Each master card
+                         ID corresponds to exactly two dicts in this
+                         list; one with 'is_awakened' set to False, one
+                         with 'is_awakened' set to True.
+            is_released: If 'is_awakened' is False, this flag represents
+                         whether the user has obtained this card. If
+                         'is_awakened' is True, this flag is True only
+                         if the user has obtained this card and this
+                         card is awakened.
+            rarity: An int representing the rarity of the card (1=N,
+                    2=R, 3=SR, 4=SSR).
+            attribute: Center skill effect of the card (1=Vocal %,
+                       2=Dance %, 3=Visual %, 4=All appeals %, 5=Life %,
+                       6=Skill probability %).
+            effect_id_list: A list containing exactly two ints. The
+                            first int is the effect type of the card
+                            skill of this card (0 if this card has no
+                            skill). The second int is always 0.
+                            1=Score bonus
+                            2=Combo bonus
+                            3=Healer
+                            4=Life guard
+                            5=Combo guard
+                            6=Perfect lock
+                            7=Double boost
+                            8=Multi up
+                            10=Overclock
+            mst_center_effect_id: Center effect ID of the card.
+            begin_date: Date when the card was released on the server
+                        and became available for any user to obtain.
+            ex_type: Extra type [0=Normal, 2=PST (Ranking),
+                     3=PST (Event Pt), 4=FES, 5=1st, 6=Ex, 7=2nd].
+            resource_id: A string for getting card-related resources.
+        costume_list: A list of dicts representing all costumes. See the
+                      return value 'costume_list' of the method
+                      'CardService.GetCardList' for the dict definition.
+    """
+    with Session(engine) as session:
+        mst_cards = session.scalars(
+            select(MstCard)
+        ).all()
+
+        owned_card_ids = session.scalars(
+            select(Card.mst_card_id)
+            .where(Card.user_id == UUID(context['user_id']))
+        ).all()
+        awakened_card_ids = session.scalars(
+            select(Card.mst_card_id)
+            .where(Card.user_id == UUID(context['user_id']))
+            .where(Card.is_awakened == True)
+        ).all()
+
+        album_schema = AlbumSchema()
+        owned_album_list = album_schema.dump(mst_cards, many=True)
+        for card in owned_album_list:
+            card['is_awakened'] = False
+            card['is_released'] = card['mst_card_id'] in owned_card_ids
+        awakened_album_list = album_schema.dump(mst_cards, many=True)
+        for card in awakened_album_list:
+            card['is_awakened'] = True
+            card['is_released'] = card['mst_card_id'] in awakened_card_ids
+        album_list = owned_album_list
+        album_list.extend(awakened_album_list)
+
+        mst_costumes = session.scalars(
+            select(MstCostume)
+        ).all()
+
+        mst_costume_schema = MstCostumeSchema()
+        costume_list = mst_costume_schema.dump(mst_costumes, many=True)
+
+    return {
+        'album_list': album_list,
+        'costume_list': costume_list
+    }
 
