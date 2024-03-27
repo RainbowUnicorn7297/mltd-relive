@@ -19,7 +19,7 @@ def get_unit_list(params, context):
         params: An empty dict.
     Returns:
         A dict containing a single key named 'unit_list', whose value is
-        a list of 18 dicts. Each of the dict represents a single unit
+        a list of 18 dicts. Each of these dicts represents a single unit
         and contains the following keys.
             unit_num: Unit number (1-18).
             name: Unit name.

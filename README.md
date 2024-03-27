@@ -34,6 +34,9 @@ MLTD的繁中服和韓服都在2022年1月28日正式停止營運。由於官方
    - 編制團體
 - 演唱會全部功能
 
+### APK修改工具（最新版本：[apk-patcher-v1.0.1](https://github.com/RainbowUnicorn7297/mltd-relive/releases/tag/apk-patcher-v1.0.1)）
+遊戲預設以720p和60fps運行。這個工具可用於修改Android遊戲APK的解像度(resolution)和幀率(frame rate)。
+
 ## 使用方法
 ### 注意事項
 - 首次啟動程式時，會在程式的同一個資料夾內建立資料庫、設定檔及記錄檔。啟動前請預留約100MB的空間。

@@ -305,8 +305,7 @@ class MstCostumeBulkChangeGroup(Base):
     end_date: Mapped[datetime] = mapped_column(
         default=datetime(
             2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
-        ).astimezone(timezone.utc)
-    )
+        ).astimezone(timezone.utc))
 
 
 class MstCenterEffect(Base):
@@ -1887,6 +1886,22 @@ class MstTopics(Base):
     mst_topics_icon_id: Mapped[int]
     number: Mapped[int]
     release_date: Mapped[datetime]
+
+
+class MstWhiteBoard(Base):
+    """Master table for whiteboard drawings."""
+    __tablename__ = 'mst_white_board'
+
+    mst_white_board_id: Mapped[int] = mapped_column(primary_key=True)
+    mst_topics_icon_id: Mapped[int]
+    number: Mapped[int]
+    sort_id: Mapped[int]
+    display_date: Mapped[datetime]
+    begin_date: Mapped[datetime]
+    end_date: Mapped[datetime] = mapped_column(
+        default=datetime(
+            2099, 12, 31, 23, 59, 59, tzinfo=config.timezone
+        ).astimezone(timezone.utc))
 
 
 class MstEvent(Base):

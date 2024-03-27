@@ -7,17 +7,18 @@ from sqlalchemy.orm import Session
 
 from mltd.models.engine import engine
 from mltd.models.models import (MainStoryChapter, MstMainStoryContactStatus,
-                                MstTopics, SpecialStory)
+                                MstTopics, MstWhiteBoard, SpecialStory)
 from mltd.models.schemas import (MainStoryChapterSchema,
                                  MstMainStoryContactStatusSchema,
-                                 MstTopicsSchema, SpecialStorySchema)
+                                 MstTopicsSchema, MstWhiteBoardSchema,
+                                 SpecialStorySchema)
 from mltd.servers.config import config
 from mltd.servers.utilities import format_datetime
 
 
 @dispatcher.add_method(name='StoryService.GetStoryList', context_arg='context')
 def get_story_list(params, context):
-    """Service for getting a list of main stories.
+    """Get a list of main stories.
 
     Invoked as part of the initial batch requests after logging in.
     Args:
@@ -127,7 +128,7 @@ def get_story_list(params, context):
 
 @dispatcher.add_method(name='StoryService.GetTopicsList')
 def get_topics_list(params):
-    """Service for getting a list of (loading screen) topics.
+    """Get a list of (loading screen) topics.
 
     Invoked as part of the initial batch requests after logging in.
     Args:
@@ -174,10 +175,56 @@ def get_topics_list(params):
     }
 
 
+@dispatcher.add_method(name='StoryService.GetWhiteBoardList')
+def get_white_board_list(params):
+    """Get a list of whiteboard drawings.
+
+    Invoked in the following situations.
+    1. 
+    Args:
+        params: An empty dict.
+    Returns:
+        A dict containing the following keys.
+        recent_begin_date: The most recent begin date from the list.
+        white_board_status_list: A list of dicts representing all
+                                 whiteboard drawings. Each dict contains
+                                 the following keys.
+            mst_white_board_id: Master whiteboard ID.
+            mst_topics_icon_id: Master topic icon ID (1-52, 101-102,
+                                908).
+            number: A mostly sequential number (possibly repeated) per
+                    idol/secretary/theater.
+            sort_id: Sort ID.
+            display_date: Date when this whiteboard drawing was
+                          displayed.
+            begin_date: Same as 'display_date'.
+            end_date: '2099-12-31T23:59:59+0800'.
+    """
+    with Session(engine) as session:
+        recent_begin_date = session.scalar(
+            select(func.max(MstWhiteBoard.begin_date))
+        )
+        recent_begin_date = recent_begin_date.replace(
+            tzinfo=timezone.utc).astimezone(config.timezone)
+
+        mst_white_board = session.scalars(
+            select(MstWhiteBoard)
+        ).all()
+
+        mst_white_board_schema = MstWhiteBoardSchema()
+        white_board_status_list = mst_white_board_schema.dump(mst_white_board,
+                                                              many=True)
+
+    return {
+        'recent_begin_date': format_datetime(recent_begin_date),
+        'white_board_status_list': white_board_status_list
+    }
+
+
 @dispatcher.add_method(name='StoryService.GetSpecialStoryList',
                        context_arg='context')
 def get_special_story_list(params, context):
-    """Service for getting a list of special stories.
+    """Get a list of special stories.
 
     Invoked as part of the initial batch requests after logging in.
     Args:
@@ -251,7 +298,7 @@ def get_special_story_list(params, context):
 
 @dispatcher.add_method(name='StoryService.GetOfferStoryList')
 def get_offer_story_list(params):
-    """Service for getting a list of offer stories.
+    """Get a list of offer stories.
 
     Invoked as part of the initial batch requests after logging in.
     Args:

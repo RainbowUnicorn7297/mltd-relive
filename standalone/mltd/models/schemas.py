@@ -1488,6 +1488,22 @@ class MstTopicsSchema(SQLAlchemyAutoSchema):
         return data
 
 
+class MstWhiteBoardSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = MstWhiteBoard
+        ordered = True
+
+    @post_dump
+    def _convert(self, data, **kwargs):
+        data['display_date'] = str_to_datetime(
+            data['display_date']).astimezone(config.timezone)
+        data['begin_date'] = str_to_datetime(data['begin_date']).astimezone(
+            config.timezone)
+        data['end_date'] = str_to_datetime(data['end_date']).astimezone(
+            config.timezone)
+        return data
+
+
 class MstEventSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = MstEvent

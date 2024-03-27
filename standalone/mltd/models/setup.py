@@ -928,6 +928,22 @@ def upgrade_database():
             session.commit()
         logger.info('Database upgraded to v0.1.0.')
 
+    if version_tuple(db_version) < version_tuple('0.1.3'):
+        logger.info('Upgrading database to v0.1.3...')
+        with Session(engine) as session:
+            table = Base.metadata.tables['mst_white_board']
+            table.create(bind=session.get_bind())
+
+            _insert_csv_data(session, _mst_data_path(), 'mst_white_board.csv')
+
+            session.execute(
+                update(ServerVersion)
+                .values(version='0.1.3')
+            )
+
+            session.commit()
+        logger.info('Database upgraded to v0.1.3.')
+
 
 if __name__ == '__main__':
     setup()
