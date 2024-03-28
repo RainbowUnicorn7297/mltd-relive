@@ -351,6 +351,7 @@ def get_album_list(params, context):
 
         mst_costumes = session.scalars(
             select(MstCostume)
+            .where(MstCostume.exclude_album == False)
         ).all()
 
         mst_costume_schema = MstCostumeSchema()
