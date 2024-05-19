@@ -1,14 +1,17 @@
 *.pyc
 *.exe
+*.code-workspace
 config.ini
 assets-*/
 env/
+obsolete/
 prototype/build/*
 standalone/build/*
 standalone/dist/*
 standalone/mltd*.db
 standalone/mltd*.log*
 standalone/mltd/locales/*.cmd
+tools/burp-viewer(hardcoded_path).pyw
 tools/imgui.ini
 tools/apk-patcher/build/*
 tools/apk-patcher/dist/*

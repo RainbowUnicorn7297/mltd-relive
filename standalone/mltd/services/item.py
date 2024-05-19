@@ -79,7 +79,7 @@ def add_item(
 
 @dispatcher.add_method(name='ItemService.GetItemList', context_arg='context')
 def get_item_list(params, context):
-    """Service for getting items obtained by the user.
+    """Get items owned by a user.
 
     Invoked as part of the initial batch requests after logging in.
     Args:
@@ -177,7 +177,7 @@ def get_item_list(params, context):
             expire_date_list: If is_extend is false, this is an empty
                               list. Otherwise, this is a list of expire
                               dates for each individual time-limited
-                              ticket (null is amount is 0).
+                              ticket (null if amount is 0).
             is_extend: true for some Platinum/Selection/SSR tickets,
                        false for everything else.
     """

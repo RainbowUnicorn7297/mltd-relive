@@ -883,8 +883,10 @@ class Episode(Base):
 
 
 class MstTheaterCostumeBlog(Base):
-    """Master table for costume blogs.
+    """Master table for SSR card costume blogs/episodes.
 
+    Each SSR card has one costume episode and one costume blog. Reward
+    is given out after reading the costume episode.
     reward_type=4, reward_mst_item_id=3, reward_item_type=1,
     reward_amount=50
     """
@@ -902,9 +904,9 @@ class MstTheaterCostumeBlog(Base):
 
 
 class CostumeAdv(Base):
-    """Costume blog states for each user.
+    """SSR card costume episode states for each user.
 
-    released_date: Unused. released_date=null for all costume blogs
+    released_date: Unused. released_date=null for all costume episodes
     """
     __tablename__ = 'costume_adv'
 

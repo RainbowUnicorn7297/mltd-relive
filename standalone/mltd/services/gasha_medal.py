@@ -21,7 +21,7 @@ def get_gasha_medal(params, context):
         A dict containing the following keys.
         gasha_medal: A dict containing the following keys.
             point_amount: Amount of gacha medal points the user
-                          currently owns (10 points = 1 medal).
+                          currently owns (100 points = 1 medal).
             expire_date_list: A list of strs. Each str represents the
                               expire date of a gasha medal. The length
                               of this list is equal to the number of

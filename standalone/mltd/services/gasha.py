@@ -21,7 +21,7 @@ def get_gasha_list(params, context):
         gasha_list: A list of dicts representing available gacha
                     banners. Each dict contains the following keys.
             mst_gasha_id: Master gacha ID.
-            mst_gasha_tickt_item_id: 0.
+            mst_gasha_ticket_item_id: 0.
             name: Name of the gacha banner.
             display_category: Display category.
             begin_date: Gacha banner begin date.

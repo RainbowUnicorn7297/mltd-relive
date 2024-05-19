@@ -222,20 +222,24 @@ def get_idol_list(params, context):
                               episode. See 'reward_item_list' for
                               'memorial_list' above.
         costume_adv_list: A list of dicts, where each dict represents a
-                          single blog entry associated with a card
-                          costume and contains the following
-                          keys.
-            mst_theater_costume_blog_id: Master costume blog ID.
-            mst_card_id: Master card ID for this costume blog.
+                          single episode associated with an SSR card
+                          costume and contains the following keys.
+            mst_theater_costume_blog_id: Master costume episode ID. Each
+                                         SSR card is associated with one
+                                         costume episode and one costume
+                                         blog. The same ID is shared
+                                         among them.
+            mst_card_id: Master card ID for this costume episode.
             mst_idol_id: Master idol ID.
-            is_released: Whether the user has read this blog (Both
-                         is_released and is_read have the same value).
-            is_read: Whether the user has read this blog.
+            is_released: Whether the user has read this costume episode
+                         (Both is_released and is_read have the same
+                         value).
+            is_read: Whether the user has read this costume episode.
             released_date: null.
             reward_item_list: A list containing a single dict
                               representing the rewards for reading this
-                              blog. See 'reward_item_list' for
-                              'memorial_list' above.
+                              costume episode. See 'reward_item_list'
+                              for 'memorial_list' above.
     """
     with Session(engine) as session:
         idols = session.scalars(
