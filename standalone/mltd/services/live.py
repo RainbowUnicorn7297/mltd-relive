@@ -743,20 +743,25 @@ def finish_song(params, context):
                             medal info after playing this song (empty
                             info if no changes). Contains the following
                             keys.
-            before_gauge: Gasha medal point amount before this song.
-            after_gauge: Gasha medal point amount to be added after this
-                         song.
-            get_point: Same as 'after_gauge'.
-            count: If the total gasha medal point amount after this song
-                   is greater than or equal to 100, this is the number
-                   of gasha medals gained by converting every 100 point
-                   amount into 1 medal. Otherwise, this value is 0.
+            before_gauge: Gasha medal points before this song.
+            after_gauge: Actual gasha medal points earned after this
+                         song. No further gasha medal points can be
+                         gained when the user owns the maximum possible
+                         number of gasha medals (10).
+            get_point: Gasha medal points dropped from random drop
+                       rewards after playing this song.
+            count: If the total gasha medal points after this song is
+                   greater than or equal to 100, this is the number of
+                   gasha medals gained by converting every 100 points
+                   into 1 medal. Otherwise, this value is 0.
             expire_date: Expiry date of the newly obtained gasha medals
                          ('0001-01-01T00:00:00+0000' if no gasha medal
                          was gained).
-            is_over: Whether the total number of gasha medals the user
-                     owns reaches the maximum possible number (10) after
-                     this song.
+            is_over: Whether the user is unable to earn some of the
+                     gasha medal points because the maximum possible
+                     number of gasha medals has been reached (or,
+                     equivalently, 'after_gauge' is strictly less than
+                     'get_point').
         live_result_reward: A dict representing the changes to score/
                             combo/clear ranks and related rewards after
                             playing this song. Contains the following
@@ -1658,8 +1663,9 @@ def finish_song(params, context):
                 self.mst_item_id = mst_item_id
                 self.weight = weight
 
-        gained_gasha_medal_pt = 0
-        gasha_medal_point_amount = user.gasha_medal.point_amount
+        old_gasha_medals = len(user.gasha_medal.gasha_medal_expire_dates)
+        old_gasha_medal_pt = user.gasha_medal.point_amount
+        dropped_gasha_medal_pt = 0
         drop_reward_box_list = None
         updated_item_ids = []
         if not user.pending_song.live_ticket:
@@ -1768,7 +1774,7 @@ def finish_song(params, context):
                     )
                 elif drop_type is DropType.GASHA_MEDAL_PT:
                     selected_item_id = random.choice([502, 503, 504])
-                    gained_gasha_medal_pt += (
+                    dropped_gasha_medal_pt += (
                         10 if selected_item_id == 502
                         else 15 if selected_item_id == 503
                         else 20)
@@ -1888,22 +1894,21 @@ def finish_song(params, context):
             'expire_date': None,
             'is_over': False
         }
-        if gained_gasha_medal_pt:
-            # TODO: What are the correct values when is_over is true?
-            result_gasha_medal['before_gauge'] = gasha_medal_point_amount
-            result_gasha_medal['after_gauge'] = gained_gasha_medal_pt
-            result_gasha_medal['get_point'] = gained_gasha_medal_pt
-            new_gasha_medal_point_amount = (gasha_medal_point_amount
-                                            + gained_gasha_medal_pt)
-            if new_gasha_medal_point_amount >= 100:
-                while new_gasha_medal_point_amount >= 100:
-                    result_gasha_medal['count'] += 1
-                    new_gasha_medal_point_amount -= 100
+        if dropped_gasha_medal_pt:
+            old_total_pt = old_gasha_medals*100 + old_gasha_medal_pt
+            new_total_pt = min(old_total_pt + dropped_gasha_medal_pt, 1000)
+            new_gasha_medals = new_total_pt // 100
+            new_gasha_medal_pt = new_total_pt - old_total_pt
+            result_gasha_medal['before_gauge'] = old_gasha_medal_pt
+            result_gasha_medal['after_gauge'] = new_gasha_medal_pt
+            result_gasha_medal['get_point'] = dropped_gasha_medal_pt
+            result_gasha_medal['count'] = new_gasha_medals - old_gasha_medals
+            if new_gasha_medals > old_gasha_medals:
                 result_gasha_medal['expire_date'] = now + timedelta(days=7)
             else:
                 result_gasha_medal['expire_date'] = datetime(1, 1, 1)
-            result_gasha_medal['is_over'] = len(
-                user.gasha_medal.gasha_medal_expire_dates) >= 10
+            result_gasha_medal['is_over'] = (
+                new_gasha_medal_pt < dropped_gasha_medal_pt)
         live_result_drop_reward = {
             'drop_reward_box_list': drop_reward_box_list
         }
