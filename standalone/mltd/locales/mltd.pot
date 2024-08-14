@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-16 02:40+0800\n"
+"POT-Creation-Date: 2024-08-13 09:43+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,254 +15,254 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2668
+#: .\mltd\models\models.py:2799
 msgid "default profile comment"
 msgstr ""
 
-#: .\mltd\models\setup.py:435 .\mltd\services\live.py:1444
+#: .\mltd\models\setup.py:439 .\mltd\services\live.py:1449
 msgid "Unit{unit_num}"
 msgstr ""
 
-#: .\mltd\services\idol.py:27
+#: .\mltd\services\idol.py:29
 msgid "Haruka Amami"
 msgstr ""
 
-#: .\mltd\services\idol.py:28
+#: .\mltd\services\idol.py:30
 msgid "Chihaya Kisaragi"
 msgstr ""
 
-#: .\mltd\services\idol.py:29
+#: .\mltd\services\idol.py:31
 msgid "Miki Hoshii"
 msgstr ""
 
-#: .\mltd\services\idol.py:30
+#: .\mltd\services\idol.py:32
 msgid "Yukiho Hagiwara"
 msgstr ""
 
-#: .\mltd\services\idol.py:31
+#: .\mltd\services\idol.py:33
 msgid "Yayoi Takatsuki"
 msgstr ""
 
-#: .\mltd\services\idol.py:32
+#: .\mltd\services\idol.py:34
 msgid "Makoto Kikuchi"
 msgstr ""
 
-#: .\mltd\services\idol.py:33
+#: .\mltd\services\idol.py:35
 msgid "Iori Minase"
 msgstr ""
 
-#: .\mltd\services\idol.py:34
+#: .\mltd\services\idol.py:36
 msgid "Takane Shijou"
 msgstr ""
 
-#: .\mltd\services\idol.py:35
+#: .\mltd\services\idol.py:37
 msgid "Ritsuko Akizuki"
 msgstr ""
 
-#: .\mltd\services\idol.py:36
+#: .\mltd\services\idol.py:38
 msgid "Azusa Miura"
 msgstr ""
 
-#: .\mltd\services\idol.py:37
+#: .\mltd\services\idol.py:39
 msgid "Ami Futami"
 msgstr ""
 
-#: .\mltd\services\idol.py:38
+#: .\mltd\services\idol.py:40
 msgid "Mami Futami"
 msgstr ""
 
-#: .\mltd\services\idol.py:39
+#: .\mltd\services\idol.py:41
 msgid "Hibiki Ganaha"
 msgstr ""
 
-#: .\mltd\services\idol.py:40
+#: .\mltd\services\idol.py:42
 msgid "Mirai Kasuga"
 msgstr ""
 
-#: .\mltd\services\idol.py:41
+#: .\mltd\services\idol.py:43
 msgid "Shizuka Mogami"
 msgstr ""
 
-#: .\mltd\services\idol.py:42
+#: .\mltd\services\idol.py:44
 msgid "Tsubasa Ibuki"
 msgstr ""
 
-#: .\mltd\services\idol.py:43
+#: .\mltd\services\idol.py:45
 msgid "Kotoha Tanaka"
 msgstr ""
 
-#: .\mltd\services\idol.py:44
+#: .\mltd\services\idol.py:46
 msgid "Elena Shimabara"
 msgstr ""
 
-#: .\mltd\services\idol.py:45
+#: .\mltd\services\idol.py:47
 msgid "Minako Satake"
 msgstr ""
 
-#: .\mltd\services\idol.py:46
+#: .\mltd\services\idol.py:48
 msgid "Megumi Tokoro"
 msgstr ""
 
-#: .\mltd\services\idol.py:47
+#: .\mltd\services\idol.py:49
 msgid "Matsuri Tokugawa"
 msgstr ""
 
-#: .\mltd\services\idol.py:48
+#: .\mltd\services\idol.py:50
 msgid "Serika Hakozaki"
 msgstr ""
 
-#: .\mltd\services\idol.py:49
+#: .\mltd\services\idol.py:51
 msgid "Akane Nonohara"
 msgstr ""
 
-#: .\mltd\services\idol.py:50
+#: .\mltd\services\idol.py:52
 msgid "Anna Mochizuki"
 msgstr ""
 
-#: .\mltd\services\idol.py:51
+#: .\mltd\services\idol.py:53
 msgid "Roco Handa"
 msgstr ""
 
-#: .\mltd\services\idol.py:52
+#: .\mltd\services\idol.py:54
 msgid "Yuriko Nanao"
 msgstr ""
 
-#: .\mltd\services\idol.py:53
+#: .\mltd\services\idol.py:55
 msgid "Sayoko Takayama"
 msgstr ""
 
-#: .\mltd\services\idol.py:54
+#: .\mltd\services\idol.py:56
 msgid "Arisa Matsuda"
 msgstr ""
 
-#: .\mltd\services\idol.py:55
+#: .\mltd\services\idol.py:57
 msgid "Umi Kousaka"
 msgstr ""
 
-#: .\mltd\services\idol.py:56
+#: .\mltd\services\idol.py:58
 msgid "Iku Nakatani"
 msgstr ""
 
-#: .\mltd\services\idol.py:57
+#: .\mltd\services\idol.py:59
 msgid "Tomoka Tenkubashi"
 msgstr ""
 
-#: .\mltd\services\idol.py:58
+#: .\mltd\services\idol.py:60
 msgid "Emily Stewart"
 msgstr ""
 
-#: .\mltd\services\idol.py:59
+#: .\mltd\services\idol.py:61
 msgid "Shiho Kitazawa"
 msgstr ""
 
-#: .\mltd\services\idol.py:60
+#: .\mltd\services\idol.py:62
 msgid "Ayumu Maihama"
 msgstr ""
 
-#: .\mltd\services\idol.py:61
+#: .\mltd\services\idol.py:63
 msgid "Hinata Kinoshita"
 msgstr ""
 
-#: .\mltd\services\idol.py:62
+#: .\mltd\services\idol.py:64
 msgid "Kana Yabuki"
 msgstr ""
 
-#: .\mltd\services\idol.py:63
+#: .\mltd\services\idol.py:65
 msgid "Nao Yokoyama"
 msgstr ""
 
-#: .\mltd\services\idol.py:64
+#: .\mltd\services\idol.py:66
 msgid "Chizuru Nikaido"
 msgstr ""
 
-#: .\mltd\services\idol.py:65
+#: .\mltd\services\idol.py:67
 msgid "Konomi Baba"
 msgstr ""
 
-#: .\mltd\services\idol.py:66
+#: .\mltd\services\idol.py:68
 msgid "Tamaki Ogami"
 msgstr ""
 
-#: .\mltd\services\idol.py:67
+#: .\mltd\services\idol.py:69
 msgid "Fuka Toyokawa"
 msgstr ""
 
-#: .\mltd\services\idol.py:68
+#: .\mltd\services\idol.py:70
 msgid "Miya Miyao"
 msgstr ""
 
-#: .\mltd\services\idol.py:69
+#: .\mltd\services\idol.py:71
 msgid "Noriko Fukuda"
 msgstr ""
 
-#: .\mltd\services\idol.py:70
+#: .\mltd\services\idol.py:72
 msgid "Mizuki Makabe"
 msgstr ""
 
-#: .\mltd\services\idol.py:71
+#: .\mltd\services\idol.py:73
 msgid "Karen Shinomiya"
 msgstr ""
 
-#: .\mltd\services\idol.py:72
+#: .\mltd\services\idol.py:74
 msgid "Rio Momose"
 msgstr ""
 
-#: .\mltd\services\idol.py:73
+#: .\mltd\services\idol.py:75
 msgid "Subaru Nagayoshi"
 msgstr ""
 
-#: .\mltd\services\idol.py:74
+#: .\mltd\services\idol.py:76
 msgid "Reika Kitakami"
 msgstr ""
 
-#: .\mltd\services\idol.py:75
+#: .\mltd\services\idol.py:77
 msgid "Momoko Suou"
 msgstr ""
 
-#: .\mltd\services\idol.py:76
+#: .\mltd\services\idol.py:78
 msgid "Julia"
 msgstr ""
 
-#: .\mltd\services\idol.py:77
+#: .\mltd\services\idol.py:79
 msgid "Tsumugi Shiraishi"
 msgstr ""
 
-#: .\mltd\services\idol.py:78
+#: .\mltd\services\idol.py:80
 msgid "Kaori Sakuramori"
 msgstr ""
 
-#: .\mltd\services\idol.py:81
+#: .\mltd\services\idol.py:83
 msgid "Shika"
 msgstr ""
 
-#: .\mltd\services\live.py:1125
+#: .\mltd\services\live.py:1130
 msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
 msgstr ""
 
-#: .\mltd\services\live.py:1176
+#: .\mltd\services\live.py:1181
 msgid "Solo 2MIX"
 msgstr ""
 
-#: .\mltd\services\live.py:1178
+#: .\mltd\services\live.py:1183
 msgid "Solo 2MIX+"
 msgstr ""
 
-#: .\mltd\services\live.py:1298 .\mltd\services\live.py:1331
-#: .\mltd\services\live.py:1366
+#: .\mltd\services\live.py:1303 .\mltd\services\live.py:1336
+#: .\mltd\services\live.py:1371
 msgid ""
 "{rank_type} reward for\n"
 "live \"{song_name} (Difficulty: {course})\"."
 msgstr ""
 
-#: .\mltd\services\live.py:1302
+#: .\mltd\services\live.py:1307
 msgid "Score Rank \"{rank}\""
 msgstr ""
 
-#: .\mltd\services\live.py:1335
+#: .\mltd\services\live.py:1340
 msgid "Combo Rank \"{rank}\""
 msgstr ""
 
-#: .\mltd\services\live.py:1370
+#: .\mltd\services\live.py:1375
 msgid "Clear Rank \"{rank}\""
 msgstr ""
 

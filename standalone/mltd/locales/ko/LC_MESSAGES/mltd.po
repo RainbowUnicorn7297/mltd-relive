@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-08-16 02:40+0800\n"
+"POT-Creation-Date: 2024-08-13 09:43+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,233 +15,266 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\mltd\models\models.py:2668
+#: .\mltd\models\models.py:2799
 msgid "default profile comment"
 msgstr "잘 부탁드립니다!"
 
-#: .\mltd\models\setup.py:435 .\mltd\services\live.py:1444
+#: .\mltd\models\setup.py:439 .\mltd\services\live.py:1449
 msgid "Unit{unit_num}"
 msgstr "유닛{unit_num}"
 
-#: .\mltd\services\idol.py:27
+#: .\mltd\services\idol.py:29
 msgid "Haruka Amami"
 msgstr "아마미 하루카"
 
-#: .\mltd\services\idol.py:28
+#: .\mltd\services\idol.py:30
 msgid "Chihaya Kisaragi"
 msgstr "키사라기 치하야"
 
-#: .\mltd\services\idol.py:29
+#: .\mltd\services\idol.py:31
 msgid "Miki Hoshii"
 msgstr "호시이 미키"
 
-#: .\mltd\services\idol.py:30
+#: .\mltd\services\idol.py:32
 msgid "Yukiho Hagiwara"
 msgstr "하기와라 유키호"
 
-#: .\mltd\services\idol.py:31
+#: .\mltd\services\idol.py:33
 msgid "Yayoi Takatsuki"
 msgstr "타카츠키 야요이"
 
-#: .\mltd\services\idol.py:32
+#: .\mltd\services\idol.py:34
 msgid "Makoto Kikuchi"
 msgstr "키쿠치 마코토"
 
-#: .\mltd\services\idol.py:33
+#: .\mltd\services\idol.py:35
 msgid "Iori Minase"
 msgstr "미나세 이오리"
 
-#: .\mltd\services\idol.py:34
+#: .\mltd\services\idol.py:36
 msgid "Takane Shijou"
 msgstr "시죠 타카네"
 
-#: .\mltd\services\idol.py:35
+#: .\mltd\services\idol.py:37
 msgid "Ritsuko Akizuki"
 msgstr "아키즈키 리츠코"
 
-#: .\mltd\services\idol.py:36
+#: .\mltd\services\idol.py:38
 msgid "Azusa Miura"
 msgstr "미우라 아즈사"
 
-#: .\mltd\services\idol.py:37
+#: .\mltd\services\idol.py:39
 msgid "Ami Futami"
 msgstr "후타미 아미"
 
-#: .\mltd\services\idol.py:38
+#: .\mltd\services\idol.py:40
 msgid "Mami Futami"
 msgstr "후타미 마미"
 
-#: .\mltd\services\idol.py:39
+#: .\mltd\services\idol.py:41
 msgid "Hibiki Ganaha"
 msgstr "가나하 히비키"
 
-#: .\mltd\services\idol.py:40
+#: .\mltd\services\idol.py:42
 msgid "Mirai Kasuga"
 msgstr "카스가 미라이"
 
-#: .\mltd\services\idol.py:41
+#: .\mltd\services\idol.py:43
 msgid "Shizuka Mogami"
 msgstr "모가미 시즈카"
 
-#: .\mltd\services\idol.py:42
+#: .\mltd\services\idol.py:44
 msgid "Tsubasa Ibuki"
 msgstr "이부키 츠바사"
 
-#: .\mltd\services\idol.py:43
+#: .\mltd\services\idol.py:45
 msgid "Kotoha Tanaka"
 msgstr "타나카 코토하"
 
-#: .\mltd\services\idol.py:44
+#: .\mltd\services\idol.py:46
 msgid "Elena Shimabara"
 msgstr "시마바라 엘레나"
 
-#: .\mltd\services\idol.py:45
+#: .\mltd\services\idol.py:47
 msgid "Minako Satake"
 msgstr "사타케 미나코"
 
-#: .\mltd\services\idol.py:46
+#: .\mltd\services\idol.py:48
 msgid "Megumi Tokoro"
 msgstr "토코로 메구미"
 
-#: .\mltd\services\idol.py:47
+#: .\mltd\services\idol.py:49
 msgid "Matsuri Tokugawa"
 msgstr "토쿠가와 마츠리"
 
-#: .\mltd\services\idol.py:48
+#: .\mltd\services\idol.py:50
 msgid "Serika Hakozaki"
 msgstr "하코자키 세리카"
 
-#: .\mltd\services\idol.py:49
+#: .\mltd\services\idol.py:51
 msgid "Akane Nonohara"
 msgstr "노노하라 아카네"
 
-#: .\mltd\services\idol.py:50
+#: .\mltd\services\idol.py:52
 msgid "Anna Mochizuki"
 msgstr "모치즈키 안나"
 
-#: .\mltd\services\idol.py:51
+#: .\mltd\services\idol.py:53
 msgid "Roco Handa"
 msgstr "로코"
 
-#: .\mltd\services\idol.py:52
+#: .\mltd\services\idol.py:54
 msgid "Yuriko Nanao"
 msgstr "나나오 유리코"
 
-#: .\mltd\services\idol.py:53
+#: .\mltd\services\idol.py:55
 msgid "Sayoko Takayama"
 msgstr "타카야마 사요코"
 
-#: .\mltd\services\idol.py:54
+#: .\mltd\services\idol.py:56
 msgid "Arisa Matsuda"
 msgstr "마츠다 아리사"
 
-#: .\mltd\services\idol.py:55
+#: .\mltd\services\idol.py:57
 msgid "Umi Kousaka"
 msgstr "코사카 우미"
 
-#: .\mltd\services\idol.py:56
+#: .\mltd\services\idol.py:58
 msgid "Iku Nakatani"
 msgstr "나카타니 이쿠"
 
-#: .\mltd\services\idol.py:57
+#: .\mltd\services\idol.py:59
 msgid "Tomoka Tenkubashi"
 msgstr "텐쿠바시 토모카"
 
-#: .\mltd\services\idol.py:58
+#: .\mltd\services\idol.py:60
 msgid "Emily Stewart"
 msgstr "에밀리 스튜어트"
 
-#: .\mltd\services\idol.py:59
+#: .\mltd\services\idol.py:61
 msgid "Shiho Kitazawa"
 msgstr "키타자와 시호"
 
-#: .\mltd\services\idol.py:60
+#: .\mltd\services\idol.py:62
 msgid "Ayumu Maihama"
 msgstr "마이하마 아유무"
 
-#: .\mltd\services\idol.py:61
+#: .\mltd\services\idol.py:63
 msgid "Hinata Kinoshita"
 msgstr "키노시타 히나타"
 
-#: .\mltd\services\idol.py:62
+#: .\mltd\services\idol.py:64
 msgid "Kana Yabuki"
 msgstr "야부키 카나"
 
-#: .\mltd\services\idol.py:63
+#: .\mltd\services\idol.py:65
 msgid "Nao Yokoyama"
 msgstr "요코야마 나오"
 
-#: .\mltd\services\idol.py:64
+#: .\mltd\services\idol.py:66
 msgid "Chizuru Nikaido"
 msgstr "니카이도 치즈루"
 
-#: .\mltd\services\idol.py:65
+#: .\mltd\services\idol.py:67
 msgid "Konomi Baba"
 msgstr "바바 코노미"
 
-#: .\mltd\services\idol.py:66
+#: .\mltd\services\idol.py:68
 msgid "Tamaki Ogami"
 msgstr "오오가미 타마키"
 
-#: .\mltd\services\idol.py:67
+#: .\mltd\services\idol.py:69
 msgid "Fuka Toyokawa"
 msgstr "토요카와 후우카"
 
-#: .\mltd\services\idol.py:68
+#: .\mltd\services\idol.py:70
 msgid "Miya Miyao"
 msgstr "미야오 미야"
 
-#: .\mltd\services\idol.py:69
+#: .\mltd\services\idol.py:71
 msgid "Noriko Fukuda"
 msgstr "후쿠다 노리코"
 
-#: .\mltd\services\idol.py:70
+#: .\mltd\services\idol.py:72
 msgid "Mizuki Makabe"
 msgstr "마카베 미즈키"
 
-#: .\mltd\services\idol.py:71
+#: .\mltd\services\idol.py:73
 msgid "Karen Shinomiya"
 msgstr "시노미야 카렌"
 
-#: .\mltd\services\idol.py:72
+#: .\mltd\services\idol.py:74
 msgid "Rio Momose"
 msgstr "모모세 리오"
 
-#: .\mltd\services\idol.py:73
+#: .\mltd\services\idol.py:75
 msgid "Subaru Nagayoshi"
 msgstr "나가요시 스바루"
 
-#: .\mltd\services\idol.py:74
+#: .\mltd\services\idol.py:76
 msgid "Reika Kitakami"
 msgstr "키타카미 레이카"
 
-#: .\mltd\services\idol.py:75
+#: .\mltd\services\idol.py:77
 msgid "Momoko Suou"
 msgstr "스오 모모코"
 
-#: .\mltd\services\idol.py:76
+#: .\mltd\services\idol.py:78
 msgid "Julia"
 msgstr "줄리아"
 
-#: .\mltd\services\idol.py:77
+#: .\mltd\services\idol.py:79
 msgid "Tsumugi Shiraishi"
 msgstr "시라이시 츠무기"
 
-#: .\mltd\services\idol.py:78
+#: .\mltd\services\idol.py:80
 msgid "Kaori Sakuramori"
 msgstr "사쿠라모리 카오리"
 
-#: .\mltd\services\idol.py:81
+#: .\mltd\services\idol.py:83
 msgid "Shika"
 msgstr "시이카"
 
-#: .\mltd\services\live.py:1176
+#: .\mltd\services\live.py:1130
+msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
+msgstr "프로듀서 랭크 \"{rank}\" 달성 보상입니다."
+
+#: .\mltd\services\live.py:1181
 msgid "Solo 2MIX"
 msgstr "솔로 2MIX"
 
-#: .\mltd\services\live.py:1178
+#: .\mltd\services\live.py:1183
 msgid "Solo 2MIX+"
 msgstr "솔로 2MIX+"
+
+#: .\mltd\services\live.py:1303 .\mltd\services\live.py:1336
+#: .\mltd\services\live.py:1371
+msgid ""
+"{rank_type} reward for\n"
+"live \"{song_name} (Difficulty: {course})\"."
+msgstr ""
+"라이브 \"{song_name}(난이도: {course})\"\n"
+"{rank_type} 달성 보상입니다."
+
+#: .\mltd\services\live.py:1307
+msgid "Score Rank \"{rank}\""
+msgstr "하이스코어 목표 \"{rank}\""
+
+#: .\mltd\services\live.py:1340
+msgid "Combo Rank \"{rank}\""
+msgstr "콤보 목표 \"{rank}\""
+
+#: .\mltd\services\live.py:1375
+msgid "Clear Rank \"{rank}\""
+msgstr "클리어 횟수 목표 \"{rank}\""
+
+#: .\mltd\services\login_bonus.py:214
+msgid ""
+"Reward received on\n"
+"Day {day} of \"Login Bonus.\""
+msgstr ""
+"\" 로그인 보너스\" {day}일째에\n"  # Sic
+"획득한 보상입니다."
 
 #: .\mltd\services\mission.py:93
 msgid "normal mission"
@@ -515,6 +548,22 @@ msgstr "ALL 타입 음악 LP {goal} 달성하기"
 msgid "Complete {goal} job offers"
 msgstr "의뢰 {goal}번 완료하기"
 
+#: .\mltd\services\mission.py:314
+msgid ""
+"Reward received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"{mission_type} \"{mission_description}\"(으)로\n"
+"획득한 보상입니다."
+
+#: .\mltd\services\mission.py:344
+msgid ""
+"Achievement received from\n"
+"{mission_type} \"{mission_description}.\""
+msgstr ""
+"{mission_type} \"{mission_description}\"(으)로\n"
+"획득한 칭호입니다."
+
 #: .\mltd\services\song.py:29
 msgid "Kokoro ga Kaeru Basho"
 msgstr "마음이 돌아가는 장소"
@@ -782,59 +831,4 @@ msgstr "두근! 뱀파이어 걸"
 #: .\mltd\services\song.py:143
 msgid "Kiramekirari"
 msgstr "반짝 반짝임"
-
-
-
-# The following are machine translations.
-
-
-
-#: .\mltd\services\live.py:1125
-msgid "Reward obtained from reaching Producer Rank \"{rank}.\""
-msgstr "프로듀서 랭크를 \"{rank}\"로 달성 보상입니다."
-
-#: .\mltd\services\live.py:1298 .\mltd\services\live.py:1331
-#: .\mltd\services\live.py:1366
-msgid ""
-"{rank_type} reward for\n"
-"live \"{song_name} (Difficulty: {course})\"."
-msgstr ""
-"라이브 \"{song_name} (난이도: {course})\"\n"
-"{rank_type} 달성 보상입니다."
-
-#: .\mltd\services\live.py:1302
-msgid "Score Rank \"{rank}\""
-msgstr "하이스코어 목표 \"{rank}\""
-
-#: .\mltd\services\live.py:1335
-msgid "Combo Rank \"{rank}\""
-msgstr "콤보 목표 \"{rank}\""
-
-#: .\mltd\services\live.py:1370
-msgid "Clear Rank \"{rank}\""
-msgstr "클리어 횟수 목표 \"{rank}\""
-
-#: .\mltd\services\login_bonus.py:214
-msgid ""
-"Reward received on\n"
-"Day {day} of \"Login Bonus.\""
-msgstr ""
-"\"로그인 보너스\" {day}일차에\n"
-"받은 보상입니다."
-
-#: .\mltd\services\mission.py:314
-msgid ""
-"Reward received from\n"
-"{mission_type} \"{mission_description}.\""
-msgstr ""
-"{mission_type} \"{mission_description}\"에서\n"
-"받은 보상입니다."
-
-#: .\mltd\services\mission.py:344
-msgid ""
-"Achievement received from\n"
-"{mission_type} \"{mission_description}.\""
-msgstr ""
-"{mission_type} \"{mission_description}\"에서\n"
-"받은 칭호입니다."
 

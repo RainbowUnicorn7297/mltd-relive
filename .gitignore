@@ -3,7 +3,7 @@
 *.code-workspace
 config.ini
 assets-*/
-env/
+*env/
 obsolete/
 prototype/build/*
 standalone/build/*
